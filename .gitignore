@@ -2,3 +2,5 @@
 /venv/
 /raw_data/
 /processed_data/
+.vscode/
+__pycache__/
