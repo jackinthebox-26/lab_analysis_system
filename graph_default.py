@@ -92,7 +92,7 @@ def plot_RF_data():
         ax.set_xlabel('Frequency (MHz)')
         ax.set_ylabel('Power (dBm)')
         print(row.index.tolist())
-        ax.set_title(f'RF Data - {row['date']}')
+        ax.set_title(f"RF Data - {row['date']}")
         ax.grid()
 
         plt.tight_layout()
