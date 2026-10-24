@@ -6,7 +6,6 @@ config_path = Path('config/data_load_config.toml')
 with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
-print(config)
 
 import pandas as pd
 
@@ -93,7 +92,6 @@ class LabDataLoader:
         ocean_optics_data = []
         for data_type, files in data_dict.items():
             for file in files:
-                data = self.load_data(file, data_type)
                 match data_type:
                     case "OSA":
                         OSA_data.append(file)
@@ -107,7 +105,7 @@ class LabDataLoader:
                         ocean_optics_data.append(file)
 
 
-        root_path = Path('processed_data')
+        root_path = Path(config['processed_data']['processed_data_folder'])
         OSA_dataframe = pd.DataFrame()
         for file in OSA_data:
             OSA_dataframe = pd.concat([OSA_dataframe, self.load_data(file, "OSA")], ignore_index=True)
