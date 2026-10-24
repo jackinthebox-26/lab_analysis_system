@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+from datetime import datetime
 
 
 def parse_OSA(file_path: str, header_1: str = 'Wavelength (nm)', header_2: str = 'Power (mW)') -> pd.DataFrame:
@@ -9,6 +10,39 @@ def parse_OSA(file_path: str, header_1: str = 'Wavelength (nm)', header_2: str =
     data = pd.read_csv(file_path, header=None, skiprows=1)
     data.columns = [header_1, header_2]
 
+
+    tokens = file_path.name.split('_')
+    meta_data['exp_index'] = tokens.pop(0) 
+    time = tokens.pop()[:-4]
+    date = tokens.pop()
+    
+    meta_data['date'] = datetime.strptime(f"{date}{time}" , "%Y%m%d%H%M%S").isoformat()
+    remaining_tokens = tokens[:]
+    
+    i = 0
+    for i in range(len(tokens)):
+        token = tokens[i]
+        match=True
+        if token == 'HWP2' and i + 1 < len(tokens):
+            meta_data['HWP2'] = float(tokens[i+1].replace('dot', '.'))
+        elif token == 'HWP1' and i + 1 < len(tokens):
+            meta_data['HWP1'] = float(tokens[i+1].replace('dot', '.'))
+        elif token == 'QWP' and i + 1 < len(tokens):
+            meta_data['QWP'] = float(tokens[i+1].replace('dot', '.'))
+        elif token.endswith('mA'):
+            meta_data['Pump current'] = token.removesuffix('mA').replace('dot', '.') 
+            remaining_tokens.remove(token)
+            match = False
+        else:
+            match = False
+
+        if match:
+            remaining_tokens.remove(token)
+            remaining_tokens.remove(tokens[i+1])
+
+    meta_data['Notes'] = " ".join(remaining_tokens)
+
+    
     meta_data[header_1] = tuple(data[header_1].tolist())
     meta_data[header_2] = tuple(data[header_2].tolist())
     return meta_data
@@ -65,6 +99,39 @@ def parse_RF_analyser(file_path: str) -> pd.DataFrame:
     meta_data = {
                 "source_file": file_path.name,
             }
+
+    
+    tokens = file_path.name.split('_')
+    meta_data['exp_index'] = tokens.pop(0) 
+    tokens[-1] = tokens[-1][:-4]
+    
+    
+    remaining_tokens = tokens[:]
+    
+    i = 0
+    for i in range(len(tokens)):
+        token = tokens[i]
+        match=True
+        if token == 'HWP2' and i + 1 < len(tokens):
+            meta_data['HWP2'] = float(tokens[i+1].replace('dot', '.'))
+        elif token == 'HWP1' and i + 1 < len(tokens):
+            meta_data['HWP1'] = float(tokens[i+1].replace('dot', '.'))
+        elif token == 'QWP' and i + 1 < len(tokens):
+            meta_data['QWP'] = float(tokens[i+1].replace('dot', '.'))
+        elif token.endswith('mA'):
+            meta_data['Pump current'] = token.removesuffix('mA').replace('dot', '.') 
+            remaining_tokens.remove(token)
+            match = False
+        else:
+            match = False
+
+        if match:
+            remaining_tokens.remove(token)
+            remaining_tokens.remove(tokens[i+1])
+
+    meta_data['Notes'] = " ".join(remaining_tokens)
+
+    
     power_array = []
     freq_array = []
 
@@ -92,6 +159,13 @@ def parse_RF_analyser(file_path: str) -> pd.DataFrame:
                     meta_data[key] = "_".join([p for p in parts[1:] if p])
     meta_data['Power (dBm)'] = power_array
     meta_data['Frequency (Hz)'] = freq_array
+
+    date_macro = meta_data['date__day-month-year']
+    time = meta_data['time__24h-minute-second']
+
+    meta_data['date'] = datetime.strptime(date_macro + time, "%d_%m_%Y%H_%M_%S").isoformat()
+
+    print(date_macro+time)
     return meta_data
 
 def parse_FROG_pulse_stats(file_path: str) -> pd.DataFrame:
