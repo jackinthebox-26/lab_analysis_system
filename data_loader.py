@@ -1,12 +1,19 @@
 from pathlib import Path
 from collections import defaultdict
+import tomllib
+
+config_path = Path('config/data_load_config.toml')
+with open(config_path, 'rb') as f:
+    config = tomllib.load(f)
+
+print(config)
 
 import pandas as pd
 
 from parsers import parse_FROG_pulse_stats, parse_OSA, parse_RF_analyser, parse_aurora_4000, parse_ocean_optics
 
 class LabDataLoader:
-    def __init__(self, data_dir: str = "raw_data"):
+    def __init__(self, data_dir: str = config['raw_data']['raw_data_folder']):
         self.data_dir = Path(data_dir)
 
     def find_all_files(self):
