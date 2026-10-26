@@ -3,4 +3,4 @@ raw_data_folder = 'raw_data'
 
 
 [processed_data] # type: ignore
-processed_data_folder = 'processed_data'
+processed_data_folder = 'processed_data/data'
