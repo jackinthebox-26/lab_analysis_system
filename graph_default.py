@@ -1,15 +1,22 @@
 from pathlib import Path
 from datetime import datetime
+import tomllib
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-PROCESSED_DATA_PATH = Path("processed_data")
+config_path = Path('config/data_load_config.toml')
+with open(config_path, 'rb') as f:
+    config = tomllib.load(f)
+
+PROCESSED_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
 
 def plot_OSA_data():
-    data = pd.read_json(PROCESSED_DATA_PATH / "OSA_data.json")
-    
+    file_path = PROCESSED_DATA_PATH / "OSA_data.json"
+    if not file_path.is_file():
+        return
+    data = pd.read_json(file_path)
     for index, row in data.iterrows():
         file_info = (
             f"Index: {row['exp_index']:03d}\n"
@@ -48,12 +55,16 @@ def plot_OSA_data():
         ax.set_title(f"OSA Data - {row['date']}")
 
         plt.tight_layout()
-        plt.savefig(f"processed_data/OSA_plots/plot_{row['source_file'][:-4]}.png")
+        OSA_plots_path = Path('processed_data/OSA_plots')
+        OSA_plots_path.mkdir(parents=True, exist_ok=True)
+        plt.savefig(OSA_plots_path / f"plot_{row['source_file'][:-4]}.png")
         plt.close()
 
 def plot_RF_data():
-    data = pd.read_json(PROCESSED_DATA_PATH / "RF_data.json")
-    print(data.columns)
+    file_path = PROCESSED_DATA_PATH / "RF_data.json"
+    if not file_path.is_file():
+        return
+    data = pd.read_json(file_path)
     for index, row in data.iterrows():
         file_info = (
                     f"Index: {row['exp_index']:03d}\n"
@@ -64,7 +75,6 @@ def plot_RF_data():
                     f"Notes: {row.get('Notes', 'NA')}\n"
                 )
         fig, ax = plt.subplots()
-        print(type(row['Frequency (Hz)']))
         ax.plot(np.array(row['Frequency (Hz)']) * 1e-6, row['Power (dBm)'])
 
         
@@ -91,7 +101,6 @@ def plot_RF_data():
 
         ax.set_xlabel('Frequency (MHz)')
         ax.set_ylabel('Power (dBm)')
-        print(row.index.tolist())
         ax.set_title(f"RF Data - {row['date']}")
         ax.grid()
 
@@ -99,9 +108,34 @@ def plot_RF_data():
         plt.savefig(f"processed_data/RF_plots/plot_{row['source_file'][:-4]}.png")
         plt.close()
         
+def plot_aurora_data():
+    file_path = PROCESSED_DATA_PATH / "aurora_data.json"
+    if not file_path.is_file():
+        return
+    data = pd.read_json(file_path)
+    print(data)
+    print(data.columns)
+
+    for index, row in data.iterrows():
+        file_info = (
+                    f"Device Name: {row.get('Device Name', 'NA')} mA\n"
+                    f"Integral Time(s): {row['Integral Time(s)']:03d}\n"
+                    f"Avg Count: {row.get('Avg Count', 'NA')} deg\n"
+                    f"Smoothness: {row.get('Smoothness', 'NA')} deg\n"
+                    f"Data Type: {row.get('Data Type', 'NA')} deg\n"
+                    f"Other Description: {row.get('Other Description', 'NA')}\n"
+                    )
+        fig, ax = plt.subplots()
+        ax.plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), np.array(row[f"Power ({row['Y-Axis Unit']})"]))
+
+            
+        plt.savefig(f"processed_data/aurora_plots/plot_{row['source_file'][:-4]}.png")
+    
+
 
     
 
 if __name__ == "__main__":
     plot_OSA_data()
     plot_RF_data()
+    plot_aurora_data()
