@@ -2,28 +2,29 @@ from pathlib import Path
 from collections import defaultdict
 import tomllib
 
+
+import pandas as pd
+
 config_path = Path('config/data_load_config.toml')
 with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
 
-import pandas as pd
 
-from parsers import parse_FROG_pulse_stats, parse_OSA, parse_RF_analyser, parse_aurora_4000, parse_ocean_optics
-
+from parsers import data_parser
 class LabDataLoader:
     def __init__(self, data_dir: str = config['raw_data']['raw_data_folder']):
         self.data_dir = Path(data_dir)
 
-    def find_all_files(self):
+    def find_all_files(self): # Called in LabDataLoader.make_raw_data_dict()
         # Implement the logic to find all files in the specified directory
         all_files = [f for f in self.data_dir.rglob('*') if f.is_file()]
         print(f"Found {len(all_files)} files in {self.data_dir}")
         return all_files
 
     
-    def get_data_type(self, file_path: Path):
-        # Implement logic to determine the data type based on the file path or content
+    def get_data_type(self, file_path: Path):  # Called in LabDataLoader.make_raw_data_dict()
+        # Implement logic to determine the data type based on the file path or first 5 lines content
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             first_5_lines = [f.readline().strip() for _ in range(5)]
 
@@ -50,86 +51,61 @@ class LabDataLoader:
         elif "FROGtrace" in file_path.name:
             return "FROG trace"
         else:
+            print(f"{file_path.name} not categorized")
             return "Other"
 
-    def load_data(self, file_path: Path, data_type: str):
-            # Implement the logic to load data based on the data type
-            match data_type:
-                case "OSA":
-                    data = parse_OSA(file_path)
-                case "Aurora 4000":
-                    # Implement the logic to parse Aurora 4000 data
-                    data = parse_aurora_4000(file_path)
-                case "Ocean Optics":
-                    data = parse_ocean_optics(file_path)
-                case "RF analyser":
-                    data = parse_RF_analyser(file_path)
-                case "FROG pulse stats":
-                    data = parse_FROG_pulse_stats(file_path)
-                case _:
-                    data = {"source_file": file_path.name, "message": "No parser available for this data type."}   
+    def load_data(self, file_path: Path, data_type: str): # Called in LabDataLoader.initiate_data_saving
+            # Implement the logic to load data based on the data type and output a dataframe with all associated raw data
+            data = data_parser(file_path, data_type).data
+           
             
             return pd.DataFrame([data])
 
     
-    def make_raw_data_dict(self):
+    def make_raw_data_dict(self): # Called in LabDataLoader.initiate_data_saving()
         # Implement the logic to create a dictionary of raw data files categorized by their data type
         raw_data_dict = {}
-        all_files = self.find_all_files()
-        for file in all_files:
-            data_type = self.get_data_type(file)
-            if data_type not in raw_data_dict:
+        print("Pull Data")
+        all_files = self.find_all_files() # Get list of files 
+        for file in all_files:  # file is a Path object
+            data_type = self.get_data_type(file)  #Peak in all files and determine where the data came from
+            if data_type not in raw_data_dict:  # If this is the first one, create the data type
                 raw_data_dict[data_type] = []
-            raw_data_dict[data_type].append(file)
-        return raw_data_dict
+            raw_data_dict[data_type].append(file) # Add it to the list of this type
+        return raw_data_dict # A dictionary where the keys are data types and values is a list of files of this type
 
-    def initiate_data_saving(self):
-        data_dict = self.make_raw_data_dict()
-        OSA_data = []
-        RF_data = []
-        pulse_data = []
-        aurora_data = []
-        ocean_optics_data = []
-        for data_type, files in data_dict.items():
-            for file in files:
-                match data_type:
-                    case "OSA":
-                        OSA_data.append(file)
-                    case "RF analyser":
-                        RF_data.append(file)
-                    case "FROG pulse stats":
-                        pulse_data.append(file)
-                    case "Aurora 4000":
-                        aurora_data.append(file)
-                    case "Ocean Optics":
-                        ocean_optics_data.append(file)
-
-
+    def initiate_data_saving(self): # Called in main()
+        print('Initiate data saving')
+        print('Initializing data catagorization')
+        data_dict = self.make_raw_data_dict()  # Contains categorized data
+        print(f"Found the following data types: {data_dict.keys()}")
+        print('Data catagorized')
+        
         root_path = Path(config['processed_data']['processed_data_folder'])
-        OSA_dataframe = pd.DataFrame()
-        for file in OSA_data:
-            OSA_dataframe = pd.concat([OSA_dataframe, self.load_data(file, "OSA")], ignore_index=True)
-        OSA_dataframe.to_json(root_path / "OSA_data.json", orient="records", indent=4)
 
-        RF_dataframe = pd.DataFrame()
-        for file in RF_data:
-            RF_dataframe = pd.concat([RF_dataframe, self.load_data(file, "RF analyser")], ignore_index=True)
-        RF_dataframe.to_json(root_path / "RF_data.json", orient="records", indent=4)
+        print('Initializing raw data processing and json saving.')
+        for key, file_list in data_dict.items():
+            temp_df = pd.DataFrame()
+            print(f'Key: {key}')
+            for file in file_list:
+                print(f"File: {file}")
+                this_file_df = self.load_data(file, key)
+                print('----this_file_df--------')
+                print(this_file_df)
+                if this_file_df is not None:
+                    temp_df = pd.concat([temp_df, this_file_df], ignore_index=True, axis=0)
+            print('------temp_df-----')
+            print(temp_df)
+            if this_file_df is not None:
+                file_name = key.replace(" ", "_") + "_data.json"
+                temp_df.to_json(root_path / file_name, indent=4)
+                print(f"Saved {key} data to {file_name}")
 
-        pulse_dataframe = pd.DataFrame()
-        for file in pulse_data:
-            pulse_dataframe = pd.concat([pulse_dataframe, self.load_data(file, "FROG pulse stats")], ignore_index=True)
-        pulse_dataframe.to_json(root_path / "pulse_data.json", orient="records", indent=4)
-
-        aurora_dataframe = pd.DataFrame()
-        for file in aurora_data:
-            aurora_dataframe = pd.concat([aurora_dataframe, self.load_data(file, "Aurora 4000")], ignore_index=True)
-        aurora_dataframe.to_json(root_path / "aurora_data.json", orient="records", indent=4)
-
-        ocean_optics_dataframe = pd.DataFrame()
-        for file in ocean_optics_data:
-            ocean_optics_dataframe = pd.concat([ocean_optics_dataframe, self.load_data(file, "Ocean Optics")], ignore_index=True)
-        ocean_optics_dataframe.to_json(root_path / "ocean_optics_data.json", orient="records", indent=4)
+                reload_data = pd.read_json(root_path / file_name)
+                print('reloaded data')
+                print(reload_data)
+                
+        
 
         
 def main():
