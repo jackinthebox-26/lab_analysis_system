@@ -132,10 +132,17 @@ def plot_aurora_data():
         plt.savefig(plot_folder / f"plot_{row['source_file'][:-4]}.png")
     
 
+def create_all_graphs():
+    print("Initializing plot creation")
+    print("Creating OSA graphs")
+    plot_OSA_data()
+    print("Creating RF analyser graphs")
+    plot_RF_data()
+    print("Creating Aurora 4000 graphs")
+    plot_aurora_data()
+    print("Completed graph creation")
 
     
 
 if __name__ == "__main__":
-    plot_OSA_data()
-    plot_RF_data()
-    plot_aurora_data()
+    create_all_graphs()

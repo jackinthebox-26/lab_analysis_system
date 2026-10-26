@@ -1,19 +1,19 @@
 [raw_data] # type: ignore
-raw_data_folder = 'raw_data'
+raw_data_folder = 'data/raw_data'
 
 
 [processed_data] # type: ignore
-processed_data_folder = 'processed_data/data'
+processed_data_folder = 'data/processed_data'
 
 
 [OSA_data]
 data_file = 'OSA_data.json'
-plot_folder = 'processed_data/OSA_plots'
+plot_folder = 'plots/OSA_plots'
 
 [RF_data]
 data_file = 'RF_data.json'
-plot_folder = 'processed_data/RF_plots'
+plot_folder = 'plots/RF_plots'
 
 [aurora_data]
 data_file = 'Aurora_4000_data.json'
-plot_folder = 'processed_data/aurora_plots'
+plot_folder = 'plots/aurora_plots'

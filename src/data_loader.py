@@ -11,7 +11,7 @@ with open(config_path, 'rb') as f:
 
 
 
-from parsers import data_parser
+from src.parsers import data_parser
 class LabDataLoader:
     def __init__(self, data_dir: str = config['raw_data']['raw_data_folder']):
         self.data_dir = Path(data_dir)
@@ -94,11 +94,14 @@ class LabDataLoader:
                     temp_df = pd.concat([temp_df, this_file_df], ignore_index=True, axis=0)
             
             if this_file_df is not None:
-                file_name = key.replace(" ", "_") + "_data.json"
-                temp_df.to_json(root_path / file_name, indent=4)
+                root_path.mkdir(parents=True, exist_ok=True)
+                file_name = root_path / (key.replace(" ", "_") + "_data.json")
+       
+                        
+                temp_df.to_json(file_name, indent=4)
                 print(f"Saved {key} data to {file_name}")
 
-                reload_data = pd.read_json(root_path / file_name)
+                reload_data = pd.read_json(file_name)
                 
         
 
