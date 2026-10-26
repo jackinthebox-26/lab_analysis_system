@@ -88,22 +88,17 @@ class LabDataLoader:
             temp_df = pd.DataFrame()
             print(f'Key: {key}')
             for file in file_list:
-                print(f"File: {file}")
+                print(f"{' ' * 5}File: {file}")
                 this_file_df = self.load_data(file, key)
-                print('----this_file_df--------')
-                print(this_file_df)
                 if this_file_df is not None:
                     temp_df = pd.concat([temp_df, this_file_df], ignore_index=True, axis=0)
-            print('------temp_df-----')
-            print(temp_df)
+            
             if this_file_df is not None:
                 file_name = key.replace(" ", "_") + "_data.json"
                 temp_df.to_json(root_path / file_name, indent=4)
                 print(f"Saved {key} data to {file_name}")
 
                 reload_data = pd.read_json(root_path / file_name)
-                print('reloaded data')
-                print(reload_data)
                 
         
 

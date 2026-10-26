@@ -1,9 +1,15 @@
 from pathlib import Path
+import tomllib
 
 import pandas as pd
 import numpy as np
 import re
 from datetime import datetime
+
+
+config_path = Path('config/data_load_config.toml')
+with open(config_path, 'rb') as f:
+    config = tomllib.load(f)
 
 class data_parser:
     def __init__(self, file_path, data_type):

@@ -13,7 +13,7 @@ with open(config_path, 'rb') as f:
 PROCESSED_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
 
 def plot_OSA_data():
-    file_path = PROCESSED_DATA_PATH / "OSA_data.json"
+    file_path = PROCESSED_DATA_PATH / config['OSA_data']['data_file']
     if not file_path.is_file():
         return
     data = pd.read_json(file_path)
@@ -55,13 +55,13 @@ def plot_OSA_data():
         ax.set_title(f"OSA Data - {row['date']}")
 
         plt.tight_layout()
-        OSA_plots_path = Path('processed_data/OSA_plots')
+        OSA_plots_path = Path(config['OSA_data']['plot_folder'])
         OSA_plots_path.mkdir(parents=True, exist_ok=True)
         plt.savefig(OSA_plots_path / f"plot_{row['source_file'][:-4]}.png")
         plt.close()
 
 def plot_RF_data():
-    file_path = PROCESSED_DATA_PATH / "RF_data.json"
+    file_path = PROCESSED_DATA_PATH / config['RF_data']['data_file']
     if not file_path.is_file():
         return
     data = pd.read_json(file_path)
@@ -103,13 +103,13 @@ def plot_RF_data():
         ax.set_ylabel('Power (dBm)')
         ax.set_title(f"RF Data - {row['date']}")
         ax.grid()
-
+        RF_plot_folder = Path(config['RF_data']['plot_folder'])
         plt.tight_layout()
-        plt.savefig(f"processed_data/RF_plots/plot_{row['source_file'][:-4]}.png")
+        plt.savefig(RF_plot_folder / f"plot_{row['source_file'][:-4]}.png")
         plt.close()
         
 def plot_aurora_data():
-    file_path = PROCESSED_DATA_PATH / "aurora_data.json"
+    file_path = PROCESSED_DATA_PATH / config['aurora_data']['plot_folder']
     if not file_path.is_file():
         return
     data = pd.read_json(file_path)
@@ -128,8 +128,8 @@ def plot_aurora_data():
         fig, ax = plt.subplots()
         ax.plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), np.array(row[f"Power ({row['Y-Axis Unit']})"]))
 
-            
-        plt.savefig(f"processed_data/aurora_plots/plot_{row['source_file'][:-4]}.png")
+        plot_folder = Path(config['aurora_data']['pot_folder'])
+        plt.savefig(plot_folder / f"plot_{row['source_file'][:-4]}.png")
     
 
 

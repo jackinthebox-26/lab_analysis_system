@@ -4,3 +4,16 @@ raw_data_folder = 'raw_data'
 
 [processed_data] # type: ignore
 processed_data_folder = 'processed_data/data'
+
+
+[OSA_data]
+data_file = 'OSA_data.json'
+plot_folder = 'processed_data/OSA_plots'
+
+[RF_data]
+data_file = 'RF_data.json'
+plot_folder = 'processed_data/RF_plots'
+
+[aurora_data]
+data_file = 'Aurora_4000_data.json'
+plot_folder = 'processed_data/aurora_plots'
