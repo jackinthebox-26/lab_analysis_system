@@ -17,6 +17,7 @@ with open(config_path, 'rb') as f:
 
 
 from src.parsers import data_parser
+from src.data_analysis import data_analysis
 class LabDataLoader:
     def __init__(self, data_dir: str = config['raw_data']['raw_data_folder']):
         self.data_dir = Path(data_dir)
@@ -96,7 +97,11 @@ class LabDataLoader:
                 print(f"{' ' * 5}File: {file}")
                 this_file_df = self.load_data(file, key)
                 if this_file_df is not None:
-                    temp_df = pd.concat([temp_df, this_file_df], ignore_index=True, axis=0)
+                    analysis_df = data_analysis(this_file_df, key).data
+                    temp_df = pd.concat([temp_df, analysis_df], ignore_index=True, axis=0)
+                    
+                    print("---data analysis dataframe---")
+                    print(analysis_df)
             print(len(temp_df))
             if len(temp_df) > 0:
                 root_path.mkdir(parents=True, exist_ok=True)
