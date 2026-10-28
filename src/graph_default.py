@@ -10,8 +10,10 @@ config_path = Path('config/data_load_config.toml')
 with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 PROCESSED_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
 
+PROCESSED_DATA_PATH  = BASE_DIR / PROCESSED_DATA_PATH
 def plot_OSA_data():
     file_path = PROCESSED_DATA_PATH / config['OSA_data']['data_file']
     if not file_path.is_file():
@@ -61,10 +63,13 @@ def plot_OSA_data():
         plt.close()
 
 def plot_RF_data():
+    print("Initializing RF data plot")
     file_path = PROCESSED_DATA_PATH / config['RF_data']['data_file']
+    print(f"Loading {file_path}")
     if not file_path.is_file():
         return
     data = pd.read_json(file_path)
+    print(f"Data has {len(data)} data lines.")
     for index, row in data.iterrows():
         file_info = (
                     f"Index: {row['exp_index']:03d}\n"
@@ -104,6 +109,8 @@ def plot_RF_data():
         ax.set_title(f"RF Data - {row['date']}")
         ax.grid()
         RF_plot_folder = Path(config['RF_data']['plot_folder'])
+        
+        RF_plot_folder.mkdir(parents=True, exist_ok=True)
         plt.tight_layout()
         plt.savefig(RF_plot_folder / f"plot_{row['source_file'][:-4]}.png")
         plt.close()

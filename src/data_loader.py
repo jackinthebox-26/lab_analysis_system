@@ -11,7 +11,7 @@ with open(config_path, 'rb') as f:
 
 
 
-from src.parsers import data_parser
+from parsers import data_parser
 class LabDataLoader:
     def __init__(self, data_dir: str = config['raw_data']['raw_data_folder']):
         self.data_dir = Path(data_dir)
@@ -92,8 +92,8 @@ class LabDataLoader:
                 this_file_df = self.load_data(file, key)
                 if this_file_df is not None:
                     temp_df = pd.concat([temp_df, this_file_df], ignore_index=True, axis=0)
-            
-            if this_file_df is not None:
+            print(len(temp_df))
+            if len(temp_df) > 0:
                 root_path.mkdir(parents=True, exist_ok=True)
                 file_name = root_path / (key.replace(" ", "_") + "_data.json")
        
