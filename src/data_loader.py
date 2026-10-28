@@ -1,9 +1,14 @@
 from pathlib import Path
 from collections import defaultdict
 import tomllib
+import sys
 
 
 import pandas as pd
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 config_path = Path('config/data_load_config.toml')
 with open(config_path, 'rb') as f:
@@ -11,7 +16,7 @@ with open(config_path, 'rb') as f:
 
 
 
-from parsers import data_parser
+from src.parsers import data_parser
 class LabDataLoader:
     def __init__(self, data_dir: str = config['raw_data']['raw_data_folder']):
         self.data_dir = Path(data_dir)

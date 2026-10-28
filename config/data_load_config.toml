@@ -1,5 +1,5 @@
 [raw_data] # type: ignore
-raw_data_folder = 'data/raw_data'
+raw_data_folder = '../2026/10/27'
 
 [src_config]
 prefix_to_head = '..'
@@ -20,3 +20,7 @@ plot_folder = 'plots/RF_analyser_plots'
 [aurora_data]
 data_file = 'Aurora_4000_data.json'
 plot_folder = 'plots/aurora_plots'
+
+[ocean_optics_data]
+data_file = 'Ocean_Optics_data.json'
+plot_folder = 'plots/ocean_optics_plots'

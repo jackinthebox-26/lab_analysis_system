@@ -116,7 +116,8 @@ def plot_RF_data():
         plt.close()
         
 def plot_aurora_data():
-    file_path = PROCESSED_DATA_PATH / config['aurora_data']['plot_folder']
+    file_path = PROCESSED_DATA_PATH / config['aurora_data']['data_file']
+    print(file_path)
     if not file_path.is_file():
         return
     data = pd.read_json(file_path)
@@ -133,9 +134,37 @@ def plot_aurora_data():
                     f"Other Description: {row.get('Other Description', 'NA')}\n"
                     )
         fig, ax = plt.subplots()
-        ax.plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), np.array(row[f"Power ({row['Y-Axis Unit']})"]))
+        ax.plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), np.array(row[f"Power (mW)"]))
 
-        plot_folder = Path(config['aurora_data']['pot_folder'])
+        plot_folder = Path(config['aurora_data']['plot_folder'])
+        
+        plot_folder.mkdir(parents=True, exist_ok=True)
+        plt.savefig(plot_folder / f"plot_{row['source_file'][:-4]}.png")
+
+def plot_ocean_optics_data():
+    file_path = PROCESSED_DATA_PATH / config['ocean_optics_data']['data_file']
+    print(file_path)
+    if not file_path.is_file():
+        return
+    data = pd.read_json(file_path)
+    print(data)
+    print(data.columns)
+
+    for index, row in data.iterrows():
+        file_info = (
+                    f"Device Name: {row.get('Spectrometer', 'NA')} mA\n"
+                    f"Integral Time(s): {row['Integration Time (sec)']}\n"
+                    f"Scans to average: {row.get('Scans to average', 'NA')} deg\n"
+                    f"Nonlinearity correction enabled: {row.get('Nonlinearity correction enabled', 'NA')} deg\n"
+                    f"Number of Pixels in Spectrum: {row.get('Number of Pixels in Spectrum', 'NA')} deg\n"
+                    f"Other Description: {row.get('Other Description', 'NA')}\n"
+                    )
+        fig, ax = plt.subplots()
+        ax.plot(np.array(row[f"Wavelength (nm)"]), np.array(row[f"Power (mW)"]))
+
+        plot_folder = Path(config['ocean_optics_data']['plot_folder'])
+        
+        plot_folder.mkdir(parents=True, exist_ok=True)
         plt.savefig(plot_folder / f"plot_{row['source_file'][:-4]}.png")
     
 
@@ -147,6 +176,8 @@ def create_all_graphs():
     plot_RF_data()
     print("Creating Aurora 4000 graphs")
     plot_aurora_data()
+    print("Creating Ocean Optics graphs")
+    plot_ocean_optics_data()
     print("Completed graph creation")
 
     
