@@ -18,6 +18,12 @@ RF_DATA = pd.read_json(DATA_FOLDER / config['RF_data']['data_file'])
 AURORA_DATA = pd.read_json(DATA_FOLDER / config['aurora_data']['data_file'])
 OCEAN_OPTICS_DATA = pd.read_json(DATA_FOLDER / config['ocean_optics_data']['data_file'])
 
+def gaussian(x, amplitude, mean, stddev, offset):
+    """1D Gaussian model with a baseline offset."""
+    return amplitude * np.exp(-((x - mean) ** 2) / (2 * stddev ** 2)) + offset
+def FWHM_to_stddev(FWHM):
+    return 0.424661 * FWHM
+
 def get_angle_number(series):
     filename = series['source_file']
     print(filename)
@@ -94,12 +100,20 @@ def UV_generation_plot():
     ax.plot(np.hstack(FHG_data[x_label]).astype(float), 
                 np.hstack(FHG_data[y_label]).astype(float),
                 label=f"FHG Center: {FHG_data['Center Wavelength (nm)'].iloc[0]:.2f} nm\nFWHM:  {FHG_data['FWHM Wavelength (nm)'].iloc[0]:.2f} nm\n Power = 430 mW")
+    ax.plot(np.hstack(FHG_data[x_label]).astype(float),
+            gaussian(np.hstack(FHG_data[x_label]), 
+                     1, 
+                     float(FHG_data['Center Wavelength (nm)'].iloc[0]), 
+                     float(FWHM_to_stddev(FHG_data['FWHM Wavelength (nm)'].iloc[0])), 
+                     0),
+                     '--',
+                     label='Gaussian fit')
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
     ax.set_xlim([255, 257])
 
     ax.grid()
-
+    ax.legend()
     plt.tight_layout()
     plt.show()
 
