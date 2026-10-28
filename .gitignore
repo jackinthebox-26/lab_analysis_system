@@ -1,6 +1,6 @@
 # Folders to ignore
 /venv/
-/raw_data/
-/processed_data/
+/data/
+/plots/
 .vscode/
 __pycache__/
