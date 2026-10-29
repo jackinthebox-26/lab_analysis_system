@@ -263,7 +263,67 @@ def plot_ocean_optics_data():
         output_filename = plot_folder / f"plot_{row['source_file'][:-4]}.png"
         plt.savefig(output_filename)
         print(f"Saved graph to {output_filename}")
-    
+
+
+def plot_FROG_data():
+    file_path = PROCESSED_DATA_PATH / config['FROG_data']['data_file']
+    print(f"Loading data from {file_path}")
+    if not file_path.is_file():
+            return
+    data = pd.read_json(file_path)
+    for index, row in data.iterrows():
+        file_info = (
+                    f"Pulse Width: {row.get('pulse_width', 'NA')} {row.get('pulse_width_unit', 'NA')}\n"
+                    f"Bandwidth: {row['bandwidth']} {row['bandwidth_unit']} \n"
+                    f"Bandwidth (nm): {row['bandwidth_nm']} nm \n"
+                    f"TBW product (g: 0.441, sec2: 0.315): {row.get('tbw_product', 'NA')}\n"
+                    f"FROG trace error: {row.get('frog_trace_error', 'NA'):.3}\n"
+                    f"Timestamp: {row.get('timestamp', 'NA')} deg\n"
+                    f"Other Description: {row.get('Other Description', 'NA')}\n"
+                    )
+        
+        fig, ax = plt.subplots(1, 3, figsize=(10, 4), dpi = 100)
+
+        ax[0].plot(np.array(row["pulse_time_data_time"]), np.array(row["pulse_time_data_intensity"]))
+        ax[0].set_xlabel('Time (fw)')
+        ax[0].set_ylabel('Normalized Power (mW)')
+        ax[0].set_title(f"Pulse temporal data \n{row['source_file']}")
+        ax[0].grid()
+        
+        ax[1].plot(np.array(row["pulse_freq_data_frequency"]), np.array(row["pulse_freq_data_intensity"]))
+        ax[1].set_xlabel('Wavelength (nm)')
+        ax[1].set_ylabel('Normalized Power (mW)')
+        ax[1].set_title(f" - Pulse spectral data")
+        ax[1].grid()
+        # 3. Define box styling
+        bbox_props = dict(
+            boxstyle="round,pad=0.5",  # Options: 'square', 'round', 'sawtooth'
+            facecolor="wheat",         # Background fill color
+            edgecolor="gray",          # Border line color
+            alpha=0.8,                 # Transparency (0 to 1)
+            linewidth=1.2
+        )
+        
+        # 4. Add text box (positioned at top-left inside axes)
+        ax[2].text(
+            0.03, 1,                # (x, y) coordinates in relative axes space (3% from left, 95% from bottom)
+            file_info,
+            transform=ax[2].transAxes,    # Coordinates relative to axes, not data values
+            fontsize=9,
+            fontfamily="monospace",    # Monospace keeps key-value pairs aligned
+            verticalalignment="top",
+            horizontalalignment="left",
+            bbox=bbox_props
+        )
+        ax[2].set_axis_off()
+        plt.tight_layout()
+        plot_folder = Path(config['FROG_data']['plot_folder'])
+                
+        plot_folder.mkdir(parents=True, exist_ok=True)
+        plt.tight_layout()
+        output_filename = plot_folder / f"plot_{row['source_file'][:-4]}.png"
+        plt.savefig(output_filename)
+        print(f"Saved graph to {output_filename}")
 
 def create_all_graphs():
     print("-------------------Initializing plot creation-------------------")
@@ -275,6 +335,8 @@ def create_all_graphs():
     plot_aurora_data()
     print("Creating Ocean Optics graphs")
     plot_ocean_optics_data()
+    print("Creating FROG graphs")
+    plot_FROG_data()
     print("Completed graph creation")
 
     

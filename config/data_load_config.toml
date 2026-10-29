@@ -24,3 +24,7 @@ plot_folder = 'plots/aurora_plots'
 [ocean_optics_data]
 data_file = 'Ocean_Optics_data.json'
 plot_folder = 'plots/ocean_optics_plots'
+
+[FROG_data]
+data_file = 'FROG_pulse_stats_data.json'
+plot_folder = 'plots/FROG_plots'
