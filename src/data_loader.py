@@ -81,7 +81,7 @@ class LabDataLoader:
         return raw_data_dict # A dictionary where the keys are data types and values is a list of files of this type
 
     def initiate_data_saving(self): # Called in main()
-        print('Initiate data saving')
+        print("-------------------Initializing Data saving-------------------")
         print('Initializing data catagorization')
         data_dict = self.make_raw_data_dict()  # Contains categorized data
         print(f"Found the following data types: {data_dict.keys()}")
@@ -100,14 +100,9 @@ class LabDataLoader:
                     analysis_df = data_analysis(this_file_df, key).data
                     temp_df = pd.concat([temp_df, analysis_df], ignore_index=True, axis=0)
                     
-                    print("---data analysis dataframe---")
-                    print(analysis_df)
-            print(len(temp_df))
-            if len(temp_df) > 0:
+            if len(temp_df) > 0 and not temp_df.columns.to_list() == ['source_file']:
                 root_path.mkdir(parents=True, exist_ok=True)
-                file_name = root_path / (key.replace(" ", "_") + "_data.json")
-       
-                        
+                file_name = root_path / (key.replace(" ", "_") + "_data.json")    
                 temp_df.to_json(file_name, indent=4)
                 print(f"Saved {key} data to {file_name}")
 

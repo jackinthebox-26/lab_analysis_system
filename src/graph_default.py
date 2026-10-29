@@ -25,6 +25,7 @@ def FWHM_to_stddev(FWHM):
     return 0.424661 * FWHM
 def plot_OSA_data():
     file_path = PROCESSED_DATA_PATH / config['OSA_data']['data_file']
+    print(f"Loading data from {file_path}")
     if not file_path.is_file():
         return
     data = pd.read_json(file_path)
@@ -81,7 +82,9 @@ def plot_OSA_data():
         plt.tight_layout()
         OSA_plots_path = Path(config['OSA_data']['plot_folder'])
         OSA_plots_path.mkdir(parents=True, exist_ok=True)
-        plt.savefig(OSA_plots_path / f"plot_{row['source_file'][:-4]}.png")
+        output_filename = OSA_plots_path / f"plot_{row['source_file'][:-4]}.png"
+        plt.savefig(output_filename)
+        print(f"Saved graph to {output_filename}")
         plt.close()
 
 def plot_RF_data():
@@ -134,17 +137,17 @@ def plot_RF_data():
         
         RF_plot_folder.mkdir(parents=True, exist_ok=True)
         plt.tight_layout()
-        plt.savefig(RF_plot_folder / f"plot_{row['source_file'][:-4]}.png")
+        output_filename = RF_plot_folder / f"plot_{row['source_file'][:-4]}.png"
+        plt.savefig(output_filename)
+        print(f"Saved graph to {output_filename}")
         plt.close()
         
 def plot_aurora_data():
     file_path = PROCESSED_DATA_PATH / config['aurora_data']['data_file']
-    print(file_path)
+    print(f"Loading data from {file_path}")
     if not file_path.is_file():
         return
     data = pd.read_json(file_path)
-    print(data)
-    print(data.columns)
 
     for index, row in data.iterrows():
         file_info = (
@@ -197,16 +200,16 @@ def plot_aurora_data():
         
         plot_folder.mkdir(parents=True, exist_ok=True)
         plt.tight_layout()
-        plt.savefig(plot_folder / f"plot_{row['source_file'][:-4]}.png")
+        output_filename = plot_folder / f"plot_{row['source_file'][:-4]}.png"
+        plt.savefig(output_filename)
+        print(f"Saved graph to {output_filename}")
 
 def plot_ocean_optics_data():
     file_path = PROCESSED_DATA_PATH / config['ocean_optics_data']['data_file']
-    print(file_path)
+    print(f"Loading data from {file_path}")
     if not file_path.is_file():
         return
     data = pd.read_json(file_path)
-    print(data)
-    print(data.columns)
 
     for index, row in data.iterrows():
         file_info = (
@@ -257,11 +260,13 @@ def plot_ocean_optics_data():
         
         plot_folder.mkdir(parents=True, exist_ok=True)
         plt.tight_layout()
-        plt.savefig(plot_folder / f"plot_{row['source_file'][:-4]}.png")
+        output_filename = plot_folder / f"plot_{row['source_file'][:-4]}.png"
+        plt.savefig(output_filename)
+        print(f"Saved graph to {output_filename}")
     
 
 def create_all_graphs():
-    print("Initializing plot creation")
+    print("-------------------Initializing plot creation-------------------")
     print("Creating OSA graphs")
     plot_OSA_data()
     print("Creating RF analyser graphs")

@@ -32,7 +32,7 @@ def clean_folder(folder_path):
 
 
 def clean_directories():
-    print('Initiating directory cleanup')
+    print("-------------------Initializing tree cleaning-------------------")
     deleted_count = 0
     for folder in folder_list:
         deleted_count += clean_folder(folder)
