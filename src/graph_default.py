@@ -192,7 +192,7 @@ def plot_aurora_data():
             bbox=bbox_props
         )
 
-        ax.set_xlabel('Frequency (MHz)')
+        ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Normalized Power (mW)')
         ax.set_title(f"Aurora 4000 Data - {row['source_file']}")
         ax.grid()
