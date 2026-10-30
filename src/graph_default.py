@@ -52,15 +52,6 @@ def load_data(config_key):
     data = pd.read_json(file_path)
     return data
 
-def get_repo_version(path=BASE_DIR):
-    try:
-        repo = git.Repo(path, search_parent_directories=True)
-        sha = repo.head.commit.hexsha[:7]
-        is_dirty = repo.is_dirty()
-        print(is_dirty)
-    except git.InvalidGitRepositoryError:
-        return "not a git repo"
-
 
 def add_info_box(ax, text_dict, x=0.03, y=-0.2):
     ax.text(
@@ -88,8 +79,6 @@ def save_and_close_plot(config_key, source_file):
     plt.close()
 
 
-def save_metadata():
-    get_repo_version()
 
 def plot_OSA_data():
     config_key = 'OSA_data'
