@@ -29,16 +29,13 @@ if config['processed_data']['store_plots_with_data']:
 
 PROCESSED_DATA_PATH  = BASE_DIR / PROCESSED_DATA_PATH
 
-def load_all_data():
-    """Loads and returns all dataset DataFrames globally or for interactive use."""
-    global OSA_DATA, RF_DATA, AURORA_DATA, OCEAN_OPTICS_DATA
-    
-    OSA_DATA = pd.read_json(PROCESSED_DATA_PATH / config['OSA_data']['data_file'])
-    RF_DATA = pd.read_json(PROCESSED_DATA_PATH / config['RF_data']['data_file'])
-    AURORA_DATA = pd.read_json(PROCESSED_DATA_PATH / config['aurora_data']['data_file'])
-    OCEAN_OPTICS_DATA = pd.read_json(PROCESSED_DATA_PATH / config['ocean_optics_data']['data_file'])
-    
-    return OSA_DATA, RF_DATA, AURORA_DATA, OCEAN_OPTICS_DATA
+def load_all_data() -> dict[str, pd.DataFrame]:
+    return {
+        "osa": pd.read_json(PROCESSED_DATA_PATH / config['OSA_data']['data_file']),
+        "rf": pd.read_json(PROCESSED_DATA_PATH / config['RF_data']['data_file']),
+        "aurora": pd.read_json(PROCESSED_DATA_PATH / config['aurora_data']['data_file']),
+        "ocean_optics": pd.read_json(PROCESSED_DATA_PATH / config['ocean_optics_data']['data_file']),
+    }
 
 
 def gaussian(x, amplitude, mean, stddev, offset):
@@ -49,23 +46,23 @@ def FWHM_to_stddev(FWHM):
     return 0.424661 * FWHM
 
 def inspect_data_files():
-    load_all_data()
+    data_dict = load_all_data()
     print('--OSA data--')
-    print(OSA_DATA.columns)
-    print(OSA_DATA.head())
+    print(data_dict['osa'].columns)
+    print(data_dict['osa'].head())
     
     print('--RF data--')
-    print(RF_DATA.columns)
-    print(RF_DATA.head())
+    print(data_dict['rf'].columns)
+    print(data_dict['rf'].head())
 
     
     print('--Aurora 4000 data--')
-    print(AURORA_DATA.columns)
-    print(AURORA_DATA.head())
+    print(data_dict['aurora'].columns)
+    print(data_dict['aurora'].head())
 
     print('--Ocean Optics data--')
-    print(OCEAN_OPTICS_DATA.columns)
-    print(OCEAN_OPTICS_DATA.head())
+    print(data_dict['ocean_optics'].columns)
+    print(data_dict['ocean_optics'].head())
 
 
 
