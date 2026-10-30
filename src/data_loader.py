@@ -22,9 +22,12 @@ class LabDataLoader:
     def __init__(self, data_dir: str = config['raw_data']['raw_data_folder']):
         self.data_dir = Path(data_dir)
 
-    def find_all_files(self): # Called in LabDataLoader.make_raw_data_dict()
+    def find_all_files(self, nested=False): # Called in LabDataLoader.make_raw_data_dict()
         # Implement the logic to find all files in the specified directory
-        all_files = [f for f in self.data_dir.rglob('*') if f.is_file()]
+        if nested:
+            all_files = [f for f in self.data_dir.rglob('*') if f.is_file()]
+        else:
+            all_files = [f for f in self.data_dir.iterdir() if f.is_file()]
         print(f"Found {len(all_files)} files in {self.data_dir}")
         return all_files
 
