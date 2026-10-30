@@ -3,7 +3,7 @@ import shutil
 
 import tomllib
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 config_path = BASE_DIR / 'config' / 'data_load_config.toml'
 
 config_path = Path(config_path)
@@ -11,7 +11,7 @@ with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
 raw_data = Path(config['raw_data']['raw_data_folder'])
-project_root = Path(__file__).parent.parent
+project_root = Path(__file__).parent.parent.parent
 
 processed_data_folder = config['processed_data']['processed_data_folder']
 if config['processed_data']['store_processed_with_data']:

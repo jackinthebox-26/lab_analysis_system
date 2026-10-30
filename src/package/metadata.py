@@ -6,14 +6,14 @@ from pathlib import Path
 import git
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 config_path = BASE_DIR / 'config' / 'data_load_config.toml'
 
 config_path = Path(config_path)
 with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 RAW_DATA_DIR = Path(config['raw_data']['raw_data_folder'])
 RAW_DATA_DIR = BASE_DIR / RAW_DATA_DIR
 PROCESSED_DIR = Path(config['processed_data']['processed_data_folder'])

@@ -6,12 +6,12 @@ import sys
 
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 config_path = BASE_DIR / 'config' / 'data_load_config.toml'
 
 config_path = Path(config_path)
@@ -20,8 +20,8 @@ with open(config_path, 'rb') as f:
 
 
 
-from src.parsers import data_parser
-from src.data_analysis import data_analysis
+from src.package.parsers import data_parser
+from src.package.data_analysis import data_analysis
 class LabDataLoader:
     def __init__(self, data_dir: str = config['raw_data']['raw_data_folder']):
         self.data_dir = Path(data_dir)

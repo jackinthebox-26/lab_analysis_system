@@ -7,7 +7,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 config_path = BASE_DIR / 'config' / 'data_load_config.toml'
 
 config_path = Path(config_path)
