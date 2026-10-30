@@ -6,10 +6,14 @@ import numpy as np
 import re
 from datetime import datetime
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+config_path = BASE_DIR / 'config' / 'data_load_config.toml'
 
-config_path = Path('config/data_load_config.toml')
+config_path = Path(config_path)
 with open(config_path, 'rb') as f:
     config = tomllib.load(f)
+
+
 
 class data_parser:
     def __init__(self, file_path, data_type):

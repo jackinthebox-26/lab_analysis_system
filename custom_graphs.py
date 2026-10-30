@@ -7,13 +7,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-config_path = Path('config/data_load_config.toml')
+
+
+BASE_DIR = Path(__file__).resolve().parent
+config_path = BASE_DIR / 'config' / 'data_load_config.toml'
+
+config_path = Path(config_path)
 with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
 
 
-BASE_DIR = Path(__file__).resolve().parent
 RAW_DIR = Path(config['raw_data']['raw_data_folder'])
 PROCESSED_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
 if config['processed_data']['store_processed_with_data']:

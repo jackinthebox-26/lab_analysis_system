@@ -10,7 +10,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-config_path = Path('config/data_load_config.toml')
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+config_path = BASE_DIR / 'config' / 'data_load_config.toml'
+
+config_path = Path(config_path)
 with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
