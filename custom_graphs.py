@@ -12,7 +12,6 @@ import numpy as np
 BASE_DIR = Path(__file__).resolve().parent
 config_path = BASE_DIR / 'config' / 'data_load_config.toml'
 
-config_path = Path(config_path)
 with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
