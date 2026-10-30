@@ -43,7 +43,7 @@ def gaussian(x, amplitude, mean, stddev, offset):
     return amplitude * np.exp(-((x - mean) ** 2) / (2 * stddev ** 2)) + offset
 
 def FWHM_to_stddev(FWHM):
-    return 0.424661 * FWHM
+    return (1 / (2 * np.sqrt(2 * np.log(2)))) * FWHM
 
 def inspect_data_files():
     data_dict = load_all_data()

@@ -56,7 +56,7 @@ def fit_gaussian_profile(x_data, y_data):
     stddev = abs(stddev)
     
     # Calculate FWHM from standard deviation
-    fwhm = 2.3548200450309493 * stddev  # 2 * sqrt(2 * ln(2)) * sigma
+    fwhm = stddev / (1 / (2 * np.sqrt(2 * np.log(2))))  # 2 * sqrt(2 * ln(2)) * sigma
 
     return {
         "center": center,
