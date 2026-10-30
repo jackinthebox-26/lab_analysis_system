@@ -85,7 +85,7 @@ def save_metadata():
     metastring = add_to_metadata(metastring, list_to_string(find_all_files(PROCESSED_DIR)), 'Processed data files')
     metastring = add_to_metadata(metastring, list_to_string(find_all_files(PLOT_DIR)), 'Plot files')
            
-    metastring_file = PLOT_DIR / "metadata.txt"
+    metastring_file = PLOT_DIR / "metadata.log"
 
     with open(metastring_file, 'w', encoding='utf-8') as f:
         f.write(metastring)
