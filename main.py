@@ -17,6 +17,7 @@ def main():
     LabDataLoader().initiate_data_saving()
     create_all_graphs()
     save_metadata()
+    print('This is new and wrong')
 
 if __name__ == '__main__':
     main()
