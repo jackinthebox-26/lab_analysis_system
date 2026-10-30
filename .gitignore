@@ -3,6 +3,6 @@
 /data/
 /plots/
 /processed_data/
-/my_package.egg-info/
+*.egg-info/
 .vscode/
 __pycache__/
