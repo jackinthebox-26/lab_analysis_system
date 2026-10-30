@@ -9,3 +9,11 @@ File structure is as follows
 -- parsers.py
 -- README.txt
 -- requirements.txt
+
+
+1. Create venv: python -m venv venv
+2. Activate venv: 
+    a. ctrl + shift + P
+    b. Select Python:Select Interpretor
+    c. Select venv in your workspace
+3. Install requirements: pip install -r requirements.txt
