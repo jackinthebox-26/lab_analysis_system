@@ -17,3 +17,8 @@ File structure is as follows
     b. Select Python:Select Interpretor
     c. Select venv in your workspace
 3. Install requirements: pip install -r requirements.txt
+
+
+To clean up everything 
+1. git reset -- hard HEAD
+2. git clean -fdx
