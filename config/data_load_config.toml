@@ -5,10 +5,10 @@ raw_data_folder = '../2026/10/29'
 prefix_to_head = '..'
 
 [processed_data] # type: ignore
-processed_data_folder = 'data/processed_data'
+processed_data_folder = 'processed_data'
 plot_data_folder = 'plots'
-store_processed_with_data = 'True'
-store_plots_with_data = 'True'
+store_processed_with_data = 'False'
+store_plots_with_data = 'False'
 
 
 [OSA_data]

@@ -12,12 +12,15 @@ with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+RAW_DIR = Path(config['raw_data']['raw_data_folder'])
 PROCESSED_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
+if config['processed_data']['store_processed_with_data'].strip().lower() == "true":
+    PROCESSED_DATA_PATH = RAW_DIR / PROCESSED_DATA_PATH
 
 FIGURE_PATH = Path(config['processed_data']['plot_data_folder'])
 
-if config['processed_data']['store_plots_with_data']:
-    FIGURE_PATH = Path(config['raw_data']['raw_data_folder']) / FIGURE_PATH
+if config['processed_data']['store_plots_with_data'].strip().lower() == "true":
+    FIGURE_PATH = RAW_DIR / FIGURE_PATH
 
 PROCESSED_DATA_PATH  = BASE_DIR / PROCESSED_DATA_PATH
 FIGURE_PATH = BASE_DIR / FIGURE_PATH
@@ -40,7 +43,9 @@ def FWHM_to_stddev(FWHM):
     return 0.424661 * FWHM
 
 def load_data(config_key):
-    file_path = file_path = PROCESSED_DATA_PATH / config[config_key]['data_file']
+
+    file_path = PROCESSED_DATA_PATH / config[config_key]['data_file']
+    print(file_path)
     print(f"Loading data from {file_path}")
     if not file_path.is_file():
         return None

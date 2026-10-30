@@ -88,6 +88,10 @@ class LabDataLoader:
         print('Data catagorized')
         
         root_path = Path(config['processed_data']['processed_data_folder'])
+        if config['processed_data']['store_processed_with_data'].strip().lower() == "true":
+            raw_data = Path(config['raw_data']['raw_data_folder'])
+            root_path = raw_data / root_path
+        root_path = PROJECT_ROOT / root_path
 
         print('Initializing raw data processing and json saving.')
         for key, file_list in data_dict.items():
