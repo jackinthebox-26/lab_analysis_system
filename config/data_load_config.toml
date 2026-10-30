@@ -10,6 +10,8 @@ plot_data_folder = 'plots'
 store_processed_with_data = 'False'
 store_plots_with_data = 'False'
 
+[plot_config]
+tight_plot_window = 2
 
 [OSA_data]
 data_file = 'OSA_data.json'
