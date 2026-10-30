@@ -3,5 +3,6 @@
 /data/
 /plots/
 /processed_data/
+.egg-info/
 .vscode/
 __pycache__/
