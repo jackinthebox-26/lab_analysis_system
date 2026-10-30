@@ -10,11 +10,15 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.data_loader import LabDataLoader
 from src.graph_default import create_all_graphs
 from src.file_tools import clean_directories
+from src.metadata import save_metadata
+from custom_graphs import main as custom_main
 
 def main():
     clean_directories()
     LabDataLoader().initiate_data_saving()
     create_all_graphs()
+    save_metadata()
+    custom_main()
 
 if __name__ == '__main__':
     main()
