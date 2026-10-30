@@ -44,21 +44,9 @@ def load_all_data():
 def gaussian(x, amplitude, mean, stddev, offset):
     """1D Gaussian model with a baseline offset."""
     return amplitude * np.exp(-((x - mean) ** 2) / (2 * stddev ** 2)) + offset
+
 def FWHM_to_stddev(FWHM):
     return 0.424661 * FWHM
-
-def get_angle_number(series):
-    filename = series['source_file']
-    print(filename)
-    pattern = r"__(\d+)__(\d+)\.\w+$"
-    match = re.search(pattern, filename)
-
-    if match:
-        first_num = int(match.group(1))   # 0
-        second_num = int(match.group(2))  # 0 (or "00000" as str via match.group(2))
-        
-        return second_num
-    return None
 
 def inspect_data_files():
     load_all_data()
