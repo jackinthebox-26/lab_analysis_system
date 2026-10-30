@@ -26,7 +26,7 @@ PLOT_DIR = BASE_DIR / PLOT_DIR
 
 def find_all_files(data_dir): # Called in LabDataLoader.make_raw_data_dict()
         # Implement the logic to find all files in the specified directory
-        all_files = [f for f in data_dir.rglob('*') if f.is_file()]
+        all_files = [f.resolve() for f in data_dir.rglob('*') if f.is_file()]
         print(f"Found {len(all_files)} files in {data_dir}")
         return all_files
 
