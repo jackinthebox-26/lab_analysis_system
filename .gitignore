@@ -2,5 +2,6 @@
 /venv/
 /data/
 /plots/
+/processed_data/
 .vscode/
 __pycache__/
