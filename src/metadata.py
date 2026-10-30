@@ -14,12 +14,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 RAW_DATA_DIR = Path(config['raw_data']['raw_data_folder'])
 RAW_DATA_DIR = BASE_DIR / RAW_DATA_DIR
 PROCESSED_DIR = Path(config['processed_data']['processed_data_folder'])
-if config['processed_data']['store_processed_with_data'].strip().lower() == "true":
+if config['processed_data']['store_processed_with_data']:
     PROCESSED_DIR = RAW_DATA_DIR / PROCESSED_DIR
 
 PROCESSED_DIR = BASE_DIR / PROCESSED_DIR
 PLOT_DIR = Path(config['processed_data']['plot_data_folder'])
-if config['processed_data']['store_plots_with_data'].strip().lower() == "true":
+if config['processed_data']['store_plots_with_data']:
     PLOT_DIR = RAW_DATA_DIR / PLOT_DIR
 
 PLOT_DIR = BASE_DIR / PLOT_DIR

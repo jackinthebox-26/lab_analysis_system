@@ -16,12 +16,12 @@ with open(config_path, 'rb') as f:
 BASE_DIR = Path(__file__).resolve().parent
 RAW_DIR = Path(config['raw_data']['raw_data_folder'])
 PROCESSED_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
-if config['processed_data']['store_processed_with_data'].strip().lower() == "true":
+if config['processed_data']['store_processed_with_data']:
     PROCESSED_DATA_PATH = RAW_DIR / PROCESSED_DATA_PATH
 
 FIGURE_PATH = Path(config['processed_data']['plot_data_folder'])
 
-if config['processed_data']['store_plots_with_data'].strip().lower() == "true":
+if config['processed_data']['store_plots_with_data']:
     FIGURE_PATH = RAW_DIR / FIGURE_PATH
 
 PROCESSED_DATA_PATH  = BASE_DIR / PROCESSED_DATA_PATH
