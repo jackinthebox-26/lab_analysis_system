@@ -22,3 +22,7 @@ File structure is as follows
 To clean up everything 
 1. git reset -- hard HEAD
 2. git clean -fdx
+
+
+To revert to a past version
+1. git revert <hash>
