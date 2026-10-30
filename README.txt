@@ -22,3 +22,8 @@ File structure is as follows
 To clean up everything 
 1. git reset -- hard HEAD
 2. git clean -fdx
+
+To go to an older version to re-create the plots
+1. git checkout <hash>
+2. Run main.py and custom_graphs.py
+3. git checkout main
