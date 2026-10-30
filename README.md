@@ -8,7 +8,7 @@ How to install and start to work with this package
 
 
 To clean up everything 
-1. git reset -- hard HEAD
+1. git reset --hard HEAD
 2. git clean -fdx
 NOTE: git clean DELETES UNTRACKED FILES. DONT DO THIS BY ACCIDENT.
 
