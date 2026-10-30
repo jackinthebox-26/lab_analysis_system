@@ -30,10 +30,17 @@ if config['processed_data']['store_plots_with_data']:
 
 PROCESSED_DATA_PATH  = BASE_DIR / PROCESSED_DATA_PATH
 
-OSA_DATA = pd.read_json(PROCESSED_DATA_PATH / config['OSA_data']['data_file'])
-RF_DATA = pd.read_json(PROCESSED_DATA_PATH / config['RF_data']['data_file'])
-AURORA_DATA = pd.read_json(PROCESSED_DATA_PATH / config['aurora_data']['data_file'])
-OCEAN_OPTICS_DATA = pd.read_json(PROCESSED_DATA_PATH / config['ocean_optics_data']['data_file'])
+def load_all_data():
+    """Loads and returns all dataset DataFrames globally or for interactive use."""
+    global OSA_DATA, RF_DATA, AURORA_DATA, OCEAN_OPTICS_DATA
+    
+    OSA_DATA = pd.read_json(PROCESSED_DATA_PATH / config['OSA_data']['data_file'])
+    RF_DATA = pd.read_json(PROCESSED_DATA_PATH / config['RF_data']['data_file'])
+    AURORA_DATA = pd.read_json(PROCESSED_DATA_PATH / config['aurora_data']['data_file'])
+    OCEAN_OPTICS_DATA = pd.read_json(PROCESSED_DATA_PATH / config['ocean_optics_data']['data_file'])
+    
+    return OSA_DATA, RF_DATA, AURORA_DATA, OCEAN_OPTICS_DATA
+
 
 def gaussian(x, amplitude, mean, stddev, offset):
     """1D Gaussian model with a baseline offset."""
@@ -55,6 +62,7 @@ def get_angle_number(series):
     return None
 
 def inspect_data_files():
+    load_all_data()
     print('--OSA data--')
     print(OSA_DATA.columns)
     print(OSA_DATA.head())
