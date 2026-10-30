@@ -13,7 +13,21 @@ with open(config_path, 'rb') as f:
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROCESSED_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
 
+FIGURE_PATH = Path(config['processed_data']['plot_data_folder'])
+
+if config['processed_data']['store_plots_with_data']:
+    FIGURE_PATH = Path(config['raw_data']['raw_data_folder']) / FIGURE_PATH
+
 PROCESSED_DATA_PATH  = BASE_DIR / PROCESSED_DATA_PATH
+FIGURE_PATH = BASE_DIR / FIGURE_PATH
+
+BBOX_PROPS = dict(
+                boxstyle="round,pad=0.5",  # Options: 'square', 'round', 'sawtooth'
+                facecolor="wheat",         # Background fill color
+                edgecolor="gray",          # Border line color
+                alpha=0.8,                 # Transparency (0 to 1)
+                linewidth=1.2
+            )
 
 
 def gaussian(x, amplitude, mean, stddev, offset):
@@ -23,12 +37,46 @@ def gaussian(x, amplitude, mean, stddev, offset):
 
 def FWHM_to_stddev(FWHM):
     return 0.424661 * FWHM
-def plot_OSA_data():
-    file_path = PROCESSED_DATA_PATH / config['OSA_data']['data_file']
+
+def load_data(config_key):
+    file_path = file_path = PROCESSED_DATA_PATH / config[config_key]['data_file']
     print(f"Loading data from {file_path}")
     if not file_path.is_file():
-        return
+        return None
     data = pd.read_json(file_path)
+    return data
+
+
+def add_info_box(ax, text_dict, x=0.03, y=-0.2):
+    ax.text(
+                x, y,                # (x, y) coordinates in relative axes space (3% from left, 95% from bottom)
+                text_dict,
+                transform=ax.transAxes,    # Coordinates relative to axes, not data values
+                fontsize=9,
+                fontfamily="monospace",    # Monospace keeps key-value pairs aligned
+                verticalalignment="top",
+                horizontalalignment="left",
+                bbox=BBOX_PROPS
+            )
+    return ax
+
+
+def save_and_close_plot(config_key, source_file):
+    plot_folder = FIGURE_PATH / config[config_key]['plot_folder']
+
+    plot_folder.mkdir(parents=True, exist_ok=True)
+
+    plt.tight_layout()
+    output_filename = plot_folder / f"plot_{Path(source_file).stem}.png"
+    plt.savefig(output_filename)
+    print(f"Saved graph to {output_filename}")
+    plt.close()
+
+
+def plot_OSA_data():
+    config_key = 'OSA_data'
+    data = load_data(config_key)
+    
     for index, row in data.iterrows():
         file_info = (
             f"Index: {row['exp_index']:03d}\n"
@@ -58,13 +106,7 @@ def plot_OSA_data():
 
 
         # 3. Define box styling
-        bbox_props = dict(
-            boxstyle="round,pad=0.5",  # Options: 'square', 'round', 'sawtooth'
-            facecolor="wheat",         # Background fill color
-            edgecolor="gray",          # Border line color
-            alpha=0.8,                 # Transparency (0 to 1)
-            linewidth=1.2
-        )
+        
 
         # 4. Add text box (positioned at top-left inside axes)
         ax.text(
@@ -75,25 +117,16 @@ def plot_OSA_data():
             fontfamily="monospace",    # Monospace keeps key-value pairs aligned
             verticalalignment="top",
             horizontalalignment="left",
-            bbox=bbox_props
+            bbox=BBOX_PROPS
         )
         ax.set_title(f"OSA Data - {row['date']}")
-
-        plt.tight_layout()
-        OSA_plots_path = Path(config['OSA_data']['plot_folder'])
-        OSA_plots_path.mkdir(parents=True, exist_ok=True)
-        output_filename = OSA_plots_path / f"plot_{row['source_file'][:-4]}.png"
-        plt.savefig(output_filename)
-        print(f"Saved graph to {output_filename}")
-        plt.close()
+        ax = add_info_box(ax, file_info)
+        save_and_close_plot(config_key, row['source_file'])
+        
 
 def plot_RF_data():
-    print("Initializing RF data plot")
-    file_path = PROCESSED_DATA_PATH / config['RF_data']['data_file']
-    print(f"Loading {file_path}")
-    if not file_path.is_file():
-        return
-    data = pd.read_json(file_path)
+    config_key = 'RF_data'
+    data = load_data(config_key)
     print(f"Data has {len(data)} data lines.")
     for index, row in data.iterrows():
         file_info = (
@@ -107,47 +140,21 @@ def plot_RF_data():
         fig, ax = plt.subplots()
         ax.plot(np.array(row['Frequency (Hz)']) * 1e-6, row['Power (dBm)'])
 
-        
-        # 3. Define box styling
-        bbox_props = dict(
-            boxstyle="round,pad=0.5",  # Options: 'square', 'round', 'sawtooth'
-            facecolor="wheat",         # Background fill color
-            edgecolor="gray",          # Border line color
-            alpha=0.8,                 # Transparency (0 to 1)
-            linewidth=1.2
-        )
+      
 
-        # 4. Add text box (positioned at top-left inside axes)
-        ax.text(
-            0.03, -0.2,                # (x, y) coordinates in relative axes space (3% from left, 95% from bottom)
-            file_info,
-            transform=ax.transAxes,    # Coordinates relative to axes, not data values
-            fontsize=9,
-            fontfamily="monospace",    # Monospace keeps key-value pairs aligned
-            verticalalignment="top",
-            horizontalalignment="left",
-            bbox=bbox_props
-        )
 
         ax.set_xlabel('Frequency (MHz)')
         ax.set_ylabel('Power (dBm)')
         ax.set_title(f"RF Data - {row['date']}")
         ax.grid()
-        RF_plot_folder = Path(config['RF_data']['plot_folder'])
         
-        RF_plot_folder.mkdir(parents=True, exist_ok=True)
-        plt.tight_layout()
-        output_filename = RF_plot_folder / f"plot_{row['source_file'][:-4]}.png"
-        plt.savefig(output_filename)
-        print(f"Saved graph to {output_filename}")
-        plt.close()
+        ax = add_info_box(ax, file_info)
+        save_and_close_plot(config_key, row['source_file'])
         
 def plot_aurora_data():
-    file_path = PROCESSED_DATA_PATH / config['aurora_data']['data_file']
-    print(f"Loading data from {file_path}")
-    if not file_path.is_file():
-        return
-    data = pd.read_json(file_path)
+    
+    config_key = 'aurora_data'
+    data = load_data(config_key)
 
     for index, row in data.iterrows():
         file_info = (
@@ -171,45 +178,18 @@ def plot_aurora_data():
                 
 
 
-        # 3. Define box styling
-        bbox_props = dict(
-            boxstyle="round,pad=0.5",  # Options: 'square', 'round', 'sawtooth'
-            facecolor="wheat",         # Background fill color
-            edgecolor="gray",          # Border line color
-            alpha=0.8,                 # Transparency (0 to 1)
-            linewidth=1.2
-        )
-        
-        # 4. Add text box (positioned at top-left inside axes)
-        ax.text(
-            0.03, -0.2,                # (x, y) coordinates in relative axes space (3% from left, 95% from bottom)
-            file_info,
-            transform=ax.transAxes,    # Coordinates relative to axes, not data values
-            fontsize=9,
-            fontfamily="monospace",    # Monospace keeps key-value pairs aligned
-            verticalalignment="top",
-            horizontalalignment="left",
-            bbox=bbox_props
-        )
-
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Normalized Power (mW)')
         ax.set_title(f"Aurora 4000 Data - {row['source_file']}")
         ax.grid()
-        plot_folder = Path(config['aurora_data']['plot_folder'])
         
-        plot_folder.mkdir(parents=True, exist_ok=True)
-        plt.tight_layout()
-        output_filename = plot_folder / f"plot_{row['source_file'][:-4]}.png"
-        plt.savefig(output_filename)
-        print(f"Saved graph to {output_filename}")
+        ax = add_info_box(ax, file_info)
+        save_and_close_plot(config_key, row['source_file'])
 
 def plot_ocean_optics_data():
-    file_path = PROCESSED_DATA_PATH / config['ocean_optics_data']['data_file']
-    print(f"Loading data from {file_path}")
-    if not file_path.is_file():
-        return
-    data = pd.read_json(file_path)
+    
+    config_key = 'ocean_optics_data'
+    data = load_data(config_key)
 
     for index, row in data.iterrows():
         file_info = (
@@ -231,46 +211,20 @@ def plot_ocean_optics_data():
                                                 linestyle='--',
                                                 label='Gaussian Fit')
                 
-        
-        # 3. Define box styling
-        bbox_props = dict(
-            boxstyle="round,pad=0.5",  # Options: 'square', 'round', 'sawtooth'
-            facecolor="wheat",         # Background fill color
-            edgecolor="gray",          # Border line color
-            alpha=0.8,                 # Transparency (0 to 1)
-            linewidth=1.2
-        )
-        
-        # 4. Add text box (positioned at top-left inside axes)
-        ax.text(
-            0.03, -0.2,                # (x, y) coordinates in relative axes space (3% from left, 95% from bottom)
-            file_info,
-            transform=ax.transAxes,    # Coordinates relative to axes, not data values
-            fontsize=9,
-            fontfamily="monospace",    # Monospace keeps key-value pairs aligned
-            verticalalignment="top",
-            horizontalalignment="left",
-            bbox=bbox_props
-        )
+      
+     
         ax.set_xlabel('Frequency (MHz)')
         ax.set_ylabel('Normalized Power (mW)')
         ax.set_title(f"Ocean Optics Data - {row['source_file']}")
         ax.grid()
-        plot_folder = Path(config['ocean_optics_data']['plot_folder'])
         
-        plot_folder.mkdir(parents=True, exist_ok=True)
-        plt.tight_layout()
-        output_filename = plot_folder / f"plot_{row['source_file'][:-4]}.png"
-        plt.savefig(output_filename)
-        print(f"Saved graph to {output_filename}")
-
+        ax = add_info_box(ax, file_info)
+        save_and_close_plot(config_key, row['source_file'])
 
 def plot_FROG_data():
-    file_path = PROCESSED_DATA_PATH / config['FROG_data']['data_file']
-    print(f"Loading data from {file_path}")
-    if not file_path.is_file():
-            return
-    data = pd.read_json(file_path)
+    
+    config_key = 'FROG_data'
+    data = load_data(config_key)
     for index, row in data.iterrows():
         file_info = (
                     f"Pulse Width: {row.get('pulse_width', 'NA')} {row.get('pulse_width_unit', 'NA')}\n"
@@ -295,35 +249,12 @@ def plot_FROG_data():
         ax[1].set_ylabel('Normalized Power (mW)')
         ax[1].set_title(f" - Pulse spectral data")
         ax[1].grid()
-        # 3. Define box styling
-        bbox_props = dict(
-            boxstyle="round,pad=0.5",  # Options: 'square', 'round', 'sawtooth'
-            facecolor="wheat",         # Background fill color
-            edgecolor="gray",          # Border line color
-            alpha=0.8,                 # Transparency (0 to 1)
-            linewidth=1.2
-        )
+    
         
-        # 4. Add text box (positioned at top-left inside axes)
-        ax[2].text(
-            0.03, 1,                # (x, y) coordinates in relative axes space (3% from left, 95% from bottom)
-            file_info,
-            transform=ax[2].transAxes,    # Coordinates relative to axes, not data values
-            fontsize=9,
-            fontfamily="monospace",    # Monospace keeps key-value pairs aligned
-            verticalalignment="top",
-            horizontalalignment="left",
-            bbox=bbox_props
-        )
+        ax[2] = add_info_box(ax[2], file_info)
         ax[2].set_axis_off()
-        plt.tight_layout()
-        plot_folder = Path(config['FROG_data']['plot_folder'])
-                
-        plot_folder.mkdir(parents=True, exist_ok=True)
-        plt.tight_layout()
-        output_filename = plot_folder / f"plot_{row['source_file'][:-4]}.png"
-        plt.savefig(output_filename)
-        print(f"Saved graph to {output_filename}")
+        
+        save_and_close_plot(config_key, row['source_file'])
 
 def create_all_graphs():
     print("-------------------Initializing plot creation-------------------")

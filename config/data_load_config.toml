@@ -1,5 +1,5 @@
 [raw_data] # type: ignore
-raw_data_folder = '../2026/10/27'
+raw_data_folder = '../2026/10/29'
 
 [src_config]
 prefix_to_head = '..'
@@ -7,24 +7,26 @@ prefix_to_head = '..'
 [processed_data] # type: ignore
 processed_data_folder = 'data/processed_data'
 plot_data_folder = 'plots'
+store_processed_with_data = 'True'
+store_plots_with_data = 'True'
 
 
 [OSA_data]
 data_file = 'OSA_data.json'
-plot_folder = 'plots/OSA_plots'
+plot_folder = 'OSA_plots'
 
 [RF_data]
 data_file = 'RF_analyser_data.json'
-plot_folder = 'plots/RF_analyser_plots'
+plot_folder = 'RF_analyser_plots'
 
 [aurora_data]
 data_file = 'Aurora_4000_data.json'
-plot_folder = 'plots/aurora_plots'
+plot_folder = 'aurora_plots'
 
 [ocean_optics_data]
 data_file = 'Ocean_Optics_data.json'
-plot_folder = 'plots/ocean_optics_plots'
+plot_folder = 'ocean_optics_plots'
 
 [FROG_data]
 data_file = 'FROG_pulse_stats_data.json'
-plot_folder = 'plots/FROG_plots'
+plot_folder = 'FROG_plots'
