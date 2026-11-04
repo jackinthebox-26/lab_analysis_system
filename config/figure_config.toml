@@ -1,0 +1,10 @@
+[info_box]
+boxstyle = "round,pad=0.5"
+facecolor = "wheat"
+edgecolor = "grey"
+alpha = 0.8
+linewidth = 1.2
+fontsize = 9
+fontfamily = "monospace"
+verticalalignment="top"
+horizontalalignment="left"

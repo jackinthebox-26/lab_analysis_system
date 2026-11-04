@@ -8,33 +8,50 @@ import numpy as np
 import git
 
 
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 config_path = BASE_DIR / 'config' / 'data_load_config.toml'
+
+plt.style.use(BASE_DIR / 'config' / 'plot_style.mplstyle')
 
 config_path = Path(config_path)
 with open(config_path, 'rb') as f:
     config = tomllib.load(f)
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-RAW_DIR = Path(config['raw_data']['raw_data_folder'])
-PROCESSED_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
-if config['processed_data']['store_processed_with_data']:
-    PROCESSED_DATA_PATH = RAW_DIR / PROCESSED_DATA_PATH
+fig_config_path = BASE_DIR / 'config' / 'figure_config.toml'
 
-FIGURE_PATH = Path(config['processed_data']['plot_data_folder'])
+fig_config_path = Path(fig_config_path)
+with open(fig_config_path, 'rb') as f:
+    fig_config = tomllib.load(f)
+
+
+RAW_DIR = Path(config['raw_data']['raw_data_folder'])
+
+PROCESSED_TEMP_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
+FIGURE_TEMP_PATH = Path(config['processed_data']['plot_data_folder'])
+
+
+if config['processed_data']['store_processed_with_data']:
+    PROCESSED_DATA_PATH = BASE_DIR / RAW_DIR / PROCESSED_TEMP_DATA_PATH
+else:
+    PROCESSED_DATA_PATH = BASE_DIR / PROCESSED_TEMP_DATA_PATH
+     
+
 
 if config['processed_data']['store_plots_with_data']:
-    FIGURE_PATH = RAW_DIR / FIGURE_PATH
+    FIGURE_PATH = BASE_DIR / RAW_DIR / FIGURE_TEMP_PATH
+else:
+    PROCESSED_DATA_PATH = BASE_DIR / PROCESSED_TEMP_DATA_PATH
 
-PROCESSED_DATA_PATH  = BASE_DIR / PROCESSED_DATA_PATH
-FIGURE_PATH = BASE_DIR / FIGURE_PATH
+
 
 BBOX_PROPS = dict(
-                boxstyle="round,pad=0.5",  # Options: 'square', 'round', 'sawtooth'
-                facecolor="wheat",         # Background fill color
-                edgecolor="gray",          # Border line color
-                alpha=0.8,                 # Transparency (0 to 1)
-                linewidth=1.2
+                boxstyle=fig_config['info_box']['boxstyle'],  # Options: 'square', 'round', 'sawtooth'
+                facecolor=fig_config['info_box']['facecolor'],         # Background fill color
+                edgecolor=fig_config['info_box']['edgecolor'],          # Border line color
+                alpha=fig_config['info_box']['alpha'],                 # Transparency (0 to 1)
+                linewidth=fig_config['info_box']['linewidth']
             )
 
 
@@ -62,10 +79,10 @@ def add_info_box(ax, text_dict, x=0.03, y=-0.2):
                 x, y,                # (x, y) coordinates in relative axes space (3% from left, 95% from bottom)
                 text_dict,
                 transform=ax.transAxes,    # Coordinates relative to axes, not data values
-                fontsize=9,
-                fontfamily="monospace",    # Monospace keeps key-value pairs aligned
-                verticalalignment="top",
-                horizontalalignment="left",
+                fontsize=fig_config['info_box']['fontsize'],
+                fontfamily=fig_config['info_box']['fontfamily'],    # Monospace keeps key-value pairs aligned
+                verticalalignment=fig_config['info_box']['verticalalignment'],
+                horizontalalignment=fig_config['info_box']['horizontalalignment'],
                 bbox=BBOX_PROPS
             )
     return ax
@@ -114,11 +131,10 @@ def plot_OSA_data():
         
         ax[0].set_xlabel("Wavelength (nm)")
         ax[0].set_ylabel("Normalized Intensity (mW)")
-        ax[0].grid(True)
         ax[0].legend()
 
 
-        ax[0].set_title(f"OSA Data - {row['date']}")
+        plt.suptitle(f"OSA Data - {row['date']}")
         ax[0] = add_info_box(ax[0], file_info)
 
 
@@ -134,7 +150,6 @@ def plot_OSA_data():
 
         ax[1].set_xlabel("Wavelength (nm)")
         ax[1].set_ylabel("Normalized Intensity (mW)")
-        ax[1].grid(True)
 
         center_wavelength = row['Center Wavelength (nm)']
         fwhm = row['FWHM Wavelength (nm)']
@@ -171,9 +186,7 @@ def plot_RF_data():
 
         ax.set_xlabel('Frequency (MHz)')
         ax.set_ylabel('Power (dBm)')
-        ax.set_title(f"RF Data - {row['date']}")
-        ax.grid()
-        
+        plt.suptitle(f"RF Data - {row['date']}")
         ax = add_info_box(ax, file_info)
         save_and_close_plot(config_key, row['source_file'])
         
@@ -209,8 +222,7 @@ def plot_aurora_data():
 
         ax[0].set_xlabel('Wavelength (nm)')
         ax[0].set_ylabel('Normalized Power (mW)')
-        ax[0].set_title(f"Aurora 4000 Data - {row['source_file']}")
-        ax[0].grid()
+        plt.suptitle(f"Aurora 4000 Data - {row['source_file']}")
 
         ax[1].plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), np.array(row[f"Normalized Power (mW)"]))
         ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
@@ -226,7 +238,7 @@ def plot_aurora_data():
 
         ax[1].set_xlabel('Wavelength (nm)')
         ax[1].set_ylabel('Normalized Power (mW)')
-        ax[1].grid()
+        
 
         center_wavelength = row['Center Wavelength (nm)']
         fwhm = row['FWHM Wavelength (nm)']
@@ -270,8 +282,7 @@ def plot_ocean_optics_data():
      
         ax[0].set_xlabel('Wavelength (nm)')
         ax[0].set_ylabel('Normalized Power (mW)')
-        ax[0].set_title(f"Ocean Optics Data - {row['source_file']}")
-        ax[0].grid()
+        plt.suptitle(f"Ocean Optics Data - {row['source_file']}")
 
         ax[1].plot(np.array(row[f"Wavelength (nm)"]), np.array(row[f"Normalized Power (mW)"]))
         ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
@@ -287,7 +298,7 @@ def plot_ocean_optics_data():
         
         ax[1].set_xlabel('Wavelength (nm)')
         ax[1].set_ylabel('Normalized Power (mW)')
-        ax[1].grid()
+        
 
         
         center_wavelength = row['Center Wavelength (nm)']
@@ -325,14 +336,12 @@ def plot_FROG_data():
         ax[0].plot(np.array(row["pulse_time_data_time"]), np.array(row["pulse_time_data_intensity"]))
         ax[0].set_xlabel('Time (fw)')
         ax[0].set_ylabel('Normalized Power (mW)')
-        ax[0].set_title(f"Pulse temporal data \n{row['source_file']}")
-        ax[0].grid()
-        
+        plt.suptitle(f"Pulse temporal data \n{row['source_file']}")
+
         ax[1].plot(np.array(row["pulse_freq_data_frequency"]), np.array(row["pulse_freq_data_intensity"]))
         ax[1].set_xlabel('Wavelength (nm)')
         ax[1].set_ylabel('Normalized Power (mW)')
-        ax[1].set_title(f" - Pulse spectral data")
-        ax[1].grid()
+        
     
         
         ax[2] = add_info_box(ax[2], file_info)
