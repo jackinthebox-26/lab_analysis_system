@@ -114,10 +114,9 @@ def plot_spectra(config_key):
                     color=fig_config['default_fig_settings']['color'])
         ax[0].set_xlabel(fig_config[config_key]['xlabel'])
         ax[0].set_ylabel(fig_config[config_key]['ylabel'])
-        ax[0].legend()
 
 
-        plt.suptitle(f"{config_key.replace('_', ' ').capitalize()}\n{row['source_file']}")
+        plt.suptitle(f"{row['source_file']}")
         ax[0] = add_info_box(ax[0], file_info)
 
 
@@ -145,6 +144,7 @@ def plot_spectra(config_key):
         ax[1]. set_xlim([center_wavelength - fwhm * window,
                             center_wavelength + fwhm * window])
         
+        ax[1].legend()
         
         save_and_close_plot(config_key, row['source_file'])   
 

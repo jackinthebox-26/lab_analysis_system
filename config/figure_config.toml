@@ -24,6 +24,7 @@ label='Gaussian fit'
 
 [OSA_data]
 file_info = """
+Type: OSA
 Index: {exp_index:03d}
 QWP: {QWP} deg
 HWP1: {HWP1} deg
@@ -39,6 +40,7 @@ ylabel="Normalized Intensity (mW)"
 
 [RF_data]
 file_info ="""
+Type: RF 
 Index: {exp_index:03d}
 QWP: {QWP} deg
 HWP1: {HWP1} deg
@@ -53,6 +55,7 @@ ylabel='Power (dBm)'
 
 [aurora_data]
 file_info = """
+Type: Aurora 4000
 Device Name: {Device Name} 
 Integral Time(s): {Integral Time(s):03d}
 Avg Count: {Avg Count} deg
@@ -67,6 +70,7 @@ ylabel='Normalized Power (mW)'
 
 [ocean_optics_data]
 file_info = """
+Type: Ocean Optics
 Device Name: {Spectrometer} 
 Integral Time(s): {Integration Time (sec)}
 Scans to average: {Scans to average} deg
@@ -81,6 +85,7 @@ ylabel='Normalized Power (mW)'
 
 [FROG_data]
 file_info = """
+Type: FROG
 Pulse Width: {pulse_width} {pulse_width_unit}
 Bandwidth: {bandwidth} {bandwidth_unit}
 Bandwidth (nm): {bandwidth_nm} nm
