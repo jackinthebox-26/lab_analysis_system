@@ -22,7 +22,7 @@ linestyle = '--'
 label='Gaussian fit'
 
 
-[OSA_plot]
+[OSA_data]
 file_info = """
 Index: {exp_index:03d}
 QWP: {QWP} deg
@@ -37,7 +37,7 @@ Notes: {Notes}
 xlabel="Wavelength (nm)"
 ylabel="Normalized Intensity (mW)"
 
-[RF_plot]
+[RF_data]
 file_info ="""
 Index: {exp_index:03d}
 QWP: {QWP} deg
@@ -51,7 +51,7 @@ xlabel='Frequency (MHz)'
 ylabel='Power (dBm)'
 
 
-[aurora_plot]
+[aurora_data]
 file_info = """
 Device Name: {Device Name} 
 Integral Time(s): {Integral Time(s):03d}
@@ -65,7 +65,7 @@ xlabel='Wavelength (nm)'
 ylabel='Normalized Power (mW)'
 
 
-[ocean_optics_plot]
+[ocean_optics_data]
 file_info = """
 Device Name: {Spectrometer} 
 Integral Time(s): {Integration Time (sec)}
@@ -79,7 +79,7 @@ ylabel='Normalized Power (mW)'
 
 
 
-[FROG_plot]
+[FROG_data]
 file_info = """
 Pulse Width: {pulse_width} {pulse_width_unit}
 Bandwidth: {bandwidth} {bandwidth_unit}

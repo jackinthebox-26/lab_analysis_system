@@ -99,38 +99,32 @@ def save_and_close_plot(config_key, source_file):
     print(f"Saved graph to {output_filename}")
     plt.close()
 
-
-
-def plot_OSA_data():
-    config_key = 'OSA_data'
+def plot_spectra(config_key):
     data = load_data(config_key)
     if data is None:
-            print("No OSA data")
-            return
+        print(f"No {config_key.replace('_', ' ')} ")
+        return
     for index, row in data.iterrows():
-        template = fig_config['OSA_plot']['file_info']
+        template = fig_config[config_key]['file_info']
         file_info = template.format(**row)
-        
         fig, ax = plt.subplots(1, 2)
         ax[0].plot(row["Wavelength (nm)"], 
-                   row["Normalized Power (mW)"], 
-                   label='Data',
-                   color=fig_config['default_fig_settings']['color'])
-
-        
-        ax[0].set_xlabel(fig_config['OSA_plot']['xlabel'])
-        ax[0].set_ylabel(fig_config['OSA_plot']['ylabel'])
+                    row["Normalized Power (mW)"], 
+                    label='Data',
+                    color=fig_config['default_fig_settings']['color'])
+        ax[0].set_xlabel(fig_config[config_key]['xlabel'])
+        ax[0].set_ylabel(fig_config[config_key]['ylabel'])
         ax[0].legend()
 
 
-        plt.suptitle(f"OSA Data - {row['date']}")
+        plt.suptitle(f"{config_key.replace('_', ' ').capitalize()}\n{row['source_file']}")
         ax[0] = add_info_box(ax[0], file_info)
 
 
         ax[1].plot(row["Wavelength (nm)"], 
-                   row["Normalized Power (mW)"], 
-                   label='Data',
-                   color=fig_config['default_fig_settings']['color'])
+                    row["Normalized Power (mW)"], 
+                    label='Data',
+                    color=fig_config['default_fig_settings']['color'])
         ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
                                                     1, 
                                                     row['Center Wavelength (nm)'],
@@ -140,86 +134,8 @@ def plot_OSA_data():
                                                     linestyle=fig_config['gaussian_plot']['linestyle'],
                                                     label=fig_config['gaussian_plot']['label'])
 
-        ax[1].set_xlabel(fig_config['OSA_plot']['xlabel'])
-        ax[1].set_ylabel(fig_config['OSA_plot']['ylabel'])
-
-        center_wavelength = row['Center Wavelength (nm)']
-        fwhm = row['FWHM Wavelength (nm)']
-
-        window = config['plot_config']['tight_plot_window']
-
-        ax[1]. set_xlim([center_wavelength - fwhm * window,
-                         center_wavelength + fwhm * window])
-        
-        
-        save_and_close_plot(config_key, row['source_file'])
-        
-
-def plot_RF_data():
-    config_key = 'RF_data'
-    data = load_data(config_key)
-    if data is None:
-            print("No RF data")
-            return
-    for index, row in data.iterrows():
-        template = fig_config['RF_plot']['file_info']
-        file_info = template.format(**row)
-        
-        fig, ax = plt.subplots(figsize=fig_config['default_fig_settings']['figsize'], 
-                               dpi=fig_config['default_fig_settings']['dpi'])
-        ax.plot(np.array(row['Frequency (Hz)']) * 1e-6, row['Power (dBm)'],
-                   color=fig_config['default_fig_settings']['color'])
-
-      
-        ax.set_xlabel(fig_config['RF_plot']['xlabel'])
-        ax.set_ylabel(fig_config['RF_plot']['ylabel'])
-        plt.suptitle(f"RF Data - {row['date']}")
-        ax = add_info_box(ax, file_info)
-        save_and_close_plot(config_key, row['source_file'])
-        
-def plot_aurora_data():
-    
-    config_key = 'aurora_data'
-    data = load_data(config_key)
-    if data is None:
-            print("No Aurora data")
-            return
-
-    for index, row in data.iterrows():
-        
-        template = fig_config['aurora_plot']['file_info']
-        file_info = template.format(**row)
-        
-        fig, ax = plt.subplots(1, 2, figsize=fig_config['default_fig_settings']['figsize'],
-                               dpi=fig_config['default_fig_settings']['dpi'])
-        ax[0].plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), 
-                   np.array(row[f"Normalized Power (mW)"]),
-                   color=fig_config['default_fig_settings']['color'])
-       
-                
-
-
-        ax[0].set_xlabel('Wavelength (nm)')
-        ax[0].set_ylabel('Normalized Power (mW)')
-        plt.suptitle(f"Aurora 4000 Data - {row['source_file']}")
-
-        ax[1].plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), 
-                   np.array(row[f"Normalized Power (mW)"]),
-                   color=fig_config['default_fig_settings']['color'])
-        ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
-                                                            1, 
-                                                            row['Center Wavelength (nm)'],
-                                                            FWHM_to_stddev(row['FWHM Wavelength (nm)']),
-                                                            0),
-                                                            color=fig_config['gaussian_plot']['color'],
-                                                            linestyle=fig_config['gaussian_plot']['linestyle'],
-                                                            label=fig_config['gaussian_plot']['label'])
-                
-
-
-        ax[1].set_xlabel(fig_config['aurora_plot']['xlabel'])
-        ax[1].set_ylabel(fig_config['aurora_plot']['ylabel'])
-        
+        ax[1].set_xlabel(fig_config[config_key]['xlabel'])
+        ax[1].set_ylabel(fig_config[config_key]['ylabel'])
 
         center_wavelength = row['Center Wavelength (nm)']
         fwhm = row['FWHM Wavelength (nm)']
@@ -228,64 +144,44 @@ def plot_aurora_data():
 
         ax[1]. set_xlim([center_wavelength - fwhm * window,
                             center_wavelength + fwhm * window])
+        
+        
+        save_and_close_plot(config_key, row['source_file'])   
 
-        ax[0] = add_info_box(ax[0], file_info)
-        save_and_close_plot(config_key, row['source_file'])
 
-def plot_ocean_optics_data():
-    
-    config_key = 'ocean_optics_data'
+def plot_OSA_data():
+    config_key = 'OSA_data'
+    plot_spectra(config_key)
+
+def plot_RF_data():
+    config_key = 'RF_data'
     data = load_data(config_key)
     if data is None:
-            print("No Ocean Optics data")
+            print("No RF data")
             return
     for index, row in data.iterrows():
-        template = fig_config['ocean_optics_plot']['file_info']
+        template = fig_config['RF_data']['file_info']
         file_info = template.format(**row)
-        fig, ax = plt.subplots(1, 2, figsize=fig_config['default_fig_settings']['figsize'], 
+        
+        fig, ax = plt.subplots(figsize=fig_config['default_fig_settings']['figsize'], 
                                dpi=fig_config['default_fig_settings']['dpi'])
-        
-        plt.suptitle(f"Ocean Optics Data - {row['source_file']}")
-
-        ax[0].plot(np.array(row[f"Wavelength (nm)"]), 
-                   np.array(row[f"Normalized Power (mW)"]),
+        ax.plot(np.array(row['Frequency (Hz)']) * 1e-6, row['Power (dBm)'],
                    color=fig_config['default_fig_settings']['color'])
 
-                
       
-     
-        ax[0].set_xlabel('Wavelength (nm)')
-        ax[0].set_ylabel('Normalized Power (mW)')
-
-        ax[1].plot(np.array(row[f"Wavelength (nm)"]), 
-                   np.array(row[f"Normalized Power (mW)"]),
-                   color=fig_config['default_fig_settings']['color'])
-        ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
-                                                1, 
-                                                row['Center Wavelength (nm)'],
-                                                FWHM_to_stddev(row['FWHM Wavelength (nm)']),
-                                                0),
-                                                color=fig_config['gaussian_plot']['color'],
-                                                linestyle=fig_config['gaussian_plot']['linestyle'],
-                                                label=fig_config['gaussian_plot']['label'])
-        
-        
-        ax[1].set_xlabel(fig_config['ocean_optics_plot']['xlabel'])
-        ax[1].set_ylabel(fig_config['ocean_optics_plot']['ylabel'])
-        
-
-        
-        center_wavelength = row['Center Wavelength (nm)']
-        fwhm = row['FWHM Wavelength (nm)']
-
-        window = config['plot_config']['tight_plot_window']
-
-        ax[1]. set_xlim([center_wavelength - fwhm * window,
-                         center_wavelength + fwhm * window])
-        
-        
-        ax[0] = add_info_box(ax[0], file_info)
+        ax.set_xlabel(fig_config['RF_data']['xlabel'])
+        ax.set_ylabel(fig_config['RF_data']['ylabel'])
+        plt.suptitle(f"RF Data - {row['date']}")
+        ax = add_info_box(ax, file_info)
         save_and_close_plot(config_key, row['source_file'])
+        
+def plot_aurora_data():
+    config_key = 'aurora_data'
+    plot_spectra(config_key)
+
+def plot_ocean_optics_data():
+    config_key = 'ocean_optics_data'
+    plot_spectra(config_key)
 
 def plot_FROG_data():
     
@@ -295,7 +191,7 @@ def plot_FROG_data():
         print("No FROG data")
         return
     for index, row in data.iterrows():
-        template = fig_config['FROG_plot']['file_info']
+        template = fig_config['FROG_data']['file_info']
         file_info = template.format(**row)
       
         
