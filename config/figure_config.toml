@@ -1,6 +1,6 @@
 [info_box]
 boxstyle = "round,pad=0.5"
-facecolor = "wheat"
+facecolor = "white"
 edgecolor = "grey"
 alpha = 0.8
 linewidth = 1.2
@@ -53,7 +53,7 @@ ylabel='Power (dBm)'
 
 [aurora_plot]
 file_info = """
-Device Name: {Device Name} mA
+Device Name: {Device Name} 
 Integral Time(s): {Integral Time(s):03d}
 Avg Count: {Avg Count} deg
 Center Wavelength (nm): {Center Wavelength (nm):.2f} nm
@@ -67,7 +67,7 @@ ylabel='Normalized Power (mW)'
 
 [ocean_optics_plot]
 file_info = """
-Device Name: {Spectrometer} mA
+Device Name: {Spectrometer} 
 Integral Time(s): {Integration Time (sec)}
 Scans to average: {Scans to average} deg
 Center Wavelength (nm): {Center Wavelength (nm)} nm

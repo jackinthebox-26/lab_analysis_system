@@ -42,7 +42,7 @@ else:
 if config['processed_data']['store_plots_with_data']:
     FIGURE_PATH = BASE_DIR / RAW_DIR / FIGURE_TEMP_PATH
 else:
-    PROCESSED_DATA_PATH = BASE_DIR / PROCESSED_TEMP_DATA_PATH
+    FIGURE_PATH = BASE_DIR / FIGURE_TEMP_PATH
 
 
 
@@ -295,7 +295,7 @@ def plot_FROG_data():
         print("No FROG data")
         return
     for index, row in data.iterrows():
-        template = fig_config['ocean_optics_plot']['file_info']
+        template = fig_config['FROG_plot']['file_info']
         file_info = template.format(**row)
       
         
