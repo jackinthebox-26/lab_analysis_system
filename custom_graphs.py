@@ -102,10 +102,10 @@ def aurora_OO_comparison():
 
         scale = 4
 
-        ax[0].set_xlim([center_wavelength  + scale *  fwhm_wavelength,
-                    center_wavelength  - scale *  fwhm_wavelength]) # type: ignore
-        ax[1].set_xlim([center_wavelength  + scale *  fwhm_wavelength,
-                    center_wavelength  - scale *  fwhm_wavelength]) # type: ignore
+        ax[0].set_xlim([center_wavelength  - scale *  fwhm_wavelength,
+                    center_wavelength  + scale *  fwhm_wavelength]) # type: ignore
+        ax[1].set_xlim([center_wavelength  - scale *  fwhm_wavelength,
+                    center_wavelength  + scale *  fwhm_wavelength]) # type: ignore
         ax[0].grid()
         ax[1].grid()
         ax[0].legend()
@@ -118,7 +118,7 @@ def aurora_OO_comparison():
 
         ax[0].set_title(f"Comparison of Ocean Optics and Aurora Spectra\nCenter Wavelength: {center_wavelength:.2f} nm, FWHM: {fwhm_wavelength:.2f} nm")
         ax[1].set_title(f"Comparison of Ocean Optics and Aurora Spectra\nCenter Wavelength: {center_wavelength:.2f} nm, FWHM: {fwhm_wavelength:.2f} nm")
-        plt.show()
+        plt.savefig(FIGURE_PATH / f"comparison_{center_wavelength:.2f}nm.png")
 
     ocean_optics = data_dict['ocean_optics']
     aurora = data_dict['aurora']
@@ -139,9 +139,134 @@ def aurora_OO_comparison():
     plot_comparison(data_1016_nm_ocean, 
                     data_1016_nm_aurora)
 
+def aurora_angle_comparison():
+    data_dict = load_all_data()
+    aurora_data = data_dict['aurora']
+
+    print(aurora_data['source_file'].unique())
+    normal_incidence_data = aurora_data[aurora_data['source_file'] == 'FHG_full_power_OSC_1016nm_normal_incidence_nov03.txt']
+
+    angle_1_data = aurora_data[aurora_data['source_file'] == 'FHG_full_power_OSC_1016nm_angle1_nov03.txt']
+    angle_2_data = aurora_data[aurora_data['source_file'] == 'FHG_full_power_OSC_1016nm_angle2_nov03.txt']
+
+    angle_3_data = aurora_data[aurora_data['source_file'] == 'FHG_full_power_OSC_1016nm_angle3_nov03.txt']
+    angle_4_data = aurora_data[aurora_data['source_file'] == 'FHG_full_power_OSC_1016nm_angle4_nov03.txt']
+    angle_list = ['Angle 4', 'Angle 3', 'Normal Incidence', 'Angle 2', 'Angle 1']
+    center_wavelength_list = [angle_4_data['Center Wavelength (nm)'].item(),
+                              angle_3_data['Center Wavelength (nm)'].item(),
+                              normal_incidence_data['Center Wavelength (nm)'].item(),
+                              angle_2_data['Center Wavelength (nm)'].item(),
+                              angle_1_data['Center Wavelength (nm)'].item()]
+
+
+    fig, ax = plt.subplots(1, 1, figsize=(12, 6))
+
+    ax.plot(np.hstack(normal_incidence_data['Wavelength (nm)']),
+            np.hstack(normal_incidence_data['Normalized Power (mW)']),
+            label='Normal Incidence')
+
+    ax.plot(np.hstack(angle_1_data['Wavelength (nm)']),
+            np.hstack(angle_1_data['Normalized Power (mW)']),
+            label='Angle 1')
+
+    ax.plot(np.hstack(angle_2_data['Wavelength (nm)']),
+            np.hstack(angle_2_data['Normalized Power (mW)']),
+            label='Angle 2')
+
+    ax.plot(np.hstack(angle_3_data['Wavelength (nm)']),
+            np.hstack(angle_3_data['Normalized Power (mW)']),
+            label='Angle 3')
+
+    ax.plot(np.hstack(angle_4_data['Wavelength (nm)']),
+            np.hstack(angle_4_data['Normalized Power (mW)']),
+            label='Angle 4')
+
+    ax.set_xlabel('Wavelength (nm)')
+    ax.set_ylabel('Normalized Power (mW)')
+
+    ax.set_xlim([230, 300])
+    ax.legend()
+    ax.grid(which='both', linestyle='--', linewidth=0.5)
+    plt.tight_layout()
+    plt.savefig(FIGURE_PATH / "aurora_angle_comparison.png")
+
+    fig, ax = plt.subplots(1, 1, figsize=(6, 3))
+    ax.plot(angle_list, center_wavelength_list, marker='o')
+    ax.grid()
+    ax.set_xlabel('Angle')
+    ax.set_ylabel('Center Wavelength (nm)')
+    plt.tight_layout()
+    plt.savefig(FIGURE_PATH / "aurora_angle_center_wavelength.png")
+
+def UV_generation_track():
+    data_dict = load_all_data()
+    def plot_UV_generation(data_OSC, data_AMP, data_UV, id):
+        fig, ax = plt.subplots(1, 2, figsize=(12, 4))
+
+        ax[0].plot(np.hstack(data_UV['Wavelength (nm)']),
+                np.hstack(data_UV['Normalized Power (mW)']),
+                label=f'UV  \n{data_UV["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {data_UV["FWHM Wavelength (nm)"].item():.2f} nm')
+
+        ax[0].plot(np.hstack(data_AMP['Wavelength (nm)']) / 4,
+                        np.hstack(data_AMP['Normalized Power (mW)']),
+                        label=f'AMP with wavelength/4\n {data_AMP["Center Wavelength (nm)"].item()/4:.2f} nm \nFWHM: {data_AMP["FWHM Wavelength (nm)"].item()/4:.2f} nm')
+
+        ax[0].legend()
+        ax[0].grid()
+        ax[0].set_xlabel('Wavelength (nm)')
+        ax[0].set_ylabel('Normalized Power (mW)')
+        ax[0].set_xlim([250, 270])
+
+
+        ax[1].plot(np.hstack(data_OSC['Wavelength (nm)']),
+                        np.hstack(data_OSC['Normalized Power (mW)']),
+                        label=f'OSC\n{data_OSC["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {data_OSC["FWHM Wavelength (nm)"].item():.2f} nm')
+        
+        ax[1].plot(np.hstack(data_AMP['Wavelength (nm)']),
+                np.hstack(data_AMP['Normalized Power (mW)']),
+                label=f'AMP\n{data_AMP["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {data_AMP["FWHM Wavelength (nm)"].item():.2f} nm')
+
+
+        ax[1].legend()
+        ax[1].grid()
+        ax[1].set_xlabel('Wavelength (nm)')
+        ax[1].set_ylabel('Normalized Power (mW)')
+        plt.suptitle(f"UV Generation Track {id.capitalize()}")
+        plt.savefig(FIGURE_PATH / f"UV_generation_track_{id}.png")
+    OSA_data = data_dict['osa']
+    ocean_optics_data = data_dict['ocean_optics']
+    first_OSC_data = OSA_data[OSA_data['source_file'] == '017_HWP2_280_HWP1_135_QWP_256_580mA_OSC_20261103_143511.csv']
+    first_AMP_data = OSA_data[OSA_data['source_file'] == '016_HWP2_280_HWP1_135_QWP_256_580mA_AMP_20261103_143423.csv']
+    first_UV_data = ocean_optics_data[ocean_optics_data['source_file'] == 'FHG_full_power_nov03_2026_HR6009442__2__15-14-00-161.txt']
+    plot_UV_generation(first_OSC_data, first_AMP_data, first_UV_data, 'first')
+
+    second_OSC_data = OSA_data[OSA_data['source_file'] == '020_HWP2_282_HWP1_135_QWP_256_580mA_OSC_20261103_183110.csv']
+    second_AMP_data = OSA_data[OSA_data['source_file'] == '021_HWP2_282_HWP1_135_QWP_256_580mA_AMP_20261103_183443.csv']
+    second_UV_data = ocean_optics_data[ocean_optics_data['source_file'] == 'FHG_1016_tuning_nov3_2026_HR6009441__0__19-04-53-747.txt']
+    plot_UV_generation(second_OSC_data, second_AMP_data, second_UV_data, 'second')
+
+    fig, ax = plt.subplots(1, 1, figsize=(8, 4))
+    ax.plot(np.hstack(first_UV_data['Wavelength (nm)']),
+            np.hstack(first_UV_data['Normalized Power (mW)']),
+            label=f'UV with OSC: 1017 nm \n{first_UV_data["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {first_UV_data["FWHM Wavelength (nm)"].item():.2f} nm')
+    ax.plot(np.hstack(second_UV_data['Wavelength (nm)']),
+            np.hstack(second_UV_data['Normalized Power (mW)']),
+            label=f'UV with OSC: 1016 nm \n{second_UV_data["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {second_UV_data["FWHM Wavelength (nm)"].item():.2f} nm')
+    
+    ax.vlines(x=256, ymin=0, ymax=1, colors='r', linestyles='--', label='Target Wavelength: 256 nm')
+    ax.legend()
+    ax.grid()
+    ax.set_xlabel('Wavelength (nm)')
+    ax.set_ylabel('Normalized Power (mW)')
+    ax.set_xlim([250, 260])
+    plt.savefig(FIGURE_PATH / "UV_generation_track_comparison.png")
+
+
 def main():
     
     #inspect_data_files()
-    aurora_OO_comparison()
+    #aurora_OO_comparison()
+    #aurora_angle_comparison()
+    UV_generation_track()
 if __name__ == "__main__":
     main()
