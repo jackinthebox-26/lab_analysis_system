@@ -87,7 +87,9 @@ def save_and_close_plot(config_key, source_file):
 def plot_OSA_data():
     config_key = 'OSA_data'
     data = load_data(config_key)
-    
+    if data is None:
+            print("No OSA data")
+            return
     for index, row in data.iterrows():
         file_info = (
             f"Index: {row['exp_index']:03d}\n"
@@ -149,7 +151,9 @@ def plot_OSA_data():
 def plot_RF_data():
     config_key = 'RF_data'
     data = load_data(config_key)
-    print(f"Data has {len(data)} data lines.")
+    if data is None:
+            print("No RF data")
+            return
     for index, row in data.iterrows():
         file_info = (
                     f"Index: {row['exp_index']:03d}\n"
@@ -177,6 +181,9 @@ def plot_aurora_data():
     
     config_key = 'aurora_data'
     data = load_data(config_key)
+    if data is None:
+            print("No Aurora data")
+            return
 
     for index, row in data.iterrows():
         file_info = (
@@ -236,7 +243,9 @@ def plot_ocean_optics_data():
     
     config_key = 'ocean_optics_data'
     data = load_data(config_key)
-
+    if data is None:
+            print("No Ocean Optics data")
+            return
     for index, row in data.iterrows():
         file_info = (
                     f"Device Name: {row.get('Spectrometer', 'NA')} mA\n"
@@ -297,6 +306,9 @@ def plot_FROG_data():
     
     config_key = 'FROG_data'
     data = load_data(config_key)
+    if data is None:
+        print("No FROG data")
+        return
     for index, row in data.iterrows():
         file_info = (
                     f"Pulse Width: {row.get('pulse_width', 'NA')} {row.get('pulse_width_unit', 'NA')}\n"

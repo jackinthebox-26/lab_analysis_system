@@ -65,9 +65,83 @@ def inspect_data_files():
     print(data_dict['ocean_optics'].head())
 
 
+def aurora_OO_comparison():
+    data_dict = load_all_data()
+    def plot_comparison(data_1, data_2):
+        print(data_1.columns)
+        print(data_2)
+
+        fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+        ax[0].plot(np.hstack(data_1['Wavelength (nm)']), 
+                    np.hstack(data_1['Normalized Power (mW)']),
+                    label='Ocean Optics')
+
+        
+
+        ax[0].plot(np.hstack(data_2['Wavelength (nm)']), 
+                         np.hstack(data_2['Normalized Power (mW)']),
+                         '.--',
+                         label='Aurora')
+
+        delta_wavelength = float(data_1['Center Wavelength (nm)'].item()) -  float(data_2['Center Wavelength (nm)'].item())
+        
+        ax[1].plot(np.hstack(data_1['Wavelength (nm)']), 
+                            np.hstack(data_1['Normalized Power (mW)']),
+                            label='Ocean Optics')
+        
+                
+        
+        ax[1].plot(np.hstack(data_2['Wavelength (nm)']) + delta_wavelength, 
+                            np.hstack(data_2['Normalized Power (mW)']),
+                            '.--',
+                            label=f'Aurora - {delta_wavelength:.2f} nm shift')
+
+        print(data_1['Center Wavelength (nm)'])
+        center_wavelength = float(data_1['Center Wavelength (nm)'].item())
+        fwhm_wavelength = float(data_1['FWHM Wavelength (nm)'].item())
+
+        scale = 4
+
+        ax[0].set_xlim([center_wavelength  + scale *  fwhm_wavelength,
+                    center_wavelength  - scale *  fwhm_wavelength]) # type: ignore
+        ax[1].set_xlim([center_wavelength  + scale *  fwhm_wavelength,
+                    center_wavelength  - scale *  fwhm_wavelength]) # type: ignore
+        ax[0].grid()
+        ax[1].grid()
+        ax[0].legend()
+        ax[1].legend()
+
+        ax[0].set_xlabel('Wavelength (nm)')
+        ax[0].set_ylabel('Normalized Power (mW)')
+        ax[1].set_xlabel('Wavelength (nm)')
+        ax[1].set_ylabel('Normalized Power (mW)')
+
+        ax[0].set_title(f"Comparison of Ocean Optics and Aurora Spectra\nCenter Wavelength: {center_wavelength:.2f} nm, FWHM: {fwhm_wavelength:.2f} nm")
+        ax[1].set_title(f"Comparison of Ocean Optics and Aurora Spectra\nCenter Wavelength: {center_wavelength:.2f} nm, FWHM: {fwhm_wavelength:.2f} nm")
+        plt.show()
+
+    ocean_optics = data_dict['ocean_optics']
+    aurora = data_dict['aurora']
+
+    data_1017_nm_ocean = ocean_optics[ocean_optics['source_file'] == 
+                                      'FHG_full_power_nov03_2026_HR6009442__2__15-14-00-161.txt']
+
+    data_1017_nm_aurora = aurora[aurora['source_file'] == 'FHG_full_power_nov03.txt']
+
+    data_1016_nm_ocean = ocean_optics[ocean_optics['source_file'] == 
+                                          'FHG_1016_tuning_nov3_2026_HR6009441__0__19-04-53-747.txt']
+    
+    data_1016_nm_aurora = aurora[aurora['source_file'] == 'FHG_full_power_OSC_1016nm_nov03.txt']
+    
+    print(data_dict)
+    plot_comparison(data_1017_nm_ocean, 
+                    data_1017_nm_aurora)
+    plot_comparison(data_1016_nm_ocean, 
+                    data_1016_nm_aurora)
 
 def main():
-    inspect_data_files()
     
+    #inspect_data_files()
+    aurora_OO_comparison()
 if __name__ == "__main__":
     main()
