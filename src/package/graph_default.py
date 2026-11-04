@@ -74,7 +74,7 @@ def load_data(config_key):
     return data
 
 
-def add_info_box(ax, text_dict, x=0.03, y=-0.2):
+def add_info_box(ax, text_dict, x=0.03, y=-0.4):
     ax.text(
                 x, y,                # (x, y) coordinates in relative axes space (3% from left, 95% from bottom)
                 text_dict,
@@ -108,29 +108,18 @@ def plot_OSA_data():
             print("No OSA data")
             return
     for index, row in data.iterrows():
-        file_info = (
-            f"Index: {row['exp_index']:03d}\n"
-            f"QWP: {row['QWP']} deg\n"
-            f"HWP1: {row['HWP1']} deg\n"
-            f"HWP2: {row['HWP2']} deg\n"
-            f"Pump current: {row['Pump current']} mA\n"
-            f"Center Wavelength (nm): {row['Center Wavelength (nm)']:.2f} nm\n"
-            f"FWHM Wavelength (nm): {row['FWHM Wavelength (nm)']:.2f} nm\n"
-            f"Notes: {row['Notes']}\n"
-        )
-        fig, ax = plt.subplots(1, 2)
-        ax[0].plot(row["Wavelength (nm)"], row["Normalized Power (mW)"], label='Data')
-        ax[0].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
-                                                 1, 
-                                                 row['Center Wavelength (nm)'],
-                                                 FWHM_to_stddev(row['FWHM Wavelength (nm)']),
-                                                 0),
-                                                 color='black',
-                                                 linestyle='--',
-                                                 label='Gaussian Fit')
+        template = fig_config['OSA_plot']['file_info']
+        file_info = template.format(**row)
         
-        ax[0].set_xlabel("Wavelength (nm)")
-        ax[0].set_ylabel("Normalized Intensity (mW)")
+        fig, ax = plt.subplots(1, 2)
+        ax[0].plot(row["Wavelength (nm)"], 
+                   row["Normalized Power (mW)"], 
+                   label='Data',
+                   color=fig_config['default_fig_settings']['color'])
+
+        
+        ax[0].set_xlabel(fig_config['OSA_plot']['xlabel'])
+        ax[0].set_ylabel(fig_config['OSA_plot']['ylabel'])
         ax[0].legend()
 
 
@@ -138,18 +127,21 @@ def plot_OSA_data():
         ax[0] = add_info_box(ax[0], file_info)
 
 
-        ax[1].plot(row["Wavelength (nm)"], row["Normalized Power (mW)"], label='Data')
+        ax[1].plot(row["Wavelength (nm)"], 
+                   row["Normalized Power (mW)"], 
+                   label='Data',
+                   color=fig_config['default_fig_settings']['color'])
         ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
                                                     1, 
                                                     row['Center Wavelength (nm)'],
                                                     FWHM_to_stddev(row['FWHM Wavelength (nm)']),
                                                     0),
-                                                    color='black',
-                                                    linestyle='--',
-                                                    label='Gaussian Fit')
+                                                    color=fig_config['gaussian_plot']['color'],
+                                                    linestyle=fig_config['gaussian_plot']['linestyle'],
+                                                    label=fig_config['gaussian_plot']['label'])
 
-        ax[1].set_xlabel("Wavelength (nm)")
-        ax[1].set_ylabel("Normalized Intensity (mW)")
+        ax[1].set_xlabel(fig_config['OSA_plot']['xlabel'])
+        ax[1].set_ylabel(fig_config['OSA_plot']['ylabel'])
 
         center_wavelength = row['Center Wavelength (nm)']
         fwhm = row['FWHM Wavelength (nm)']
@@ -170,22 +162,17 @@ def plot_RF_data():
             print("No RF data")
             return
     for index, row in data.iterrows():
-        file_info = (
-                    f"Index: {row['exp_index']:03d}\n"
-                    f"QWP: {row.get('QWP', 'NA')} deg\n"
-                    f"HWP1: {row.get('HWP1', 'NA')} deg\n"
-                    f"HWP2: {row.get('HWP2', 'NA')} deg\n"
-                    f"Pump current: {row.get('Pump current', 'NA')} mA\n"
-                    f"Notes: {row.get('Notes', 'NA')}\n"
-                )
-        fig, ax = plt.subplots()
-        ax.plot(np.array(row['Frequency (Hz)']) * 1e-6, row['Power (dBm)'])
+        template = fig_config['RF_plot']['file_info']
+        file_info = template.format(**row)
+        
+        fig, ax = plt.subplots(figsize=fig_config['default_fig_settings']['figsize'], 
+                               dpi=fig_config['default_fig_settings']['dpi'])
+        ax.plot(np.array(row['Frequency (Hz)']) * 1e-6, row['Power (dBm)'],
+                   color=fig_config['default_fig_settings']['color'])
 
       
-
-
-        ax.set_xlabel('Frequency (MHz)')
-        ax.set_ylabel('Power (dBm)')
+        ax.set_xlabel(fig_config['RF_plot']['xlabel'])
+        ax.set_ylabel(fig_config['RF_plot']['ylabel'])
         plt.suptitle(f"RF Data - {row['date']}")
         ax = add_info_box(ax, file_info)
         save_and_close_plot(config_key, row['source_file'])
@@ -199,24 +186,16 @@ def plot_aurora_data():
             return
 
     for index, row in data.iterrows():
-        file_info = (
-                    f"Device Name: {row.get('Device Name', 'NA')} mA\n"
-                    f"Integral Time(s): {row['Integral Time(s)']:03d}\n"
-                    f"Avg Count: {row.get('Avg Count', 'NA')} deg\n"
-                    f"Center Wavelength (nm): {row.get('Center Wavelength (nm)', 'NA'):.2f} nm\n"
-                    f"FWHM Wavelength (nm): {row.get('FWHM Wavelength (nm)', 'NA'):.2f} nm\n"
-                    f"Other Description: {row.get('Other Description', 'NA')}\n"
-                    )
-        fig, ax = plt.subplots(1, 2)
-        ax[0].plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), np.array(row[f"Normalized Power (mW)"]))
-        ax[0].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
-                                                         1, 
-                                                         row['Center Wavelength (nm)'],
-                                                         FWHM_to_stddev(row['FWHM Wavelength (nm)']),
-                                                         0),
-                                                         color='black',
-                                                         linestyle='--',
-                                                         label='Gaussian Fit')
+        
+        template = fig_config['aurora_plot']['file_info']
+        file_info = template.format(**row)
+        
+        fig, ax = plt.subplots(1, 2, figsize=fig_config['default_fig_settings']['figsize'],
+                               dpi=fig_config['default_fig_settings']['dpi'])
+        ax[0].plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), 
+                   np.array(row[f"Normalized Power (mW)"]),
+                   color=fig_config['default_fig_settings']['color'])
+       
                 
 
 
@@ -224,20 +203,22 @@ def plot_aurora_data():
         ax[0].set_ylabel('Normalized Power (mW)')
         plt.suptitle(f"Aurora 4000 Data - {row['source_file']}")
 
-        ax[1].plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), np.array(row[f"Normalized Power (mW)"]))
+        ax[1].plot(np.array(row[f"Wavelength ({row['X-Axis Unit']})"]), 
+                   np.array(row[f"Normalized Power (mW)"]),
+                   color=fig_config['default_fig_settings']['color'])
         ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
                                                             1, 
                                                             row['Center Wavelength (nm)'],
                                                             FWHM_to_stddev(row['FWHM Wavelength (nm)']),
                                                             0),
-                                                            color='black',
-                                                            linestyle='--',
-                                                            label='Gaussian Fit')
+                                                            color=fig_config['gaussian_plot']['color'],
+                                                            linestyle=fig_config['gaussian_plot']['linestyle'],
+                                                            label=fig_config['gaussian_plot']['label'])
                 
 
 
-        ax[1].set_xlabel('Wavelength (nm)')
-        ax[1].set_ylabel('Normalized Power (mW)')
+        ax[1].set_xlabel(fig_config['aurora_plot']['xlabel'])
+        ax[1].set_ylabel(fig_config['aurora_plot']['ylabel'])
         
 
         center_wavelength = row['Center Wavelength (nm)']
@@ -259,45 +240,38 @@ def plot_ocean_optics_data():
             print("No Ocean Optics data")
             return
     for index, row in data.iterrows():
-        file_info = (
-                    f"Device Name: {row.get('Spectrometer', 'NA')} mA\n"
-                    f"Integral Time(s): {row['Integration Time (sec)']}\n"
-                    f"Scans to average: {row.get('Scans to average', 'NA')} deg\n"
-                    f"Center Wavelength (nm): {row.get('Center Wavelength (nm)', 'NA')} nm\n"
-                    f"FWHM Wavelength (nm): {row.get('FWHM Wavelength (nm)', 'NA')} nm\n"
-                    f"Other Description: {row.get('Other Description', 'NA')}\n"
-                    )
-        fig, ax = plt.subplots(1, 2)
-        ax[0].plot(np.array(row[f"Wavelength (nm)"]), np.array(row[f"Normalized Power (mW)"]))
-        ax[0].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
-                                                1, 
-                                                row['Center Wavelength (nm)'],
-                                                FWHM_to_stddev(row['FWHM Wavelength (nm)']),
-                                                0),
-                                                color='black',
-                                                linestyle='--',
-                                                label='Gaussian Fit')
+        template = fig_config['ocean_optics_plot']['file_info']
+        file_info = template.format(**row)
+        fig, ax = plt.subplots(1, 2, figsize=fig_config['default_fig_settings']['figsize'], 
+                               dpi=fig_config['default_fig_settings']['dpi'])
+        
+        plt.suptitle(f"Ocean Optics Data - {row['source_file']}")
+
+        ax[0].plot(np.array(row[f"Wavelength (nm)"]), 
+                   np.array(row[f"Normalized Power (mW)"]),
+                   color=fig_config['default_fig_settings']['color'])
+
                 
       
      
         ax[0].set_xlabel('Wavelength (nm)')
         ax[0].set_ylabel('Normalized Power (mW)')
-        plt.suptitle(f"Ocean Optics Data - {row['source_file']}")
 
-        ax[1].plot(np.array(row[f"Wavelength (nm)"]), np.array(row[f"Normalized Power (mW)"]))
+        ax[1].plot(np.array(row[f"Wavelength (nm)"]), 
+                   np.array(row[f"Normalized Power (mW)"]),
+                   color=fig_config['default_fig_settings']['color'])
         ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
                                                 1, 
                                                 row['Center Wavelength (nm)'],
                                                 FWHM_to_stddev(row['FWHM Wavelength (nm)']),
                                                 0),
-                                                color='black',
-                                                linestyle='--',
-                                                label='Gaussian Fit')
-                
+                                                color=fig_config['gaussian_plot']['color'],
+                                                linestyle=fig_config['gaussian_plot']['linestyle'],
+                                                label=fig_config['gaussian_plot']['label'])
         
         
-        ax[1].set_xlabel('Wavelength (nm)')
-        ax[1].set_ylabel('Normalized Power (mW)')
+        ax[1].set_xlabel(fig_config['ocean_optics_plot']['xlabel'])
+        ax[1].set_ylabel(fig_config['ocean_optics_plot']['ylabel'])
         
 
         
@@ -321,17 +295,12 @@ def plot_FROG_data():
         print("No FROG data")
         return
     for index, row in data.iterrows():
-        file_info = (
-                    f"Pulse Width: {row.get('pulse_width', 'NA')} {row.get('pulse_width_unit', 'NA')}\n"
-                    f"Bandwidth: {row['bandwidth']} {row['bandwidth_unit']} \n"
-                    f"Bandwidth (nm): {row['bandwidth_nm']} nm \n"
-                    f"TBW product (g: 0.441, sec2: 0.315): {row.get('tbw_product', 'NA')}\n"
-                    f"FROG trace error: {row.get('frog_trace_error', 'NA'):.3}\n"
-                    f"Timestamp: {row.get('timestamp', 'NA')} deg\n"
-                    f"Other Description: {row.get('Other Description', 'NA')}\n"
-                    )
+        template = fig_config['ocean_optics_plot']['file_info']
+        file_info = template.format(**row)
+      
         
-        fig, ax = plt.subplots(1, 3, figsize=(10, 4), dpi = 100)
+        fig, ax = plt.subplots(1, 3, figsize=fig_config['default_fig_settings']['figsize'], 
+                               dpi=fig_config['default_fig_settings']['dpi'])
 
         ax[0].plot(np.array(row["pulse_time_data_time"]), np.array(row["pulse_time_data_intensity"]))
         ax[0].set_xlabel('Time (fw)')

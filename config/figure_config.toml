@@ -8,3 +8,83 @@ fontsize = 9
 fontfamily = "monospace"
 verticalalignment="top"
 horizontalalignment="left"
+
+
+[default_fig_settings]
+figsize = [10, 4]
+dpi = 100
+color='C3'
+
+
+[gaussian_plot]
+color='black'
+linestyle = '--'
+label='Gaussian fit'
+
+
+[OSA_plot]
+file_info = """
+Index: {exp_index:03d}
+QWP: {QWP} deg
+HWP1: {HWP1} deg
+HWP2: {HWP2} deg
+Pump current: {Pump current} mA
+Center Wavelength (nm): {Center Wavelength (nm):.2f} nm
+FWHM Wavelength (nm): {FWHM Wavelength (nm):.2f} nm
+Notes: {Notes}
+"""
+
+xlabel="Wavelength (nm)"
+ylabel="Normalized Intensity (mW)"
+
+[RF_plot]
+file_info ="""
+Index: {exp_index:03d}
+QWP: {QWP} deg
+HWP1: {HWP1} deg
+HWP2: {HWP2} deg
+Pump current: {Pump current} mA
+Notes: {Notes}
+"""
+
+xlabel='Frequency (MHz)'
+ylabel='Power (dBm)'
+
+
+[aurora_plot]
+file_info = """
+Device Name: {Device Name} mA
+Integral Time(s): {Integral Time(s):03d}
+Avg Count: {Avg Count} deg
+Center Wavelength (nm): {Center Wavelength (nm):.2f} nm
+FWHM Wavelength (nm): {FWHM Wavelength (nm):.2f} nm
+Other Description: {Other Description}
+"""
+
+xlabel='Wavelength (nm)'
+ylabel='Normalized Power (mW)'
+
+
+[ocean_optics_plot]
+file_info = """
+Device Name: {Spectrometer} mA
+Integral Time(s): {Integration Time (sec)}
+Scans to average: {Scans to average} deg
+Center Wavelength (nm): {Center Wavelength (nm)} nm
+FWHM Wavelength (nm): {FWHM Wavelength (nm)} nm
+"""
+
+xlabel='Wavelength (nm)'
+ylabel='Normalized Power (mW)'
+
+
+
+[FROG_plot]
+file_info = """
+Pulse Width: {pulse_width} {pulse_width_unit}
+Bandwidth: {bandwidth} {bandwidth_unit}
+Bandwidth (nm): {bandwidth_nm} nm
+TBW product (g: 0.441, sec2: 0.315): {tbw_product}
+FROG trace error: {frog_trace_error}
+Timestamp: {timestamp} deg
+"""
