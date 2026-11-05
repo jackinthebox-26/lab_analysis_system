@@ -72,27 +72,27 @@ def aurora_OO_comparison():
         print(data_2)
 
         fig, ax = plt.subplots(1, 2, figsize=(12, 6))
-        ax[0].plot(np.hstack(data_1['Wavelength (nm)']), 
-                    np.hstack(data_1['Normalized Power (mW)']),
+        ax[0].plot(np.array(data_1['Wavelength (nm)'].item()), 
+                    np.array(data_1['Normalized Power (mW)'].item()),
                     label='Ocean Optics')
 
         
 
-        ax[0].plot(np.hstack(data_2['Wavelength (nm)']), 
-                         np.hstack(data_2['Normalized Power (mW)']),
+        ax[0].plot(np.array(data_2['Wavelength (nm)'].item()), 
+                         np.array(data_2['Normalized Power (mW)'].item()),
                          '.--',
                          label='Aurora')
 
         delta_wavelength = float(data_1['Center Wavelength (nm)'].item()) -  float(data_2['Center Wavelength (nm)'].item())
         
-        ax[1].plot(np.hstack(data_1['Wavelength (nm)']), 
-                            np.hstack(data_1['Normalized Power (mW)']),
+        ax[1].plot(np.array(data_1['Wavelength (nm)'].item()), 
+                            np.array(data_1['Normalized Power (mW)'].item()),
                             label='Ocean Optics')
         
                 
         
-        ax[1].plot(np.hstack(data_2['Wavelength (nm)']) + delta_wavelength, 
-                            np.hstack(data_2['Normalized Power (mW)']),
+        ax[1].plot(np.array(data_2['Wavelength (nm)'].item()) + delta_wavelength, 
+                            np.array(data_2['Normalized Power (mW)'].item()),
                             '.--',
                             label=f'Aurora - {delta_wavelength:.2f} nm shift')
 
@@ -161,24 +161,24 @@ def aurora_angle_comparison():
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 6))
 
-    ax.plot(np.hstack(normal_incidence_data['Wavelength (nm)'].item()),
-            np.hstack(normal_incidence_data['Normalized Power (mW)'].item()),
+    ax.plot(np.array(normal_incidence_data['Wavelength (nm)'].item()),
+            np.array(normal_incidence_data['Normalized Power (mW)'].item()),
             label='Normal Incidence')
 
-    ax.plot(np.hstack(angle_1_data['Wavelength (nm)'].item()),
-            np.hstack(angle_1_data['Normalized Power (mW)'].item()),
+    ax.plot(np.array(angle_1_data['Wavelength (nm)'].item()),
+            np.array(angle_1_data['Normalized Power (mW)'].item()),
             label='Angle 1')
 
-    ax.plot(np.hstack(angle_2_data['Wavelength (nm)'].item()),
-            np.hstack(angle_2_data['Normalized Power (mW)'].item()),
+    ax.plot(np.array(angle_2_data['Wavelength (nm)'].item()),
+            np.array(angle_2_data['Normalized Power (mW)'].item()),
             label='Angle 2')
 
-    ax.plot(np.hstack(angle_3_data['Wavelength (nm)'].item()),
-            np.hstack(angle_3_data['Normalized Power (mW)'].item()),
+    ax.plot(np.array(angle_3_data['Wavelength (nm)'].item()),
+            np.array(angle_3_data['Normalized Power (mW)'].item()),
             label='Angle 3')
 
-    ax.plot(np.hstack(angle_4_data['Wavelength (nm)'].item()),
-            np.hstack(angle_4_data['Normalized Power (mW)'].item()),
+    ax.plot(np.array(angle_4_data['Wavelength (nm)'].item()),
+            np.array(angle_4_data['Normalized Power (mW)'].item()),
             label='Angle 4')
 
     ax.set_xlabel('Wavelength (nm)')
@@ -203,12 +203,12 @@ def UV_generation_track():
     def plot_UV_generation(data_OSC, data_AMP, data_UV, id):
         fig, ax = plt.subplots(1, 2, figsize=(12, 4))
 
-        ax[0].plot(np.hstack(data_UV['Wavelength (nm)']),
-                np.hstack(data_UV['Normalized Power (mW)']),
+        ax[0].plot(np.array(data_UV['Wavelength (nm)'].item()),
+                np.array(data_UV['Normalized Power (mW)'].item()),
                 label=f'UV  \n{data_UV["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {data_UV["FWHM Wavelength (nm)"].item():.2f} nm')
 
-        ax[0].plot(np.hstack(data_AMP['Wavelength (nm)']) / 4,
-                        np.hstack(data_AMP['Normalized Power (mW)']),
+        ax[0].plot(np.array(data_AMP['Wavelength (nm)'].item()) / 4,
+                        np.array(data_AMP['Normalized Power (mW)'].item()),
                         label=f'AMP with wavelength/4\n {data_AMP["Center Wavelength (nm)"].item()/4:.2f} nm \nFWHM: {data_AMP["FWHM Wavelength (nm)"].item()/4:.2f} nm')
 
         ax[0].legend()
@@ -218,12 +218,12 @@ def UV_generation_track():
         ax[0].set_xlim([250, 270])
 
 
-        ax[1].plot(np.hstack(data_OSC['Wavelength (nm)']),
-                        np.hstack(data_OSC['Normalized Power (mW)']),
+        ax[1].plot(np.array(data_OSC['Wavelength (nm)'].item()),
+                    np.array(data_OSC['Normalized Power (mW)'].item()),
                         label=f'OSC\n{data_OSC["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {data_OSC["FWHM Wavelength (nm)"].item():.2f} nm')
         
-        ax[1].plot(np.hstack(data_AMP['Wavelength (nm)']),
-                np.hstack(data_AMP['Normalized Power (mW)']),
+        ax[1].plot(np.array(data_AMP['Wavelength (nm)'].item()),
+                np.array(data_AMP['Normalized Power (mW)'].item()),
                 label=f'AMP\n{data_AMP["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {data_AMP["FWHM Wavelength (nm)"].item():.2f} nm')
 
 
@@ -247,11 +247,11 @@ def UV_generation_track():
 
     fig, ax = plt.subplots(1, 1, figsize=(8, 4))
     print(first_UV_data['Wavelength (nm)'].item())
-    ax.plot(np.hstack(first_UV_data['Wavelength (nm)'].item()),
-            np.hstack(first_UV_data['Normalized Power (mW)'].item()),
+    ax.plot(np.array(first_UV_data['Wavelength (nm)'].item()),
+            np.array(first_UV_data['Normalized Power (mW)'].item()),
             label=f'UV with OSC: 1017 nm \n{first_UV_data["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {first_UV_data["FWHM Wavelength (nm)"].item():.2f} nm')
-    ax.plot(np.hstack(second_UV_data['Wavelength (nm)'].item()),
-            np.hstack(second_UV_data['Normalized Power (mW)'].item()),
+    ax.plot(np.array(second_UV_data['Wavelength (nm)'].item()),
+            np.array(second_UV_data['Normalized Power (mW)'].item()),
             label=f'UV with OSC: 1016 nm \n{second_UV_data["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {second_UV_data["FWHM Wavelength (nm)"].item():.2f} nm')
     
     ax.vlines(x=256, ymin=0, ymax=1, colors='r', linestyles='--', label='Target Wavelength: 256 nm')
