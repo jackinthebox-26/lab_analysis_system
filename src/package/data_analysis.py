@@ -6,13 +6,7 @@ import numpy as np
 
 from scipy.optimize import curve_fit
 
-
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-config_path = BASE_DIR / 'config' / 'data_load_config.toml'
-
-config_path = Path(config_path)
-with open(config_path, 'rb') as f:
-    config = tomllib.load(f)
+from package.config import BASE_DIR, DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
 
 def gaussian(x, amplitude, mean, stddev, offset):
     """1D Gaussian model with a baseline offset."""

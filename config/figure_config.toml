@@ -14,6 +14,7 @@ horizontalalignment="left"
 figsize = [10, 4]
 dpi = 100
 color='C3'
+tight_plot_window=2
 
 
 [gaussian_plot]

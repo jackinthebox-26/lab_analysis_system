@@ -6,24 +6,11 @@ import sys
 
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-config_path = BASE_DIR / 'config' / 'data_load_config.toml'
-
-config_path = Path(config_path)
-with open(config_path, 'rb') as f:
-    config = tomllib.load(f)
-
-
-
-from src.package.parsers import data_parser
-from src.package.data_analysis import data_analysis
+from package.config import BASE_DIR, RAW_DIR, PROCESSED_DATA_PATH, FIGURE_PATH, DATA_LOAD_CONFIG
+from package.parsers import data_parser
+from package.data_analysis import data_analysis
 class LabDataLoader:
-    def __init__(self, data_dir: str = config['raw_data']['raw_data_folder']):
+    def __init__(self, data_dir: str = DATA_LOAD_CONFIG['raw_data']['raw_data_folder']):
         self.data_dir = Path(data_dir)
 
     def find_all_files(self, nested=False): # Called in LabDataLoader.make_raw_data_dict()
@@ -94,11 +81,11 @@ class LabDataLoader:
         print(f"Found the following data types: {data_dict.keys()}")
         print('Data catagorized')
         
-        root_path = Path(config['processed_data']['processed_data_folder'])
-        if config['processed_data']['store_processed_with_data']:
-            raw_data = Path(config['raw_data']['raw_data_folder'])
+        root_path = Path(DATA_LOAD_CONFIG['processed_data']['processed_data_folder'])
+        if DATA_LOAD_CONFIG['processed_data']['store_processed_with_data']:
+            raw_data = Path(DATA_LOAD_CONFIG['raw_data']['raw_data_folder'])
             root_path = raw_data / root_path
-        root_path = PROJECT_ROOT / root_path
+        root_path = BASE_DIR / root_path
 
         print('Initializing raw data processing and json saving.')
         for key, file_list in data_dict.items():

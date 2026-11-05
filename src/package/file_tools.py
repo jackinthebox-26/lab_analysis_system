@@ -3,26 +3,9 @@ import shutil
 
 import tomllib
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-config_path = BASE_DIR / 'config' / 'data_load_config.toml'
+from package.config import PROCESSED_DATA_PATH, FIGURE_PATH
 
-config_path = Path(config_path)
-with open(config_path, 'rb') as f:
-    config = tomllib.load(f)
-
-raw_data = Path(config['raw_data']['raw_data_folder'])
-project_root = Path(__file__).parent.parent.parent
-
-processed_data_folder = config['processed_data']['processed_data_folder']
-if config['processed_data']['store_processed_with_data']:
-    processed_data_folder = raw_data / processed_data_folder
-processed_data_folder = project_root / processed_data_folder
-plot_data_folder = project_root / config['processed_data']['plot_data_folder']
-if config['processed_data']['store_plots_with_data']:
-    plot_data_folder = raw_data / plot_data_folder
-plot_data_folder = project_root / plot_data_folder
-
-folder_list = [processed_data_folder, plot_data_folder]
+folder_list = [PROCESSED_DATA_PATH, FIGURE_PATH]
 PROTECTED_EXTENSIONS = [".py", ".toml", ".md", ".txt", ".gitkeep", ".gitignore"]
 
 def clean_folder(folder_path):
