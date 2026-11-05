@@ -161,30 +161,30 @@ def aurora_angle_comparison():
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 6))
 
-    ax.plot(np.hstack(normal_incidence_data['Wavelength (nm)']),
-            np.hstack(normal_incidence_data['Normalized Power (mW)']),
+    ax.plot(np.hstack(normal_incidence_data['Wavelength (nm)'].item()),
+            np.hstack(normal_incidence_data['Normalized Power (mW)'].item()),
             label='Normal Incidence')
 
-    ax.plot(np.hstack(angle_1_data['Wavelength (nm)']),
-            np.hstack(angle_1_data['Normalized Power (mW)']),
+    ax.plot(np.hstack(angle_1_data['Wavelength (nm)'].item()),
+            np.hstack(angle_1_data['Normalized Power (mW)'].item()),
             label='Angle 1')
 
-    ax.plot(np.hstack(angle_2_data['Wavelength (nm)']),
-            np.hstack(angle_2_data['Normalized Power (mW)']),
+    ax.plot(np.hstack(angle_2_data['Wavelength (nm)'].item()),
+            np.hstack(angle_2_data['Normalized Power (mW)'].item()),
             label='Angle 2')
 
-    ax.plot(np.hstack(angle_3_data['Wavelength (nm)']),
-            np.hstack(angle_3_data['Normalized Power (mW)']),
+    ax.plot(np.hstack(angle_3_data['Wavelength (nm)'].item()),
+            np.hstack(angle_3_data['Normalized Power (mW)'].item()),
             label='Angle 3')
 
-    ax.plot(np.hstack(angle_4_data['Wavelength (nm)']),
-            np.hstack(angle_4_data['Normalized Power (mW)']),
+    ax.plot(np.hstack(angle_4_data['Wavelength (nm)'].item()),
+            np.hstack(angle_4_data['Normalized Power (mW)'].item()),
             label='Angle 4')
 
     ax.set_xlabel('Wavelength (nm)')
     ax.set_ylabel('Normalized Power (mW)')
 
-    ax.set_xlim([230, 300])
+    ax.set_xlim(230, 300)
     ax.legend()
     ax.grid(which='both', linestyle='--', linewidth=0.5)
     plt.tight_layout()
@@ -246,11 +246,12 @@ def UV_generation_track():
     plot_UV_generation(second_OSC_data, second_AMP_data, second_UV_data, 'second')
 
     fig, ax = plt.subplots(1, 1, figsize=(8, 4))
-    ax.plot(np.hstack(first_UV_data['Wavelength (nm)']),
-            np.hstack(first_UV_data['Normalized Power (mW)']),
+    print(first_UV_data['Wavelength (nm)'].item())
+    ax.plot(np.hstack(first_UV_data['Wavelength (nm)'].item()),
+            np.hstack(first_UV_data['Normalized Power (mW)'].item()),
             label=f'UV with OSC: 1017 nm \n{first_UV_data["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {first_UV_data["FWHM Wavelength (nm)"].item():.2f} nm')
-    ax.plot(np.hstack(second_UV_data['Wavelength (nm)']),
-            np.hstack(second_UV_data['Normalized Power (mW)']),
+    ax.plot(np.hstack(second_UV_data['Wavelength (nm)'].item()),
+            np.hstack(second_UV_data['Normalized Power (mW)'].item()),
             label=f'UV with OSC: 1016 nm \n{second_UV_data["Center Wavelength (nm)"].item():.2f} nm \nFWHM: {second_UV_data["FWHM Wavelength (nm)"].item():.2f} nm')
     
     ax.vlines(x=256, ymin=0, ymax=1, colors='r', linestyles='--', label='Target Wavelength: 256 nm')
@@ -258,15 +259,15 @@ def UV_generation_track():
     ax.grid()
     ax.set_xlabel('Wavelength (nm)')
     ax.set_ylabel('Normalized Power (mW)')
-    ax.set_xlim([250, 260])
+    ax.set_xlim(250, 260)
     plt.savefig(FIGURE_PATH / "UV_generation_track_comparison.png")
 
 
 def main():
     
-    #inspect_data_files()
-    #aurora_OO_comparison()
-    #aurora_angle_comparison()
+    inspect_data_files()
+    aurora_OO_comparison()
+    aurora_angle_comparison()
     UV_generation_track()
 if __name__ == "__main__":
     main()
