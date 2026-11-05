@@ -1,13 +1,11 @@
 from pathlib import Path
-from datetime import datetime
-import tomllib
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import git
 
-from package.config import BASE_DIR, DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
+from package.config import DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
+from package.math_tools import gaussian, FWHM_to_stddev
 
 
 BBOX_PROPS = dict(
@@ -17,15 +15,6 @@ BBOX_PROPS = dict(
                 alpha=FIG_CONFIG['info_box']['alpha'],                 # Transparency (0 to 1)
                 linewidth=FIG_CONFIG['info_box']['linewidth']
             )
-
-
-def gaussian(x, amplitude, mean, stddev, offset):
-    """1D Gaussian model with a baseline offset."""
-    x = np.hstack(x).astype(float)
-    return amplitude * np.exp(-((x - mean) ** 2) / (2 * stddev ** 2)) + offset
-
-def FWHM_to_stddev(FWHM):
-    return (1 / (2 * np.sqrt(2 * np.log(2)))) * FWHM
 
 def load_data(config_key):
 

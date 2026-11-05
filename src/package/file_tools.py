@@ -1,7 +1,4 @@
-from pathlib import Path
 import shutil
-
-import tomllib
 
 from package.config import PROCESSED_DATA_PATH, FIGURE_PATH
 

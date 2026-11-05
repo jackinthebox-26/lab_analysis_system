@@ -1,10 +1,5 @@
 # python3
 
-from pathlib import Path
-import sys
-
-
-
 from package.data_loader import LabDataLoader
 from package.graph_default import create_all_graphs
 from package.file_tools import clean_directories
