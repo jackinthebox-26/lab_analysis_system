@@ -89,12 +89,13 @@ def add_info_box(ax, text_dict, x=0.03, y=-0.4):
 
 
 def save_and_close_plot(config_key, source_file):
-    plot_folder = FIGURE_PATH / config[config_key]['plot_folder']
+    clean_source = str(source_file).strip().replace('\r', '').replace('\n', '')
+    plot_folder = (FIGURE_PATH / config[config_key]['plot_folder']).resolve()
 
     plot_folder.mkdir(parents=True, exist_ok=True)
 
     plt.tight_layout()
-    output_filename = plot_folder / f"plot_{Path(source_file).stem}.png"
+    output_filename = plot_folder / f"plot_{Path(clean_source).stem}.png"
     plt.savefig(output_filename)
     print(f"Saved graph to {output_filename}")
     plt.close()
