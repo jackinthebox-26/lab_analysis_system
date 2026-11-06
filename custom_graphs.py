@@ -9,7 +9,7 @@ from matplotlib.collections import PolyCollection
 import numpy as np
 
 from package.config import DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH, BASE_DIR, RAW_DIR
-
+from package.math_tools import gaussian, FWHM_to_stddev
 
 def load_all_data() -> dict[str, pd.DataFrame]:
     data_sources = {
@@ -30,13 +30,6 @@ def load_all_data() -> dict[str, pd.DataFrame]:
             
     return loaded_data
 
-
-def gaussian(x, amplitude, mean, stddev, offset):
-    """1D Gaussian model with a baseline offset."""
-    return amplitude * np.exp(-((x - mean) ** 2) / (2 * stddev ** 2)) + offset
-
-def FWHM_to_stddev(FWHM):
-    return (1 / (2 * np.sqrt(2 * np.log(2)))) * FWHM
 
 def inspect_data_files():
     data_dict = load_all_data()
