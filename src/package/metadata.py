@@ -11,6 +11,15 @@ def find_all_files(data_dir): # Called in LabDataLoader.make_raw_data_dict()
         print(f"Found {len(all_files)} files in {data_dir}")
         return all_files
 
+def get_repo_hash(path=BASE_DIR):
+    try:
+        repo = git.Repo(path, search_parent_directories=True)
+        sha = repo.head.commit.hexsha
+        is_dirty = repo.is_dirty()
+        return sha, is_dirty
+    except git.InvalidGitRepositoryError:
+        return None, None
+
 def get_repo_version(path=BASE_DIR):
     try:
         repo = git.Repo(path, search_parent_directories=True)
@@ -65,8 +74,15 @@ def save_metadata():
     metastring = add_to_metadata(metastring, list_to_string(find_all_files(RAW_DIR)), 'Raw data files')
     metastring = add_to_metadata(metastring, list_to_string(find_all_files(PROCESSED_DATA_PATH)), 'Processed data files')
     metastring = add_to_metadata(metastring, list_to_string(find_all_files(FIGURE_PATH)), 'Plot files')
-           
-    metastring_file = FIGURE_PATH / "metadata.log"
+
+
+    git_hash, is_dirty = get_repo_hash()
+
+    if is_dirty:
+        print("Warning: Git repository is dirty. Changes may not be tracked.")
+        metastring_file = FIGURE_PATH / f"metadata_{git_hash[:7]}-dirty.log"
+    else:
+        metastring_file = FIGURE_PATH / f"metadata_{git_hash[:7]}.log"
 
     with open(metastring_file, 'w', encoding='utf-8') as f:
         f.write(metastring)
