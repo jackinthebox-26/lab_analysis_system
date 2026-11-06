@@ -24,7 +24,11 @@ def load_all_data() -> dict[str, pd.DataFrame]:
     for key, path in data_sources.items():
         path = Path(path)
         if path.exists():
-            loaded_data[key] = pd.read_json(path)
+            temp_df = pd.read_json(path)
+            for col in temp_df.columns:
+                if isinstance(temp_df[col].iloc[0], list):
+                    temp_df[col] = temp_df[col].apply(np.array)
+            loaded_data[key] = temp_df
         else:
             print(f"Warning: Data file for {key} not found at {path}.")
             
@@ -76,14 +80,14 @@ def tuning_to_1016():
     step_8 = osa_data[osa_data['exp_index'] == 68]
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(step_1['Wavelength (nm)'].item(), step_1['Normalized Power (mW)'].item(), label='Initial mode lock', color='blue')
-    ax.plot(step_2['Wavelength (nm)'].item(), step_2['Normalized Power (mW)'].item(), label='Reduce pump current to 500 mA', color='red')
-    ax.plot(step_3['Wavelength (nm)'].item(), step_3['Normalized Power (mW)'].item(), label='Increase HWP1 to 134 deg', color='green')
-    ax.plot(step_4['Wavelength (nm)'].item(), step_4['Normalized Power (mW)'].item(), label='Tune to 1030 nm and increase pump current to 550 mA', color='orange')
-    ax.plot(step_5['Wavelength (nm)'].item(), step_5['Normalized Power (mW)'].item(), label='Tune down to 1020 nm, increase pump current to 580 mA and decrease HWP2 to 274 deg ', color='purple')
-    ax.plot(step_6['Wavelength (nm)'].item(), step_6['Normalized Power (mW)'].item(), label='Tune down to 1017 nm and let it settle', color='brown')
-    ax.plot(step_7['Wavelength (nm)'].item(), step_7['Normalized Power (mW)'].item(), label='Tune to 1016 nm', color='gray')
-    ax.plot(step_8['Wavelength (nm)'].item(), step_8['Normalized Power (mW)'].item(), label='Increase output power by setting HWP2 to 282 deg', color='black')
+    ax.plot(step_1['Wavelength (nm)'].values[0], step_1['Normalized Power (mW)'].values[0], label='Initial mode lock', color='blue')
+    ax.plot(step_2['Wavelength (nm)'].values[0], step_2['Normalized Power (mW)'].values[0], label='Reduce pump current to 500 mA', color='red')
+    ax.plot(step_3['Wavelength (nm)'].values[0], step_3['Normalized Power (mW)'].values[0], label='Increase HWP1 to 134 deg', color='green')
+    ax.plot(step_4['Wavelength (nm)'].values[0], step_4['Normalized Power (mW)'].values[0], label='Tune to 1030 nm and increase pump current to 550 mA', color='orange')
+    ax.plot(step_5['Wavelength (nm)'].values[0], step_5['Normalized Power (mW)'].values[0], label='Tune down to 1020 nm, increase pump current to 580 mA and decrease HWP2 to 274 deg ', color='purple')
+    ax.plot(step_6['Wavelength (nm)'].values[0], step_6['Normalized Power (mW)'].values[0], label='Tune down to 1017 nm and let it settle', color='brown')
+    ax.plot(step_7['Wavelength (nm)'].values[0], step_7['Normalized Power (mW)'].values[0], label='Tune to 1016 nm', color='gray')
+    ax.plot(step_8['Wavelength (nm)'].values[0], step_8['Normalized Power (mW)'].values[0], label='Increase output power by setting HWP2 to 282 deg', color='black')
     ax.set_xlabel('Wavelength')
     ax.set_ylabel('Normalized Intensity')
     ax.set_title('Tuning to 1016')
@@ -119,8 +123,8 @@ def tuning_to_1016_cascade():
     for y_pos, (exp_idx, label, color) in zip(y_positions, reversed_steps):
         step_data = osa_data[osa_data['exp_index'] == exp_idx]
         
-        x = np.array(step_data['Wavelength (nm)'].item())
-        z = np.array(step_data['Normalized Power (mW)'].item())
+        x = np.array(step_data['Wavelength (nm)'].values[0])
+        z = np.array(step_data['Normalized Power (mW)'].values[0])
 
         ax.plot(
             x,
