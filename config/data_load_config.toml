@@ -1,5 +1,5 @@
 [raw_data] # type: ignore
-raw_data_folder = '../2026/11/03'
+raw_data_folder = '../2026/11/05'
 
 [src_config]
 prefix_to_head = '..'
