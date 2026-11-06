@@ -8,34 +8,15 @@ import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection
 import numpy as np
 
+from package.config import DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH, BASE_DIR, RAW_DIR
 
-
-BASE_DIR = Path(__file__).resolve().parent
-config_path = BASE_DIR / 'config' / 'data_load_config.toml'
-
-with open(config_path, 'rb') as f:
-    config = tomllib.load(f)
-
-
-
-RAW_DIR = Path(config['raw_data']['raw_data_folder'])
-PROCESSED_DATA_PATH = Path(config['processed_data']['processed_data_folder'])
-if config['processed_data']['store_processed_with_data']:
-    PROCESSED_DATA_PATH = RAW_DIR / PROCESSED_DATA_PATH
-
-FIGURE_PATH = Path(config['processed_data']['plot_data_folder'])
-
-if config['processed_data']['store_plots_with_data']:
-    FIGURE_PATH = RAW_DIR / FIGURE_PATH
-
-PROCESSED_DATA_PATH  = BASE_DIR / PROCESSED_DATA_PATH
 
 def load_all_data() -> dict[str, pd.DataFrame]:
     data_sources = {
-        "osa": PROCESSED_DATA_PATH / config['OSA_data']['data_file'],
-        "rf": PROCESSED_DATA_PATH / config['RF_data']['data_file'],
-        "aurora": PROCESSED_DATA_PATH / config['aurora_data']['data_file'],
-        "ocean_optics": PROCESSED_DATA_PATH / config['ocean_optics_data']['data_file'],
+        "osa": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG['OSA_data']['data_file'],
+        "rf": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG['RF_data']['data_file'],
+        "aurora": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG['aurora_data']['data_file'],
+        "ocean_optics": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG['ocean_optics_data']['data_file'],
     }
     
     loaded_data: dict[str, pd.DataFrame] = {}
