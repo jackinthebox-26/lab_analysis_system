@@ -66,101 +66,59 @@ def inspect_data_files():
     else:
         print("No Ocean Optics data found.")
 
-def tuning_to_1016():
+
+def plot_UV_spectra():
     data_dict = load_all_data()
-    osa_data = data_dict.get('osa')
+    ocean_optics_data = data_dict.get('ocean_optics')
 
-    step_1 = osa_data[osa_data['exp_index'] == 61]
-    step_2 = osa_data[osa_data['exp_index'] == 62]
-    step_3 = osa_data[osa_data['exp_index'] == 63]
-    step_4 = osa_data[osa_data['exp_index'] == 64]
-    step_5 = osa_data[osa_data['exp_index'] == 65]
-    step_6 = osa_data[osa_data['exp_index'] == 66]
-    step_7 = osa_data[osa_data['exp_index'] == 67]
-    step_8 = osa_data[osa_data['exp_index'] == 68]
+    this_data = ocean_optics_data[ocean_optics_data['source_file'] == 'FHG_1016_tuning_nov3_2026_HR6009441__0__19-04-53-747.txt']
 
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(step_1['Wavelength (nm)'].values[0], step_1['Normalized Power (mW)'].values[0], label='Initial mode lock', color='blue')
-    ax.plot(step_2['Wavelength (nm)'].values[0], step_2['Normalized Power (mW)'].values[0], label='Reduce pump current to 500 mA', color='red')
-    ax.plot(step_3['Wavelength (nm)'].values[0], step_3['Normalized Power (mW)'].values[0], label='Increase HWP1 to 134 deg', color='green')
-    ax.plot(step_4['Wavelength (nm)'].values[0], step_4['Normalized Power (mW)'].values[0], label='Tune to 1030 nm and increase pump current to 550 mA', color='orange')
-    ax.plot(step_5['Wavelength (nm)'].values[0], step_5['Normalized Power (mW)'].values[0], label='Tune down to 1020 nm, increase pump current to 580 mA and decrease HWP2 to 274 deg ', color='purple')
-    ax.plot(step_6['Wavelength (nm)'].values[0], step_6['Normalized Power (mW)'].values[0], label='Tune down to 1017 nm and let it settle', color='brown')
-    ax.plot(step_7['Wavelength (nm)'].values[0], step_7['Normalized Power (mW)'].values[0], label='Tune to 1016 nm', color='gray')
-    ax.plot(step_8['Wavelength (nm)'].values[0], step_8['Normalized Power (mW)'].values[0], label='Increase output power by setting HWP2 to 282 deg', color='black')
-    ax.set_xlabel('Wavelength')
-    ax.set_ylabel('Normalized Intensity')
-    ax.set_title('Tuning to 1016')
+    fig, ax = plt.subplots(figsize=FIG_CONFIG['default_fig_settings']['figsize'], dpi=FIG_CONFIG['default_fig_settings']['dpi'])
+    ax.plot(this_data['Wavelength (nm)'].values[0], this_data['Normalized Power (mW)'].values[0], color='purple', label=f'Data: $P$ = 340 mW')
+
+    gaussian_fit = gaussian(this_data['Wavelength (nm)'].values[0],1, this_data['Center Wavelength (nm)'].values[0], FWHM_to_stddev(this_data['FWHM Wavelength (nm)'].values[0]), 0)
+    ax.plot(this_data['Wavelength (nm)'].values[0], gaussian_fit, color='black', alpha=0.5, linestyle='--', label=r'Fit: $\lambda_0$ = {:.2f} nm, FWHM = {:.2f} nm'.format(this_data['Center Wavelength (nm)'].values[0], this_data['FWHM Wavelength (nm)'].values[0]))
+    ax.vlines(256, ymin=0, ymax=1, color='k', linestyle=':', label='256 nm')
+    ax.set_xlabel('Wavelength (nm)')
+    ax.set_ylabel('Normalized Power (mW)')
+    ax.set_title('UV Spectrum')
+    ax.set_xlim([254, 258])
     ax.legend()
     ax.grid()
-    plt.savefig(FIGURE_PATH / 'tuning_to_1016.png', dpi=300)
+    plt.savefig(FIGURE_PATH / '256_brag.png', dpi=FIG_CONFIG['default_fig_settings']['dpi'])
 
-
-
-def tuning_to_1016_cascade():
+def plot_IR_spectra():
     data_dict = load_all_data()
     osa_data = data_dict.get('osa')
 
-    # Define metadata for each step
-    steps = [
-        (61, 'Initial mode lock', '#1f77b4'),
-        (62, 'Reduce pump to 500 mA', '#d62728'),
-        (63, 'Increase HWP1 to 134 deg', '#2ca02c'),
-        (64, 'Tune to 1030 nm, pump 550 mA', '#ff7f0e'),
-        (65, 'Tune 1020 nm, pump 580 mA, HWP2 274 deg', '#9467bd'),
-        (66, 'Tune to 1017 nm (settling)', '#8c564b'),
-        (67, 'Tune to 1016 nm', '#7f7f7f'),
-        (68, 'Increase power (HWP2 282 deg)', '#17becf'),
-    ]
+    this_data = osa_data[osa_data['exp_index'] == 20]
+    this_amp_data = osa_data[osa_data['exp_index'] == 21]
 
-    # Initialize 3D plot
-    fig = plt.figure(figsize=(11, 8))
-    ax = fig.add_subplot(projection='3d')
+    fig, ax = plt.subplots(figsize=(15, 4), dpi=FIG_CONFIG['default_fig_settings']['dpi'])
+    ax.plot(this_data['Wavelength (nm)'].values[0], this_data['Normalized Power (mW)'].values[0], color='orangered', label=f'OSA Data: $P$ = 20 mW')
+    ax.plot(this_amp_data['Wavelength (nm)'].values[0], this_amp_data['Normalized Power (mW)'].values[0], color='red', label=f'AMP Data: $P$ = 7.1 W')
 
-    reversed_steps = steps[::-1]
-    y_positions = np.arange(len(reversed_steps))
-
-    for y_pos, (exp_idx, label, color) in zip(y_positions, reversed_steps):
-        step_data = osa_data[osa_data['exp_index'] == exp_idx]
+    gaussian_fit = gaussian(this_data['Wavelength (nm)'].values[0],1, this_data['Center Wavelength (nm)'].values[0], FWHM_to_stddev(this_data['FWHM Wavelength (nm)'].values[0]), 0)
+    ax.plot(this_data['Wavelength (nm)'].values[0], gaussian_fit, color='black', alpha=0.5, linestyle='--', label=r'Fit: $\lambda_0$ = {:.2f} nm, FWHM = {:.2f} nm'.format(this_data['Center Wavelength (nm)'].values[0], this_data['FWHM Wavelength (nm)'].values[0]))
+    gaussian_fit = gaussian(this_amp_data['Wavelength (nm)'].values[0],1, this_amp_data['Center Wavelength (nm)'].values[0], FWHM_to_stddev(this_amp_data['FWHM Wavelength (nm)'].values[0]), 0)
+    ax.plot(this_amp_data['Wavelength (nm)'].values[0], gaussian_fit, color='black', alpha=0.5, linestyle='--', label=r'Fit: $\lambda_0$ = {:.2f} nm, FWHM = {:.2f} nm'.format(this_amp_data['Center Wavelength (nm)'].values[0], this_amp_data['FWHM Wavelength (nm)'].values[0]))
         
-        x = np.array(step_data['Wavelength (nm)'].values[0])
-        z = np.array(step_data['Normalized Power (mW)'].values[0])
-
-        ax.plot(
-            x,
-            np.full_like(x, y_pos),
-            z,
-            color=color,
-            markersize=3,
-            linewidth=1.2,
-            zorder=10 - y_pos
-        )
-
-        #z_min = 0
-        #verts = [(x[0], z_min), *zip(x, z), (x[-1], z_min)]
-        #poly = PolyCollection([verts], facecolors='#e0e0e0', edgecolors='none', alpha=0.7)
-        #ax.add_collection3d(poly, zs=y_pos, zdir='y')
-
-    # Update y-tick labels to match the reversed order
-    ax.set_yticks(y_positions)
-    ax.set_yticklabels([8-f for f in y_positions], fontsize=8)
-
-
-    # Set optimal 3D perspective view angle
-    ax.view_init(elev=26, azim=-60)
-    ax.set_title('Tuning to 1016 nm (Waterfall Cascade)', pad=20, fontsize=13)
-    ax.set_xlabel('Wavelength (nm)', labelpad=10, fontsize=10)
-    ax.set_ylabel('Step Number', labelpad=10, fontsize=10)
-    ax.set_zlabel('Normalized Power (mW)', labelpad=10, fontsize=10)
+    
+    ax.vlines(1016, ymin=0, ymax=1, color='k', linestyle=':', label='1016 nm')
+    ax.set_xlabel('Wavelength (nm)')
+    ax.set_ylabel('Normalized Power (mW)')
+    ax.set_title('OSC and Amplifier Spectra')
+    ax.set_xlim([1000, 1040])
+    plt.legend(loc="center right", bbox_to_anchor=(-0.1, 0.5))
+    ax.grid()
     plt.tight_layout()
-    plt.savefig(FIGURE_PATH / 'tuning_to_1016_cascade.png', dpi=300)
-    # plt.show()
+    plt.savefig(FIGURE_PATH / '1016_brag.png', dpi=FIG_CONFIG['default_fig_settings']['dpi'])
 
 def main():
     
-    inspect_data_files()
-    tuning_to_1016()
-    tuning_to_1016_cascade()
+    #inspect_data_files()
+    plot_UV_spectra()
+    plot_IR_spectra()
 
 
 if __name__ == "__main__":
