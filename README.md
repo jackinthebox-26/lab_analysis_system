@@ -19,3 +19,7 @@ To go to an older version to re-create the plots
 1. git checkout `<hash>`
 2. Run main.py and custom_graphs.py
 3. git checkout main
+
+
+To create an easilty sharable bundle use the following code in powershell
+`(Set-> Get-ChildItem -Recurse -Include *.py, *.js, *.html, *.css, *.md, *.sql -Exclude node_modules, .git, venv | Where-Object { -not $_.PSIsContainer } | ForEach-Object { "=== $($_.FullName) ==="; Get-Content $_.FullName; "`n" } | Out-File -Encoding utf8 project_bundle.txt`
