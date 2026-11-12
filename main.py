@@ -4,7 +4,6 @@ from package.data_loader import LabDataLoader
 from package.graph_default import create_all_graphs
 from package.file_tools import clean_directories
 from package.metadata import save_metadata
-import custom_graphs as cg
 
 from package.config import BASE_DIR, RAW_DIR
 import importlib.util
