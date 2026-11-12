@@ -7,6 +7,8 @@ from package.config import BASE_DIR, RAW_DIR, PROCESSED_DATA_PATH, FIGURE_PATH
 
 def find_all_files(data_dir): # Called in LabDataLoader.make_raw_data_dict()
         # Implement the logic to find all files in the specified directory
+        if isinstance(data_dir, str):
+            data_dir = Path(data_dir)
         all_files = [f.resolve() for f in data_dir.rglob('*') if f.is_file()]
         print(f"Found {len(all_files)} files in {data_dir}")
         return all_files
