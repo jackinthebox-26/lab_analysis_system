@@ -88,50 +88,32 @@ class data_parser:
         meta_data[header_2] = data[header_2].tolist()
         return meta_data
 
-    def parse_aurora_4000(self):
-        file_path = self.file_path
-        meta_data = self.data
+    def _parse_delimited_spectrum(self, start_marker: str) -> dict:
         data_start_line = 0
+        with open(self.file_path, "r", encoding="utf-8", errors="ignore") as f:
+            for idx, line in enumerate(f):
+                line_str = line.strip()
+                if start_marker in line_str:
+                    data_start_line = idx + 1
+                    break
+                if ":" in line_str:
+                    key, value = line_str.split(":", 1)
+                    self.data[key.strip()] = value.strip()
 
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            lines = f.readlines()
-        for idx, line in enumerate(lines):
-            line_str = line.strip()
-            if ':' in line_str:
-                key, value = line_str.split(':', 1)
-                meta_data[key.strip()] = value.strip()
-            elif "+++++Begin Spectral Data+++++" in line_str:
-                data_start_line = idx + 1
-                break
+        spectral_data = pd.read_csv(
+            self.file_path, sep=r"\s+", on_bad_lines="skip",
+            skiprows=data_start_line, header=None,
+            names=["Wavelength (nm)", "Power (mW)"],
+        )
+        self.data["Wavelength (nm)"] = spectral_data["Wavelength (nm)"].tolist()
+        self.data["Power (mW)"] = spectral_data["Power (mW)"].tolist()
+        return self.data
 
-        # Parse the spectral data
-        spectral_data = pd.read_csv(file_path, sep=r"\s+", on_bad_lines="skip", skiprows=data_start_line, header=None, names=['Wavelength (nm)', 'Power (mW)'])
-        meta_data['Wavelength (nm)'] = spectral_data['Wavelength (nm)'].tolist()
-        meta_data['Power (mW)'] = spectral_data['Power (mW)'].tolist()
-        
-        return meta_data
+    def parse_aurora_4000(self):
+        return self._parse_delimited_spectrum("+++++Begin Spectral Data+++++")
 
     def parse_ocean_optics(self):
-        file_path = self.file_path
-        meta_data = self.data
-        data_start_line = 0
-        
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            lines = f.readlines()
-        for idx, line in enumerate(lines):
-            line_str = line.strip()
-            if ':' in line_str:
-                key, value = line_str.split(':', 1)
-                meta_data[key.strip()] = value.strip()
-            elif ">>>>>Begin Spectral Data<<<<<" in line_str:
-                data_start_line = idx + 1
-                break
-
-        # Parse the spectral data
-        spectral_data = pd.read_csv(file_path, sep=r"\s+", on_bad_lines="skip", skiprows=data_start_line, header=None, names=['Wavelength (nm)', 'Power (mW)'])
-        meta_data['Wavelength (nm)'] = spectral_data['Wavelength (nm)'].tolist()
-        meta_data['Power (mW)'] = spectral_data['Power (mW)'].tolist()
-        return meta_data
+        return self._parse_delimited_spectrum(">>>>>Begin Spectral Data<<<<<")
 
     def parse_RF_analyser(self):
         file_path = self.file_path
