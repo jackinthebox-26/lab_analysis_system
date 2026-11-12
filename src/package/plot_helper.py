@@ -30,7 +30,7 @@ def inspect_data_files(data_dict: dict[str, pd.DataFrame]) -> None:
 
 def plot_spectrum_with_fit(ax, row: pd.Series, color: str, data_label: str) -> None:
     wl = row["Wavelength (nm)"]
-    pwr = row["Normalized Power (mW)"]
+    pwr = row["Normalized Linear Power (a.u.)"]
     center = row["Center Wavelength (nm)"]
     fwhm = row["FWHM Wavelength (nm)"]
 
