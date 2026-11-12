@@ -34,7 +34,7 @@ def get_repo_version(path=BASE_DIR):
         
         return meta_dict
     except Exception:
-            return "nogit00", True
+        return {"Repo_name": path.name, "version_string": "nogit00-dirty"}
 
 def dict_to_string(d: dict, indent: int = 0) -> str:
     """Formats a dictionary into clean key-value pairs line-by-line."""
