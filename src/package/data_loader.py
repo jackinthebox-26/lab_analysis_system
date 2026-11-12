@@ -81,9 +81,12 @@ class LabDataLoader:
             records = []
             for file in file_list:
                 print(f"{' ' * 5}File: {file}")
-                raw_dict = data_parser(file, key).data
-                analyzed_dict = data_analysis(raw_dict, key).data
-                records.append(analyzed_dict)
+                try:
+                    raw_dict = data_parser(file, key).data
+                    analyzed_dict = data_analysis(raw_dict, key).data
+                    records.append(analyzed_dict)
+                except Exception as e:
+                    print(f"WARNING: Skipping {file.name} due to parse/analysis error: {e}")
 
             if records and key in DATA_TYPE_TO_CONFIG_KEY:
                 temp_df = pd.DataFrame(records)
