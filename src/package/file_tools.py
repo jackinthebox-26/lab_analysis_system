@@ -3,12 +3,14 @@ from pathlib import Path
 
 import shutil
 
-from package.config import PROCESSED_DATA_PATH, FIGURE_PATH
+from package.config import PROCESSED_DATA_PATH, FIGURE_PATH, RAW_DIR
 
 folder_list = [PROCESSED_DATA_PATH, FIGURE_PATH]
 PROTECTED_EXTENSIONS = [".py", ".toml", ".md", ".txt", ".gitkeep", ".gitignore"]
 
 def clean_folder(folder_path):
+    if folder_path.resolve() == RAW_DIR.resolve():
+        raise RuntimeError("Safety abort: Refusing to clean RAW_DIR!")
     deleted_count = 0
     if not folder_path.exists():
         print(f"Directory does not exist yet: {folder_path}")
