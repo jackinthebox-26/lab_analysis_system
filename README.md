@@ -29,3 +29,9 @@ Get-ChildItem -Recurse -File -Include *.py, *.js, *.html, *.css, *.md, *.sql, *.
     Out-File -Encoding utf8 project_bundle.txt
     
     `
+
+
+TODO
+- Add logging
+- Add unittests
+- build exp_date_template
