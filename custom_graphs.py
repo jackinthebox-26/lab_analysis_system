@@ -1,14 +1,12 @@
 
-import tomllib
 from pathlib import Path
 import re
 
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.collections import PolyCollection
 import numpy as np
 
-from package.config import DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH, BASE_DIR, RAW_DIR
+from package.config import DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
 from package.math_tools import gaussian, FWHM_to_stddev
 
 def load_all_data() -> dict[str, pd.DataFrame]:

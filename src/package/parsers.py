@@ -55,8 +55,6 @@ class data_parser:
 
 
     def parse_OSA(self):
-        # Parse filename
-        tokens = self.file_path.name.split('_')
         meta_data = self.data
         meta_data |= parse_OSC_settings(self.file_path.name)
 

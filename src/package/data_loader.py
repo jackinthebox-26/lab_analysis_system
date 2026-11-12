@@ -1,12 +1,8 @@
 from pathlib import Path
-from collections import defaultdict
-import tomllib
-import sys
-
 
 import pandas as pd
 
-from package.config import BASE_DIR, RAW_DIR, PROCESSED_DATA_PATH, FIGURE_PATH, DATA_LOAD_CONFIG
+from package.config import RAW_DIR, PROCESSED_DATA_PATH
 from package.parsers import data_parser
 from package.data_analysis import data_analysis
 class LabDataLoader:
@@ -100,7 +96,6 @@ class LabDataLoader:
                 temp_df.to_json(file_name, indent=4)
                 print(f"Saved {key} data to {file_name}")
 
-                reload_data = pd.read_json(file_name)
                 
         
 
