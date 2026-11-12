@@ -1,6 +1,5 @@
 import numpy as np
 import logging
-import logging
 
 
 from package.config import BASE_DIR, DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH

@@ -1,6 +1,5 @@
 from pathlib import Path
 import logging
-import logging
 import matplotlib.pyplot as plt
 import tomllib
 
