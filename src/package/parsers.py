@@ -119,37 +119,7 @@ class data_parser:
         file_path = self.file_path
         meta_data = self.data
 
-        
-        tokens = file_path.name.split('_')
-        meta_data['exp_index'] = int(tokens.pop(0))
-        tokens[-1] = tokens[-1].split('.')[0]
-        removed_tokens = np.zeros(len(tokens), dtype=int)
-        
-        remaining_tokens = tokens[:]
-        
-        i = 0
-        for i in range(len(tokens)):
-            token = tokens[i]
-            match=True
-            if token == 'HWP2' and i + 1 < len(tokens):
-                meta_data['HWP2'] = float(tokens[i+1].replace('dot', '.'))
-            elif token == 'HWP1' and i + 1 < len(tokens):
-                meta_data['HWP1'] = float(tokens[i+1].replace('dot', '.'))
-            elif token == 'QWP' and i + 1 < len(tokens):
-                meta_data['QWP'] = float(tokens[i+1].replace('dot', '.'))
-            elif token.endswith('mA'):
-                meta_data['Pump current'] = token.removesuffix('mA').replace('dot', '.') 
-                removed_tokens[i] = 1
-                match = False
-            else:
-                match = False
-            if match:
-                removed_tokens[i] = 1
-                removed_tokens[i+1] = 1
-        notes_list = [token for token, mask in zip(tokens, removed_tokens) if mask == 0]
-        meta_data['Notes'] = " ".join(notes_list)
-
-
+        meta_data |= parse_OSC_settings(self.file_path.name, has_timestamp=False)
         
         power_array = []
         freq_array = []
