@@ -156,7 +156,7 @@ def plot_FROG_data():
                                dpi=FIG_CONFIG['default_fig_settings']['dpi'])
 
         ax[0].plot(np.array(row["pulse_time_data_time"]), np.array(row["pulse_time_data_intensity"]))
-        ax[0].set_xlabel('Time (fw)')
+        ax[0].set_xlabel('Time (fs)')
         ax[0].set_ylabel('Normalized Power (mW)')
         plt.suptitle(f"Pulse temporal data \n{row['source_file']}")
 
