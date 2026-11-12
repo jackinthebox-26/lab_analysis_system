@@ -50,7 +50,7 @@ def dict_to_string(d: dict, indent: int = 0) -> str:
             lines.append(f"{prefix}{key}: {value}")
     return "\n".join(lines)
 
-def list_to_string(items: list, bullet: str = "•") -> str:
+def list_to_string(items: list, bullet: str = "-") -> str:
     """Formats a list into a vertical bulleted list string."""
     return "\n".join(f"{bullet} {item}" for item in items)
 
