@@ -8,10 +8,11 @@ from package.file_tools import find_all_files
 
 
 def get_repo_hash(path=BASE_DIR):
-    repo = git.Repo(path, search_parent_directories=True)
-    sha = repo.head.commit.hexsha
-    is_dirty = repo.is_dirty()
-    return sha, is_dirty
+    try:
+        repo = git.Repo(path, search_parent_directories=True)
+        return repo.head.commit.hexsha, repo.is_dirty()
+    except Exception:
+        return "nogit00", True
     
 
 def get_repo_version(path=BASE_DIR):
