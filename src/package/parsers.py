@@ -201,24 +201,29 @@ class data_parser:
             
 
             pulse_time_file = file_path.parent / f"Pulse_Time_Domain {time_match['month']}_{time_match['day']}_time_{time_match['h']}_{time_match['m']}_{time_match['s']}_{time_match['ms']}.txt"
+            pulse_complex_time_file = file_path.parent / f"Pulse_Complex_Time_Domain {time_match['month']}_{time_match['day']}_time_{time_match['h']}_{time_match['m']}_{time_match['s']}_{time_match['ms']}.txt"
+            pulse_freq_file = file_path.parent / f"Pulse_Freq_Domain {time_match['month']}_{time_match['day']}_time_{time_match['h']}_{time_match['m']}_{time_match['s']}_{time_match['ms']}.txt"
+                                  
+            for companion in (pulse_time_file, pulse_complex_time_file, pulse_freq_file):
+                if not companion.is_file():
+                    raise FileNotFoundError(f"Missing companion FROG file: {companion.name}")
+
             pulse_time_data = pd.read_csv(pulse_time_file, header=None, names=['Time (fs)', 'Intensity (a.u.)', 'Empty'], sep=r"\s+")
+            pulse_complex_time_data = pd.read_csv(pulse_complex_time_file, header=None, names=['Time (s)', 'Amplitude (a.u.)', 'Phase (rad)'], sep=r"\s+")
+            pulse_freq_data = pd.read_csv(pulse_freq_file, header=None, names=['Frequency (THz)', 'Intensity (a.u.)', 'Empty'], sep=r"\s+")
+                                                
+            
             meta_data["pulse_time_data_time"] = pulse_time_data["Time (fs)"].tolist()
             meta_data["pulse_time_data_intensity"] = pulse_time_data["Intensity (a.u.)"].tolist()
 
-            pulse_complex_time_file = file_path.parent / f"Pulse_Complex_Time_Domain {time_match['month']}_{time_match['day']}_time_{time_match['h']}_{time_match['m']}_{time_match['s']}_{time_match['ms']}.txt"
-            pulse_complex_time_data = pd.read_csv(pulse_complex_time_file, header=None, names=['Time (s)', 'Amplitude (a.u.)', 'Phase (rad)'], sep=r"\s+")
             
             meta_data["pulse_complex_time_data_time"] = pulse_complex_time_data["Time (s)"].tolist()
             meta_data["pulse_complex_time_data_amplitude"] = pulse_complex_time_data["Amplitude (a.u.)"].tolist()
             meta_data["pulse_complex_time_data_phase"] = pulse_complex_time_data["Phase (rad)"].tolist()
 
-            pulse_freq_file = file_path.parent / f"Pulse_Freq_Domain {time_match['month']}_{time_match['day']}_time_{time_match['h']}_{time_match['m']}_{time_match['s']}_{time_match['ms']}.txt"
-            pulse_freq_data = pd.read_csv(pulse_freq_file, header=None, names=['Frequency (THz)', 'Intensity (a.u.)', 'Empty'], sep=r"\s+")
             meta_data["pulse_freq_data_wavelength"] = pulse_freq_data["Frequency (THz)"].tolist()  # Note: This is really wavelength, the FROG software outputs frequency in THz, but it's actually wavelength in nm. This is a known quirk of the FROG software.
             meta_data["pulse_freq_data_intensity"] = pulse_freq_data["Intensity (a.u.)"].tolist()
-            for companion in (pulse_time_file, pulse_complex_time_file, pulse_freq_file):
-                if not companion.is_file():
-                    raise FileNotFoundError(f"Missing companion FROG file: {companion.name}")
+            
             
             return meta_data
 
