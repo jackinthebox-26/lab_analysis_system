@@ -42,7 +42,7 @@ class data_parser:
         # Parse filename
         tokens = self.file_path.name.split('_')
         meta_data = self.data
-        meta_data['exp_index'] = tokens.pop(0) 
+        meta_data['exp_index'] = int(tokens.pop(0))
         time = tokens.pop().split('.')[0]
         date = tokens.pop()
         
@@ -134,7 +134,7 @@ class data_parser:
 
         
         tokens = file_path.name.split('_')
-        meta_data['exp_index'] = tokens.pop(0) 
+        meta_data['exp_index'] = int(tokens.pop(0))
         tokens[-1] = tokens[-1].split('.')[0]
         removed_tokens = np.zeros(len(tokens), dtype=int)
         
@@ -234,7 +234,8 @@ class data_parser:
             # Parse timestamp from filename: Pulse_Stats 10_20_time_15_33_12_717
             pattern = r"(?P<month>\d+)\_(?P<day>\d+)\_time\_(?P<h>\d+)\_(?P<m>\d+)\_(?P<s>\d+)\_(?P<ms>\d+)"
             time_match = re.search(pattern, file_path.stem)
-            assert time_match
+            if not time_match:
+                raise ValueError(f"Filename {file_path.name} does not match expected timestamp pattern.")
             t = time_match.groupdict()
             meta_data["timestamp"] = f"2026-{t['month']}-{t['day']} {t['h']}:{t['m']}:{t['s']}.{t['ms']}"
             
