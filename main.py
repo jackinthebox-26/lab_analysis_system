@@ -19,7 +19,7 @@ def run_daily_custom_plots():
     experiments_dir.mkdir(parents=True, exist_ok=True)
 
     script_path = experiments_dir / f"exp_{date_slug}.py"
-    template_path = experiments_dir / "template.py"
+    template_path = experiments_dir / "exp_date_template.py"
 
     if not script_path.is_file():
         if template_path.is_file():
