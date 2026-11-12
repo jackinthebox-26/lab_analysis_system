@@ -89,8 +89,7 @@ file_info = """
 Type: FROG
 Pulse Width: {pulse_width} {pulse_width_unit}
 Bandwidth: {bandwidth} {bandwidth_unit}
-Bandwidth (nm): {bandwidth_nm} nm
 TBW product (g: 0.441, sec2: 0.315): {tbw_product}
 FROG trace error: {frog_trace_error}
-Timestamp: {timestamp} deg
+Timestamp: {timestamp} 
 """
