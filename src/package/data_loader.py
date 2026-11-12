@@ -80,24 +80,23 @@ class LabDataLoader:
         print('Data catagorized')
         
         
-
         print('Initializing raw data processing and json saving.')
         for key, file_list in data_dict.items():
-            temp_df = pd.DataFrame()
             print(f'Key: {key}')
-            for key, file_list in data_dict.items():
-                records = []
-                for file in file_list:
-                    raw_dict = data_parser(file, key).data
-                    analyzed_dict = data_analysis(raw_dict, key).data
-                    records.append(analyzed_dict)
+            records = []
+            for file in file_list:
+                print(f"{' ' * 5}File: {file}")
+                raw_dict = data_parser(file, key).data
+                analyzed_dict = data_analysis(raw_dict, key).data
+                records.append(analyzed_dict)
 
-                if records and key in DATA_TYPE_TO_CONFIG_KEY:
-                    temp_df = pd.DataFrame(records)
-                    PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
-                    config_key = DATA_TYPE_TO_CONFIG_KEY[key]
-                    file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[config_key]["data_file"]
-                    temp_df.to_json(file_name)
+            if records and key in DATA_TYPE_TO_CONFIG_KEY:
+                temp_df = pd.DataFrame(records)
+                PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
+                config_key = DATA_TYPE_TO_CONFIG_KEY[key]
+                file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[config_key]["data_file"]
+                temp_df.to_json(file_name)
+                print(f"Saved {key} data to {file_name}")
 
 
                 
