@@ -213,7 +213,9 @@ class data_parser:
             pulse_freq_data = pd.read_csv(pulse_freq_file, header=None, names=['Frequency (THz)', 'Intensity (a.u.)', 'Empty'], sep=r"\s+")
             meta_data["pulse_freq_data_wavelength"] = pulse_freq_data["Frequency (THz)"].tolist()  # Note: This is really wavelength, the FROG software outputs frequency in THz, but it's actually wavelength in nm. This is a known quirk of the FROG software.
             meta_data["pulse_freq_data_intensity"] = pulse_freq_data["Intensity (a.u.)"].tolist()
-
+            for companion in (pulse_time_file, pulse_complex_time_file, pulse_freq_file):
+                if not companion.is_file():
+                    raise FileNotFoundError(f"Missing companion FROG file: {companion.name}")
             
             return meta_data
 
