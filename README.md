@@ -16,7 +16,7 @@ NOTE: git clean DELETES UNTRACKED FILES. DONT DO THIS BY ACCIDENT.
 
 To go to an older version to re-create the plots
 1. git checkout `<hash>`
-2. Run main.py and custom_graphs.py
+2. Run main.py
 3. git checkout main
 
 
@@ -33,4 +33,3 @@ Get-ChildItem -Recurse -File -Include *.py, *.js, *.html, *.css, *.md, *.sql, *.
 TODO
 - Add logging
 - Add unittests
-- build exp_date_template
