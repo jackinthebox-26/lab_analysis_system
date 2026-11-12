@@ -1,15 +1,14 @@
 from pathlib import Path
-import sys
+import matplotlib.pyplot as plt
 import tomllib
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-if str(BASE_DIR) not in sys.path:
-    sys.path.insert(0, str(BASE_DIR))
 
-
-MPL_STYLE_PATH = BASE_DIR / 'config' / 'plot_style.mplstyle'
+MPL_STYLE_PATH = BASE_DIR / "config" / "plot_style.mplstyle"
+if MPL_STYLE_PATH.is_file():
+    plt.style.use(MPL_STYLE_PATH)
 
 
 config_path = BASE_DIR / 'config' / 'data_load_config.toml'
