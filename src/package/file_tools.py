@@ -1,10 +1,12 @@
 # src/package/file_tools.py
 from pathlib import Path
+import logging
 
 import shutil
 
 from package.config import PROCESSED_DATA_PATH, FIGURE_PATH, RAW_DIR
 
+logger = logging.getLogger(__name__)
 folder_list = [PROCESSED_DATA_PATH, FIGURE_PATH]
 PROTECTED_EXTENSIONS = [".py", ".toml", ".md", ".txt", ".gitkeep", ".gitignore", ".pdf", ".svg"]
 

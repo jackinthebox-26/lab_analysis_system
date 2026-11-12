@@ -1,6 +1,10 @@
 import numpy as np
+import logging
 
 from scipy.optimize import curve_fit
+
+
+logger = logging.getLogger(__name__)
 
 def gaussian(x, amplitude, mean, stddev, offset):
     """1D Gaussian model with a baseline offset."""

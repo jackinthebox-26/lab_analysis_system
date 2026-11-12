@@ -7,7 +7,7 @@ import git
 from package.config import BASE_DIR, RAW_DIR, PROCESSED_DATA_PATH, FIGURE_PATH
 from package.file_tools import find_all_files
 
-logger = logging.getLogger("package.main")
+logger = logging.getLogger(__name__)
 
 def get_repo_hash(path=BASE_DIR):
     try:

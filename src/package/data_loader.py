@@ -1,4 +1,5 @@
 from pathlib import Path
+import logging
 
 import pandas as pd
 
@@ -8,6 +9,9 @@ from package.data_analysis import data_analysis
 
 from package.config import RAW_DIR, PROCESSED_DATA_PATH, DATA_LOAD_CONFIG
 from package.file_tools import find_all_files
+
+
+logger = logging.getLogger(__name__)
 
 DATA_TYPE_TO_CONFIG_KEY = {
     "OSA": "OSA_data",
