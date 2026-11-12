@@ -31,7 +31,7 @@ class data_analysis:
         max_val = np.max(shifted)
         norm_power = shifted / max_val if max_val > 0 else shifted
 
-        self.data['Normalized Power (mW)'] = norm_power.tolist()
+        self.data['Normalized Linear Power (a.u.)'] = norm_power.tolist()
         return self.data
 
 

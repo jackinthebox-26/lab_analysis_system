@@ -63,7 +63,7 @@ def plot_spectra(config_key):
         file_info = template.format(**row)
         fig, ax = plt.subplots(1, 2)
         ax[0].plot(row["Wavelength (nm)"], 
-                    row["Normalized Power (mW)"], 
+                    row["Normalized Linear Power (a.u.)"], 
                     label='Data',
                     color=FIG_CONFIG['default_fig_settings']['color'])
         ax[0].set_xlabel(FIG_CONFIG[config_key]['xlabel'])
@@ -75,7 +75,7 @@ def plot_spectra(config_key):
 
 
         ax[1].plot(row["Wavelength (nm)"], 
-                    row["Normalized Power (mW)"], 
+                    row["Normalized Linear Power (a.u.)"], 
                     label='Data',
                     color=FIG_CONFIG['default_fig_settings']['color'])
         ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
@@ -157,12 +157,12 @@ def plot_FROG_data():
 
         ax[0].plot(np.array(row["pulse_time_data_time"]), np.array(row["pulse_time_data_intensity"]))
         ax[0].set_xlabel('Time (fs)')
-        ax[0].set_ylabel('Normalized Power (mW)')
+        ax[0].set_ylabel('Normalized Linear Power (a.u.)')
         plt.suptitle(f"Pulse temporal data \n{row['source_file']}")
 
         ax[1].plot(np.array(row["pulse_freq_data_wavelength"]), np.array(row["pulse_freq_data_intensity"]))
         ax[1].set_xlabel('Wavelength (nm)')
-        ax[1].set_ylabel('Normalized Power (mW)')
+        ax[1].set_ylabel('Normalized Linear Power (a.u.)')
         
         
         ax[2] = add_info_box(ax[2], file_info)
