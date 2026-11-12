@@ -5,6 +5,17 @@ import pandas as pd
 from package.config import RAW_DIR, PROCESSED_DATA_PATH
 from package.parsers import data_parser
 from package.data_analysis import data_analysis
+
+from package.config import RAW_DIR, PROCESSED_DATA_PATH, DATA_LOAD_CONFIG
+
+DATA_TYPE_TO_CONFIG_KEY = {
+    "OSA": "OSA_data",
+    "RF analyser": "RF_data",
+    "Aurora 4000": "aurora_data",
+    "Ocean Optics": "ocean_optics_data",
+    "FROG pulse stats": "FROG_data",
+}
+
 class LabDataLoader:
     def __init__(self, data_dir: str = str(RAW_DIR)):
         self.data_dir = Path(data_dir)
@@ -90,11 +101,14 @@ class LabDataLoader:
                     analysis_df = data_analysis(this_file_df, key).data
                     temp_df = pd.concat([temp_df, analysis_df], ignore_index=True, axis=0)
                     
-            if len(temp_df) > 0 and not temp_df.columns.to_list() == ['source_file']:
+
+            if len(temp_df) > 0 and key in DATA_TYPE_TO_CONFIG_KEY:
                 PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
-                file_name = PROCESSED_DATA_PATH / (key.replace(" ", "_") + "_data.json")    
-                temp_df.to_json(file_name, indent=4)
+                config_key = DATA_TYPE_TO_CONFIG_KEY[key]
+                file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[config_key]["data_file"]
+                temp_df.to_json(file_name)  # or .to_json(file_name, indent=4)
                 print(f"Saved {key} data to {file_name}")
+
 
                 
         
