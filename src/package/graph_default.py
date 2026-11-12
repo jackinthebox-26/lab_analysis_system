@@ -98,7 +98,7 @@ def plot_spectra(config_key):
         window = FIG_CONFIG['default_fig_settings']['tight_plot_window']
 
         if np.isnan(center_wavelength) or np.isnan(fwhm):
-            logger.info(f"Warning: Center wavelength or FWHM is NaN for {row['source_file']}. Skipping xlim setting.")
+            logger.warning(f"Warning: Center wavelength or FWHM is NaN for {row['source_file']}. Skipping xlim setting.")
         else:
             ax[1].set_xlim([center_wavelength - fwhm * window,
                             center_wavelength + fwhm * window]) 

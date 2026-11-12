@@ -29,7 +29,7 @@ def run_daily_custom_plots():
             shutil.copyfile(template_path, script_path)
             logger.info(f"Created new custom plot script from template: {script_path.name}")
         else:
-            logger.info(f"Warning: Neither {script_path.name} nor template.py found. Skipping custom plots.")
+            logger.warning(f"Warning: Neither {script_path.name} nor template.py found. Skipping custom plots.")
             return
 
     if not script_path.is_file():

@@ -90,7 +90,7 @@ class LabDataLoader:
                     analyzed_dict = data_analysis(raw_dict, key).data
                     records.append(analyzed_dict)
                 except Exception as e:
-                    logger.info(f"WARNING: Skipping {file.name} due to parse/analysis error: {e}")
+                    logger.warning(f"WARNING: Skipping {file.name} due to parse/analysis error: {e}")
 
             if records and key in DATA_TYPE_TO_CONFIG_KEY:
                 temp_df = pd.DataFrame(records)

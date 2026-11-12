@@ -60,7 +60,7 @@ def fit_gaussian_profile(x_data, y_data):
         fwhm = stddev * (2 * np.sqrt(2 * np.log(2)))
         fit_y = gaussian(x, *popt)
     except (RuntimeError, ValueError) as e:
-        logger.info(f"Warning: Gaussian fit failed ({e}). Storing NaN values.")
+        logger.warning(f"Warning: Gaussian fit failed ({e}). Storing NaN values.")
         amplitude = center = stddev = fwhm = offset = np.nan
         fit_y = np.full_like(x, np.nan)
     return {
