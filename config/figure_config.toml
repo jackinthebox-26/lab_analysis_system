@@ -58,7 +58,7 @@ ylabel='Power (dBm)'
 file_info = """
 Type: Aurora 4000
 Device Name: {Device Name} 
-Integral Time(s): {Integral Time(s):03d}
+Integral Time(s): {Integral Time(s)}
 Avg Count: {Avg Count} deg
 Center Wavelength (nm): {Center Wavelength (nm):.2f} nm
 FWHM Wavelength (nm): {FWHM Wavelength (nm):.2f} nm
