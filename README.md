@@ -1,3 +1,29 @@
+File Structure
+`
+lab_analysis_system/                  # Repository root (BASE_DIR)
+    ├── pyproject.toml                    # Editable package definition (pip install -e .)
+    ├── README.md
+    ├── main.py                           # Full pipeline entrypoint
+    ├── config/
+    │   ├── data_load_config.toml         # Target date folder, output paths, per-instrument filenames
+    │   ├── figure_config.toml            # Plot styling, axis labels, and info-box templates
+    │   └── plot_style.mplstyle           # (Optional) Global Matplotlib stylesheet
+    ├── experiments/
+    │   ├── exp_date_template.py          # Boilerplate copied when a new date is run
+    │   └── exp_2026_10_29.py             # Auto-created daily script for custom/exploratory plots
+    └── src/
+        └── package/
+            ├── __init__.py
+            ├── config.py                 # Loads TOML configs and resolves BASE_DIR / RAW_DIR
+            ├── data_loader.py            # Categorizes raw files by header/filename and saves JSONs
+            ├── parsers.py                # Instrument-specific parsers and filename metadata extraction
+            ├── data_analysis.py          # Gaussian fitting and power normalization
+            ├── math_tools.py             # Bounded Gaussian curve fitting and FWHM conversions
+            ├── graph_default.py          # Standard diagnostic plots with metadata info boxes
+            ├── plot_helper.py            # Helper utilities imported by daily experiments/*.py scripts
+            ├── file_tools.py             # Safe directory cleanup (blocks deletion of RAW_DIR)
+            └── metadata.py               # Records Git SHA, dirty state, and resolved file manifests
+`
 How to install and start to work with this package
 1. Create venv: python -m venv venv
 2. Activate venv: 
@@ -33,3 +59,4 @@ Get-ChildItem -Recurse -File -Include *.py, *.js, *.html, *.css, *.md, *.sql, *.
 TODO
 - Add logging
 - Add unittests
+- Make it easier to add instroments
