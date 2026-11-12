@@ -59,7 +59,7 @@ file_info = """
 Type: Aurora 4000
 Device Name: {Device Name} 
 Integral Time(s): {Integral Time(s)}
-Avg Count: {Avg Count} deg
+Avg Count: {Avg Count} 
 Center Wavelength (nm): {Center Wavelength (nm):.2f} nm
 FWHM Wavelength (nm): {FWHM Wavelength (nm):.2f} nm
 Other Description: {Other Description}
@@ -74,7 +74,7 @@ file_info = """
 Type: Ocean Optics
 Device Name: {Spectrometer} 
 Integral Time(s): {Integration Time (sec)}
-Scans to average: {Scans to average} deg
+Scans to average: {Scans to average} 
 Center Wavelength (nm): {Center Wavelength (nm)} nm
 FWHM Wavelength (nm): {FWHM Wavelength (nm)} nm
 """
