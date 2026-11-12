@@ -57,7 +57,4 @@ Get-ChildItem -Recurse -File -Include *.py, *.js, *.html, *.css, *.md, *.sql, *.
 
 
 TODO
-- Add logging
-- Add unittests
-- Make it easier to add instroments
 - Make it easier to add instroments
