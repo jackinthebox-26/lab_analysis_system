@@ -79,7 +79,7 @@ class data_parser:
         meta_data |= parse_OSC_settings(self.file_path.name)
 
         header_1 = 'Wavelength (nm)'
-        header_2 = 'Power (mW)'
+        header_2 = 'Power (mW)'  # Note the instroment always uses dBm label, but this is wrong
 
         data = pd.read_csv(self.file_path, header=None, skiprows=1)
         data.columns = [header_1, header_2] 
