@@ -150,9 +150,12 @@ class data_parser:
         meta_data['Frequency (Hz)'] = freq_array
 
         date_macro = str(meta_data['date__day-month-year'])
-        time = str(meta_data['time__24h-minute-second'])
+        time_str = str(meta_data['time__24h-minute-second'])
 
-        meta_data['date'] = datetime.strptime(date_macro + time, "%d_%m_%Y%H_%M_%S").isoformat()
+        if not date_macro or not time_str:
+            raise ValueError(f"Missing date/time header fields in RF file: {file_path.name}")
+
+        meta_data['date'] = datetime.strptime(date_macro + time_str, "%d_%m_%Y%H_%M_%S").isoformat()
 
         return meta_data
 
