@@ -16,22 +16,25 @@ def get_repo_hash(path=BASE_DIR):
     
 
 def get_repo_version(path=BASE_DIR):
-    repo = git.Repo(path, search_parent_directories=True)
-    sha = repo.head.commit.hexsha
-    is_dirty = repo.is_dirty()
-    branch = repo.active_branch.name if not repo.head.is_detached else "detached"
-    remote = repo.remote(name='origin') if 'origin' in [r.name for r in repo.remotes] else repo.remotes[0]
-    url = list(remote.urls)[0]
-    repo_name = Path(url).stem
+    try:
+        repo = git.Repo(path, search_parent_directories=True)
+        sha = repo.head.commit.hexsha
+        is_dirty = repo.is_dirty()
+        branch = repo.active_branch.name if not repo.head.is_detached else "detached"
+        remote = repo.remote(name='origin') if 'origin' in [r.name for r in repo.remotes] else repo.remotes[0]
+        url = list(remote.urls)[0]
+        repo_name = Path(url).stem
 
-    meta_dict = {'Repo_name': repo_name,
-                    'commit_sha': sha[:7],
-                    'full_sha': sha,
-                    'branch': branch,
-                    'is_dirty': is_dirty,
-                    'version_string' :f"{sha[:7]}{'-dirty' if repo.is_dirty() else ''}"}
-    
-    return meta_dict
+        meta_dict = {'Repo_name': repo_name,
+                        'commit_sha': sha[:7],
+                        'full_sha': sha,
+                        'branch': branch,
+                        'is_dirty': is_dirty,
+                        'version_string' :f"{sha[:7]}{'-dirty' if repo.is_dirty() else ''}"}
+        
+        return meta_dict
+    except Exception:
+            return "nogit00", True
 
 def dict_to_string(d: dict, indent: int = 0) -> str:
     """Formats a dictionary into clean key-value pairs line-by-line."""
