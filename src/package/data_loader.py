@@ -97,7 +97,7 @@ class LabDataLoader:
                     PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
                     config_key = DATA_TYPE_TO_CONFIG_KEY[key]
                     file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[config_key]["data_file"]
-                    temp_df.to_json(file_name, indent=4)
+                    temp_df.to_json(file_name)
 
 
                 
