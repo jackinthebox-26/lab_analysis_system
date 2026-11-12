@@ -43,7 +43,7 @@ def fit_gaussian_profile(x_data, y_data):
 
     p0 = [amp_guess, mean_guess, stddev_guess, offset_guess]
 
-    
+
     x_min, x_max = np.min(x), np.max(x)
     lower_bounds = [0.0, x_min, 0.0, -np.inf]
     upper_bounds = [np.inf, x_max, x_max - x_min, np.inf]
@@ -65,5 +65,5 @@ def fit_gaussian_profile(x_data, y_data):
         "amplitude": amplitude,
         "stddev": stddev,
         "offset": offset,
-        "fit_y": gaussian(x, *popt)
+        "fit_y": fit_y
     }
