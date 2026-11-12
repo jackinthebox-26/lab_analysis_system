@@ -81,11 +81,7 @@ class LabDataLoader:
         print(f"Found the following data types: {data_dict.keys()}")
         print('Data catagorized')
         
-        root_path = Path(DATA_LOAD_CONFIG['processed_data']['processed_data_folder'])
-        if DATA_LOAD_CONFIG['processed_data']['store_processed_with_data']:
-            raw_data = Path(DATA_LOAD_CONFIG['raw_data']['raw_data_folder'])
-            root_path = raw_data / root_path
-        root_path = BASE_DIR / root_path
+        
 
         print('Initializing raw data processing and json saving.')
         for key, file_list in data_dict.items():
@@ -99,8 +95,8 @@ class LabDataLoader:
                     temp_df = pd.concat([temp_df, analysis_df], ignore_index=True, axis=0)
                     
             if len(temp_df) > 0 and not temp_df.columns.to_list() == ['source_file']:
-                root_path.mkdir(parents=True, exist_ok=True)
-                file_name = root_path / (key.replace(" ", "_") + "_data.json")    
+                PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
+                file_name = PROCESSED_DATA_PATH / (key.replace(" ", "_") + "_data.json")    
                 temp_df.to_json(file_name, indent=4)
                 print(f"Saved {key} data to {file_name}")
 
