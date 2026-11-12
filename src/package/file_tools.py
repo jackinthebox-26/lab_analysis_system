@@ -6,7 +6,7 @@ import shutil
 from package.config import PROCESSED_DATA_PATH, FIGURE_PATH, RAW_DIR
 
 folder_list = [PROCESSED_DATA_PATH, FIGURE_PATH]
-PROTECTED_EXTENSIONS = [".py", ".toml", ".md", ".txt", ".gitkeep", ".gitignore"]
+PROTECTED_EXTENSIONS = [".py", ".toml", ".md", ".txt", ".gitkeep", ".gitignore", ".pdf", ".svg"]
 
 def clean_folder(folder_path):
     if folder_path.resolve() == RAW_DIR.resolve():
