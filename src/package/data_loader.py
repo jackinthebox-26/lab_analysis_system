@@ -85,20 +85,19 @@ class LabDataLoader:
         for key, file_list in data_dict.items():
             temp_df = pd.DataFrame()
             print(f'Key: {key}')
-            for file in file_list:
-                print(f"{' ' * 5}File: {file}")
-                this_file_df = self.load_data(file, key)
-                if this_file_df is not None:
-                    analysis_df = data_analysis(this_file_df, key).data
-                    temp_df = pd.concat([temp_df, analysis_df], ignore_index=True, axis=0)
-                    
+            for key, file_list in data_dict.items():
+                records = []
+                for file in file_list:
+                    raw_dict = data_parser(file, key).data
+                    analyzed_dict = data_analysis(raw_dict, key).data
+                    records.append(analyzed_dict)
 
-            if len(temp_df) > 0 and key in DATA_TYPE_TO_CONFIG_KEY:
-                PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
-                config_key = DATA_TYPE_TO_CONFIG_KEY[key]
-                file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[config_key]["data_file"]
-                temp_df.to_json(file_name)  # or .to_json(file_name, indent=4)
-                print(f"Saved {key} data to {file_name}")
+                if records and key in DATA_TYPE_TO_CONFIG_KEY:
+                    temp_df = pd.DataFrame(records)
+                    PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
+                    config_key = DATA_TYPE_TO_CONFIG_KEY[key]
+                    file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[config_key]["data_file"]
+                    temp_df.to_json(file_name, indent=4)
 
 
                 

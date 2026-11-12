@@ -23,9 +23,9 @@ def fit_gaussian_profile(x_data, y_data):
     Returns:
         dict: Fitted parameters (center, FWHM, amplitude, stddev, offset, fit_y).
     """
-    x = np.hstack(x_data).astype(float)
-    y = np.hstack(y_data).astype(float)
-    
+    x = np.asarray(x_data, dtype=float)
+    y = np.asarray(y_data, dtype=float)
+
     # Estimate initial guesses for stable optimization convergence
     offset_guess = np.min(y)
     amp_guess = np.max(y) - offset_guess
