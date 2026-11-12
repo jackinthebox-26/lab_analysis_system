@@ -160,11 +160,10 @@ def plot_FROG_data():
         ax[0].set_ylabel('Normalized Power (mW)')
         plt.suptitle(f"Pulse temporal data \n{row['source_file']}")
 
-        ax[1].plot(np.array(row["pulse_freq_data_frequency"]), np.array(row["pulse_freq_data_intensity"]))
+        ax[1].plot(np.array(row["pulse_freq_data_wavelength"]), np.array(row["pulse_freq_data_intensity"]))
         ax[1].set_xlabel('Wavelength (nm)')
         ax[1].set_ylabel('Normalized Power (mW)')
         
-    
         
         ax[2] = add_info_box(ax[2], file_info)
         ax[2].set_axis_off()
