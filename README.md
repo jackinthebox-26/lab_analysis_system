@@ -22,4 +22,10 @@ To go to an older version to re-create the plots
 
 
 To create an easilty sharable bundle use the following code in powershell
-`(Set-> Get-ChildItem -Recurse -Include *.py, *.js, *.html, *.css, *.md, *.sql -Exclude node_modules, .git, venv | Where-Object { -not $_.PSIsContainer } | ForEach-Object { "=== $($_.FullName) ==="; Get-Content $_.FullName; "`n" } | Out-File -Encoding utf8 project_bundle.txt`
+`
+Get-ChildItem -Recurse -File -Include *.py, *.js, *.html, *.css, *.md, *.sql | 
+    Where-Object { $_.FullName -notmatch '[\\/](node_modules|\.git|venv)[\\/]' } | 
+    ForEach-Object { "=== $($_.FullName) ==="; Get-Content $_.FullName -Raw; "`n" } | 
+    Out-File -Encoding utf8 project_bundle.txt
+    
+    `
