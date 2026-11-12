@@ -1,4 +1,5 @@
 from pathlib import Path
+import logging
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,6 +8,7 @@ import numpy as np
 from package.config import DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
 from package.math_tools import gaussian, FWHM_to_stddev
 
+logger = logging.getLogger("package.graph_default")
 
 BBOX_PROPS = dict(
                 boxstyle=FIG_CONFIG['info_box']['boxstyle'],  # Options: 'square', 'round', 'sawtooth'

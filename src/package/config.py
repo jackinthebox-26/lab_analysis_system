@@ -1,7 +1,10 @@
 from pathlib import Path
+import logging
 import matplotlib.pyplot as plt
 import tomllib
 
+
+logger = logging.getLogger("package.config")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 

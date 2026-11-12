@@ -2,8 +2,12 @@
 from pathlib import Path
 import numpy as np
 import pandas as pd
+import logging
 from package.config import DATA_LOAD_CONFIG, PROCESSED_DATA_PATH
 from package.math_tools import gaussian, FWHM_to_stddev
+
+
+logger = logging.getLogger("package.plot_helper")
 
 def load_all_data() -> dict[str, pd.DataFrame]:
     data_sources = {

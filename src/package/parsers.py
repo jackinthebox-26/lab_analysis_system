@@ -1,5 +1,6 @@
 from pathlib import Path
 import tomllib
+import logging
 
 import pandas as pd
 import numpy as np
@@ -7,6 +8,9 @@ import re
 from datetime import datetime
 
 from package.config import RAW_DIR
+
+
+logger = logging.getLogger("package.parsers")
 
 REQUIRED_OSC_KEYS = ("HWP1", "HWP2", "QWP", "Pump current")
 
