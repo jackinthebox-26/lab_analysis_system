@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from pathlib import Path
 
@@ -6,6 +7,7 @@ import git
 from package.config import BASE_DIR, RAW_DIR, PROCESSED_DATA_PATH, FIGURE_PATH
 from package.file_tools import find_all_files
 
+logger = logging.getLogger("package.main")
 
 def get_repo_hash(path=BASE_DIR):
     try:
@@ -73,14 +75,15 @@ def save_metadata():
 
     git_hash, is_dirty = get_repo_hash()
 
-    if is_dirty:
-        print("Warning: Git repository is dirty. Changes may not be tracked.")
-        metastring_file = FIGURE_PATH / f"metadata_{git_hash[:7]}-dirty.log"
-    else:
-        metastring_file = FIGURE_PATH / f"metadata_{git_hash[:7]}.log"
 
-    FIGURE_PATH.mkdir(parents=True, exist_ok=True)
-    with open(metastring_file, 'w', encoding='utf-8') as f:
+    if is_dirty:
+        logger.warning("Git repository is dirty. Changes may not be tracked.")
+        metastring_file = PROCESSED_DATA_PATH / f"metadata_{git_hash[:7]}-dirty.log"
+    else:
+        metastring_file = PROCESSED_DATA_PATH / f"metadata_{git_hash[:7]}.log"
+
+    PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
+    with open(metastring_file, "w", encoding="utf-8") as f:
         f.write(metastring)
     return metastring
 

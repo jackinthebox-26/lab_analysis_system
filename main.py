@@ -4,10 +4,14 @@ from package.data_loader import LabDataLoader
 from package.graph_default import create_all_graphs
 from package.file_tools import clean_directories
 from package.metadata import save_metadata
+from package.logger import setup_logging
 
-from package.config import BASE_DIR, RAW_DIR
+from package.config import BASE_DIR, RAW_DIR, FIGURE_PATH, PROCESSED_DATA_PATH
 import importlib.util
 import shutil
+import logging
+
+logger = logging.getLogger("package.main")
 
 def run_daily_custom_plots():
     # Turns '.../2026/11/03' into '2026_11_03.py'
@@ -43,11 +47,15 @@ def run_daily_custom_plots():
         module.main()
 
 def main():
+    setup_logging(log_dir=None)
     clean_directories()
+    setup_logging(log_dir=PROCESSED_DATA_PATH)
+    logger.info("Starting lab analysis pipeline for PROCESSED_DATA=%s", PROCESSED_DATA_PATH)
     LabDataLoader().initiate_data_saving()
     create_all_graphs()
     run_daily_custom_plots()
     save_metadata()
+    logger.info("Pipeline run completed successfully.")
 
 if __name__ == '__main__':
     main()
