@@ -12,34 +12,29 @@ def find_all_files(data_dir): # Called in LabDataLoader.make_raw_data_dict()
         return all_files
 
 def get_repo_hash(path=BASE_DIR):
-    try:
-        repo = git.Repo(path, search_parent_directories=True)
-        sha = repo.head.commit.hexsha
-        is_dirty = repo.is_dirty()
-        return sha, is_dirty
-    except git.InvalidGitRepositoryError:
-        return None, None
+    repo = git.Repo(path, search_parent_directories=True)
+    sha = repo.head.commit.hexsha
+    is_dirty = repo.is_dirty()
+    return sha, is_dirty
+    
 
 def get_repo_version(path=BASE_DIR):
-    try:
-        repo = git.Repo(path, search_parent_directories=True)
-        sha = repo.head.commit.hexsha
-        is_dirty = repo.is_dirty()
-        branch = repo.active_branch.name if not repo.head.is_detached else "detached"
-        remote = repo.remote(name='origin') if 'origin' in [r.name for r in repo.remotes] else repo.remotes[0]
-        url = list(remote.urls)[0]
-        repo_name = Path(url).stem
+    repo = git.Repo(path, search_parent_directories=True)
+    sha = repo.head.commit.hexsha
+    is_dirty = repo.is_dirty()
+    branch = repo.active_branch.name if not repo.head.is_detached else "detached"
+    remote = repo.remote(name='origin') if 'origin' in [r.name for r in repo.remotes] else repo.remotes[0]
+    url = list(remote.urls)[0]
+    repo_name = Path(url).stem
 
-        meta_dict = {'Repo_name': repo_name,
-                     'commit_sha': sha[:7],
-                     'full_sha': sha,
-                     'branch': branch,
-                     'is_dirty': is_dirty,
-                     'version_string' :f"{sha[:7]}{'-dirty' if repo.is_dirty() else ''}"}
-        
-        return meta_dict
-    except git.InvalidGitRepositoryError:
-        return {"Repo_name": "not a git repo"}
+    meta_dict = {'Repo_name': repo_name,
+                    'commit_sha': sha[:7],
+                    'full_sha': sha,
+                    'branch': branch,
+                    'is_dirty': is_dirty,
+                    'version_string' :f"{sha[:7]}{'-dirty' if repo.is_dirty() else ''}"}
+    
+    return meta_dict
 
 def dict_to_string(d: dict, indent: int = 0) -> str:
     """Formats a dictionary into clean key-value pairs line-by-line."""
