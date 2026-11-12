@@ -4,8 +4,7 @@ How to install and start to work with this package
     a. ctrl + shift + P
     b. Select Python:Select Interpretor
     c. Select venv in your workspace
-3. Install requirements: pip install -r requirements.txt
-4. Install this package: pip install -e .
+3. Install this package: pip install -e .
 
 
 To clean up everything 
