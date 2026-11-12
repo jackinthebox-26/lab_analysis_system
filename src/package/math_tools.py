@@ -40,18 +40,25 @@ def fit_gaussian_profile(x_data, y_data):
     else:
         stddev_guess = (np.max(x) - np.min(x)) / 6.0
 
+
     p0 = [amp_guess, mean_guess, stddev_guess, offset_guess]
 
-    # Fit the Gaussian curve
-    popt, _ = curve_fit(gaussian, x, y, p0=p0)
-    amplitude, center, stddev, offset = popt
-
-    # Standard deviation can converge as negative depending on initial signs
-    stddev = abs(stddev)
     
-    # Calculate FWHM from standard deviation
-    fwhm = stddev / (1 / (2 * np.sqrt(2 * np.log(2))))  # 2 * sqrt(2 * ln(2)) * sigma
-
+    x_min, x_max = np.min(x), np.max(x)
+    lower_bounds = [0.0, x_min, 0.0, -np.inf]
+    upper_bounds = [np.inf, x_max, x_max - x_min, np.inf]
+    try:
+        popt, _ = curve_fit(
+            gaussian, x, y, p0=p0, bounds=(lower_bounds, upper_bounds), maxfev=5000
+        )
+        amplitude, center, stddev, offset = popt
+        stddev = abs(stddev)
+        fwhm = stddev * (2 * np.sqrt(2 * np.log(2)))
+        fit_y = gaussian(x, *popt)
+    except (RuntimeError, ValueError) as e:
+        print(f"Warning: Gaussian fit failed ({e}). Storing NaN values.")
+        amplitude = center = stddev = fwhm = offset = np.nan
+        fit_y = np.full_like(x, np.nan)
     return {
         "center": center,
         "fwhm": fwhm,
