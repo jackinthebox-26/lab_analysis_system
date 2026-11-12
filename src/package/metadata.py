@@ -62,9 +62,9 @@ def save_metadata():
     metastring = ""
     metastring = add_to_metadata(metastring, get_now(), "Code run datetime")
     metastring = add_to_metadata(metastring, dict_to_string(get_repo_version()), "Git repo data")
-    metastring = add_to_metadata(metastring, list_to_string(find_all_files(RAW_DIR)), 'Raw data files')
-    metastring = add_to_metadata(metastring, list_to_string(find_all_files(PROCESSED_DATA_PATH)), 'Processed data files')
-    metastring = add_to_metadata(metastring, list_to_string(find_all_files(FIGURE_PATH)), 'Plot files')
+    metastring = add_to_metadata(metastring, list_to_string(find_all_files(RAW_DIR, nested=False, resolve=True)), 'Raw data files')
+    metastring = add_to_metadata(metastring, list_to_string(find_all_files(PROCESSED_DATA_PATH, nested=True, resolve=True)), 'Processed data files')
+    metastring = add_to_metadata(metastring, list_to_string(find_all_files(FIGURE_PATH, nested=True, resolve=True)), 'Plot files')
 
 
     git_hash, is_dirty = get_repo_hash()
