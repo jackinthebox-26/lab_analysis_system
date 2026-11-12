@@ -1,5 +1,6 @@
 import numpy as np
 import logging
+import logging
 
 from scipy.optimize import curve_fit
 
