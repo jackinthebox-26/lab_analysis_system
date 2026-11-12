@@ -1,3 +1,6 @@
+# src/package/file_tools.py
+from pathlib import Path
+
 import shutil
 
 from package.config import PROCESSED_DATA_PATH, FIGURE_PATH
@@ -31,6 +34,17 @@ def clean_directories():
         deleted_count += clean_folder(folder)
     print(f"Deleted {deleted_count} files from {len(folder_list)} folders")
     
+
+
+def find_all_files(data_dir: Path | str, nested: bool = False, resolve: bool = False) -> list[Path]:
+    data_dir = Path(data_dir)
+    if not data_dir.exists():
+        return []
+    iterator = data_dir.rglob("*") if nested else data_dir.iterdir()
+    all_files = [f.resolve() if resolve else f for f in iterator if f.is_file()]
+    print(f"Found {len(all_files)} files in {data_dir}")
+    return all_files
+
 
 def main():
     clean_directories()

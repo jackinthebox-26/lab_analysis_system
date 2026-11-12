@@ -7,6 +7,7 @@ from package.parsers import data_parser
 from package.data_analysis import data_analysis
 
 from package.config import RAW_DIR, PROCESSED_DATA_PATH, DATA_LOAD_CONFIG
+from package.file_tools import find_all_files
 
 DATA_TYPE_TO_CONFIG_KEY = {
     "OSA": "OSA_data",
@@ -19,16 +20,6 @@ DATA_TYPE_TO_CONFIG_KEY = {
 class LabDataLoader:
     def __init__(self, data_dir: str = str(RAW_DIR)):
         self.data_dir = Path(data_dir)
-
-    def find_all_files(self, nested=False): # Called in LabDataLoader.make_raw_data_dict()
-        # Implement the logic to find all files in the specified directory
-        if nested:
-            all_files = [f for f in self.data_dir.rglob('*') if f.is_file()]
-        else:
-            all_files = [f for f in self.data_dir.iterdir() if f.is_file()]
-        print(f"Found {len(all_files)} files in {self.data_dir}")
-        return all_files
-
     
     def get_data_type(self, file_path: Path):  # Called in LabDataLoader.make_raw_data_dict()
         # Implement logic to determine the data type based on the file path or first 5 lines content
@@ -73,7 +64,7 @@ class LabDataLoader:
         # Implement the logic to create a dictionary of raw data files categorized by their data type
         raw_data_dict = {}
         print("Pull Data")
-        all_files = self.find_all_files() # Get list of files 
+        all_files = find_all_files(self.data_dir, nested=False) # Get list of files 
         for file in all_files:  # file is a Path object
             data_type = self.get_data_type(file)  #Peak in all files and determine where the data came from
             if data_type not in raw_data_dict:  # If this is the first one, create the data type
