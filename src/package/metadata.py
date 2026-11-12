@@ -2,6 +2,9 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
+
+from package.logger import setup_logging
+
 import git
 
 from package.config import BASE_DIR, RAW_DIR, PROCESSED_DATA_PATH, FIGURE_PATH
@@ -88,4 +91,5 @@ def save_metadata():
     return metastring
 
 if __name__ == "__main__":
+    setup_logging()
     logger.info(save_metadata())

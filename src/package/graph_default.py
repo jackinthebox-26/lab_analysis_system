@@ -1,6 +1,9 @@
 from pathlib import Path
 import logging
 
+
+from package.logger import setup_logging
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -189,4 +192,5 @@ def create_all_graphs():
     
 
 if __name__ == "__main__":
+    setup_logging()
     create_all_graphs()

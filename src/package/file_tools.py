@@ -2,6 +2,9 @@
 from pathlib import Path
 import logging
 
+
+from package.logger import setup_logging
+
 import shutil
 
 from package.config import PROCESSED_DATA_PATH, FIGURE_PATH, RAW_DIR
@@ -51,6 +54,7 @@ def find_all_files(data_dir: Path | str, nested: bool = False, resolve: bool = F
 
 
 def main():
+    setup_logging()
     clean_directories()
 if __name__ == "__main__":
     main()

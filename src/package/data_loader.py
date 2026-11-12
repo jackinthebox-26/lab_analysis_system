@@ -1,6 +1,8 @@
 from pathlib import Path
 import logging
 
+from package.logger import setup_logging
+
 import pandas as pd
 
 from package.config import RAW_DIR, PROCESSED_DATA_PATH
@@ -106,6 +108,7 @@ class LabDataLoader:
 
         
 def main():
+    setup_logging()
     LabDataLoader().initiate_data_saving()
 if __name__ == "__main__":
     main()
