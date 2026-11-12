@@ -15,58 +15,31 @@ class data_analysis:
         self.data_type = data_type
         match data_type:
             case 'OSA':
-                self.data = self.OSA_analysis()
+                self.data = self.analyze_spectrum()
             case 'Aurora 4000':
-                self.data = self.Aurora_analysis()
+                self.data = self.analyze_spectrum()
             case 'Ocean Optics':
-                self.data = self.OCEAN_OPTICS_analysis()
+                self.data = self.analyze_spectrum()
 
 
-    def OSA_analysis(self):
-        fit_dict = fit_gaussian_profile(self.data['Wavelength (nm)'],
-                                        self.data['Power (mW)'])
+    def analyze_spectrum(self):
+        fit_dict = fit_gaussian_profile(
+            self.data['Wavelength (nm)'],
+            self.data['Power (mW)']
+        )
 
-        
         self.data['Center Wavelength (nm)'] = fit_dict['center']
         self.data['FWHM Wavelength (nm)'] = fit_dict['fwhm']
         self.data['amplitude'] = fit_dict['amplitude']
         self.data['offset'] = fit_dict['offset']
-        offset =self.data['offset'].iloc[0]
-        self.data['Normalized Power (mW)'] = [np.hstack(self.data['Power (mW)']).astype(float) - offset]
-        self.data['Normalized Power (mW)'] = self.data['Normalized Power (mW)'].apply(
-                lambda p: np.array(p, dtype=float) / np.max(p)
-                )
+
+        power = np.hstack(self.data['Power (mW)']).astype(float)
+        offset = fit_dict['offset'] if not np.isnan(fit_dict['offset']) else np.min(power)
+        shifted = power - offset
+        max_val = np.max(shifted)
+        norm_power = shifted / max_val if max_val > 0 else shifted
+
+        self.data['Normalized Power (mW)'] = [norm_power]
         return self.data
-
-
-    def Aurora_analysis(self):
-        fit_dict = fit_gaussian_profile(self.data['Wavelength (nm)'],
-                                        self.data['Power (mW)'])
-        
-                
-        self.data['Center Wavelength (nm)'] = fit_dict['center']
-        self.data['FWHM Wavelength (nm)'] = fit_dict['fwhm']
-        self.data['amplitude'] = fit_dict['amplitude']
-        self.data['offset'] = fit_dict['offset']
-        offset =self.data['offset'].iloc[0]
-        self.data['Normalized Power (mW)'] = [np.hstack(self.data['Power (mW)']).astype(float) - offset]
-        self.data['Normalized Power (mW)'] = self.data['Normalized Power (mW)'].apply(
-                        lambda p: np.array(p, dtype=float) / np.max(p))
-        return self.data
-
-    def OCEAN_OPTICS_analysis(self):
-            fit_dict = fit_gaussian_profile(self.data['Wavelength (nm)'],
-                                            self.data['Power (mW)'])
-            
-                    
-            self.data['Center Wavelength (nm)'] = fit_dict['center']
-            self.data['FWHM Wavelength (nm)'] = fit_dict['fwhm']
-            self.data['amplitude'] = fit_dict['amplitude']
-            self.data['offset'] = fit_dict['offset']
-            offset =self.data['offset'].iloc[0]
-            self.data['Normalized Power (mW)'] = [np.hstack(self.data['Power (mW)']).astype(float) - offset]
-            self.data['Normalized Power (mW)'] = self.data['Normalized Power (mW)'].apply(
-                    lambda p: np.array(p, dtype=float) / np.max(p))
-            return self.data
 
 
