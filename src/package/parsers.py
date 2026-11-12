@@ -6,6 +6,31 @@ import numpy as np
 import re
 from datetime import datetime
 
+def parse_OSC_settings(filename: str, has_timestamp: bool = True) -> dict:
+    stem = Path(filename).stem
+    tokens = stem.split('_')
+    settings = {'exp_index': int(tokens.pop(0))}
+
+    if has_timestamp:
+        time = tokens.pop()
+        date = tokens.pop()
+        settings['date'] = datetime.strptime(f"{date}{time}", "%Y%m%d%H%M%S").isoformat()
+
+    removed_tokens = np.zeros(len(tokens), dtype=int)
+    for i, token in enumerate(tokens):
+        if token in ('HWP1', 'HWP2', 'QWP') and i + 1 < len(tokens):
+            settings[token] = float(tokens[i + 1].replace('dot', '.'))
+            removed_tokens[i] = 1
+            removed_tokens[i + 1] = 1
+        elif token.endswith('mA'):
+            settings['Pump current'] = token.removesuffix('mA').replace('dot', '.')
+            removed_tokens[i] = 1
+
+    notes_list = [token for token, mask in zip(tokens, removed_tokens) if mask == 0]
+    settings['Notes'] = " ".join(notes_list)
+    return settings
+
+
 class data_parser:
     def __init__(self, file_path, data_type):
         self.file_path = file_path
@@ -33,36 +58,7 @@ class data_parser:
         # Parse filename
         tokens = self.file_path.name.split('_')
         meta_data = self.data
-        meta_data['exp_index'] = int(tokens.pop(0))
-        time = tokens.pop().split('.')[0]
-        date = tokens.pop()
-        
-        meta_data['date'] = datetime.strptime(f"{date}{time}" , "%Y%m%d%H%M%S").isoformat()
-        removed_tokens = np.zeros(len(tokens), dtype=int)
-        
-        i = 0
-        for i in range(len(tokens)):
-            token = tokens[i]
-            match=True
-            if token == 'HWP2' and i + 1 < len(tokens):
-                meta_data['HWP2'] = float(tokens[i+1].replace('dot', '.'))
-            elif token == 'HWP1' and i + 1 < len(tokens):
-                meta_data['HWP1'] = float(tokens[i+1].replace('dot', '.'))
-            elif token == 'QWP' and i + 1 < len(tokens):
-                meta_data['QWP'] = float(tokens[i+1].replace('dot', '.'))
-            elif token.endswith('mA'):
-                meta_data['Pump current'] = token.removesuffix('mA').replace('dot', '.') 
-                removed_tokens[i] = 1
-                match = False
-            else:
-                match = False
-
-            if match:
-                removed_tokens[i] = 1
-                removed_tokens[i+1] = 1
-        notes_list = [token for token, mask in zip(tokens, removed_tokens) if mask == 0]
-        meta_data['Notes'] = " ".join(notes_list)
-
+        meta_data |= parse_OSC_settings(self.file_path.name)
 
         header_1 = 'Wavelength (nm)'
         header_2 = 'Power (mW)'
