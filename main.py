@@ -39,7 +39,7 @@ def run_daily_custom_plots():
     logger.info(f"Running custom plots from {script_path.name}")
     spec = importlib.util.spec_from_file_location(f"exp_{date_slug}", script_path)
     if spec is None or spec.loader is None:
-        logger.info(f"Failed to load the custom script at {script_path}.")
+        logger.error(f"Failed to load the custom script at {script_path}.")
         return
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
