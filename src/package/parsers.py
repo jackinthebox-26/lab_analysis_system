@@ -27,9 +27,7 @@ def parse_OSC_settings(filename: str, has_timestamp: bool = True) -> dict:
         time = tokens.pop()
         date = tokens.pop()
         settings['date'] = datetime.strptime(f"{date}{time}", "%Y%m%d%H%M%S").isoformat()
-        year = settings['date'][:4]
-    else:
-        year = _infer_year(str(filename))
+        
 
     removed_tokens = np.zeros(len(tokens), dtype=int)
     for i, token in enumerate(tokens):
