@@ -60,3 +60,4 @@ TODO
 - Add logging
 - Add unittests
 - Make it easier to add instroments
+- Make it easier to add instroments
