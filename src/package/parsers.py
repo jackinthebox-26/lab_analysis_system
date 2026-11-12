@@ -6,6 +6,8 @@ import numpy as np
 import re
 from datetime import datetime
 
+REQUIRED_OSC_KEYS = ("HWP1", "HWP2", "QWP", "Pump current")
+
 def parse_OSC_settings(filename: str, has_timestamp: bool = True) -> dict:
     stem = Path(filename).stem
     tokens = stem.split('_')
@@ -28,6 +30,13 @@ def parse_OSC_settings(filename: str, has_timestamp: bool = True) -> dict:
 
     notes_list = [token for token, mask in zip(tokens, removed_tokens) if mask == 0]
     settings['Notes'] = " ".join(notes_list)
+
+    missing = [k for k in REQUIRED_OSC_KEYS if k not in settings]
+    if missing:
+        raise ValueError(
+            f"Filename '{filename}' is missing required experimental settings: {missing}"
+        )
+
     return settings
 
 
