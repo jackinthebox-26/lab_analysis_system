@@ -6,17 +6,30 @@ import numpy as np
 import re
 from datetime import datetime
 
+from package.config import RAW_DIR
+
 REQUIRED_OSC_KEYS = ("HWP1", "HWP2", "QWP", "Pump current")
+
+def _infer_year(file_path: Path) -> int:
+        # Try to extract a 4-digit year from RAW_DIR (e.g. '../2026/11/03')
+        for part in RAW_DIR.resolve().parts:
+            if part.isdigit() and len(part) == 4:
+                return int(part)
+        # Fallback to file modification year
+        return datetime.fromtimestamp(file_path.stat().st_mtime).year
 
 def parse_OSC_settings(filename: str, has_timestamp: bool = True) -> dict:
     stem = Path(filename).stem
     tokens = stem.split('_')
     settings = {'exp_index': int(tokens.pop(0))}
-
+    
     if has_timestamp:
         time = tokens.pop()
         date = tokens.pop()
         settings['date'] = datetime.strptime(f"{date}{time}", "%Y%m%d%H%M%S").isoformat()
+        year = settings['date'][:4]
+    else:
+        year = _infer_year(str(filename))
 
     removed_tokens = np.zeros(len(tokens), dtype=int)
     for i, token in enumerate(tokens):
@@ -166,7 +179,7 @@ class data_parser:
     def parse_FROG_pulse_stats(self):
         file_path = self.file_path
         meta_data = self.data
-
+        year = _infer_year(file_path)
         # Parse key-value lines
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             for line in f:
@@ -201,7 +214,7 @@ class data_parser:
             if not time_match:
                 raise ValueError(f"Filename {file_path.name} does not match expected timestamp pattern.")
             t = time_match.groupdict()
-            meta_data["timestamp"] = f"2026-{t['month']}-{t['day']} {t['h']}:{t['m']}:{t['s']}.{t['ms']}"
+            meta_data["timestamp"] = f"{year}-{t['month']}-{t['day']} {t['h']}:{t['m']}:{t['s']}.{t['ms']}"
             
 
             pulse_time_file = file_path.parent / f"Pulse_Time_Domain {time_match['month']}_{time_match['day']}_time_{time_match['h']}_{time_match['m']}_{time_match['s']}_{time_match['ms']}.txt"
