@@ -76,9 +76,7 @@ def plot_UV_spectra():
         return
 
     this_data = ocean_optics_data[ocean_optics_data['source_file'] == 'FHG_1016_tuning_nov3_2026_HR6009441__0__19-04-53-747.txt']
-    if this_data is not pd.DataFrame:
-        print("No Ocean Optics data found. Cannot plot UV spectra.")
-        return
+    
     fig, ax = plt.subplots(figsize=FIG_CONFIG['default_fig_settings']['figsize'], dpi=FIG_CONFIG['default_fig_settings']['dpi'])
     ax.plot(this_data['Wavelength (nm)'].values[0], this_data['Normalized Power (mW)'].values[0], color='purple', label=f'Data: $P$ = 340 mW')
 
@@ -102,9 +100,7 @@ def plot_IR_spectra():
         return
     this_data = osa_data[osa_data['exp_index'] == 20]
     this_amp_data = osa_data[osa_data['exp_index'] == 21]
-    if this_data is not pd.DataFrame or this_amp_data is not pd.DataFrame:
-            print("No OSA data found. Cannot plot IR spectra.")
-            return
+   
     fig, ax = plt.subplots(figsize=(15, 4), dpi=FIG_CONFIG['default_fig_settings']['dpi'])
     ax.plot(this_data['Wavelength (nm)'].values[0], this_data['Normalized Power (mW)'].values[0], color='orangered', label=f'OSA Data: $P$ = 20 mW')
     ax.plot(this_amp_data['Wavelength (nm)'].values[0], this_amp_data['Normalized Power (mW)'].values[0], color='red', label=f'AMP Data: $P$ = 7.1 W')
