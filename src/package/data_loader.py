@@ -52,12 +52,7 @@ class LabDataLoader:
             print(f"{file_path.name} not categorized")
             return "Other"
 
-    def load_data(self, file_path: Path, data_type: str): # Called in LabDataLoader.initiate_data_saving
-            # Implement the logic to load data based on the data type and output a dataframe with all associated raw data
-            data = data_parser(file_path, data_type).data
-           
-            
-            return pd.DataFrame([data])
+ 
 
     
     def make_raw_data_dict(self): # Called in LabDataLoader.initiate_data_saving()
