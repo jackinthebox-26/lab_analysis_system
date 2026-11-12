@@ -10,7 +10,7 @@ from package.config import BASE_DIR, RAW_DIR, PROCESSED_DATA_PATH, FIGURE_PATH, 
 from package.parsers import data_parser
 from package.data_analysis import data_analysis
 class LabDataLoader:
-    def __init__(self, data_dir: str = DATA_LOAD_CONFIG['raw_data']['raw_data_folder']):
+    def __init__(self, data_dir: str = str(RAW_DIR.absolute())):
         self.data_dir = Path(data_dir)
 
     def find_all_files(self, nested=False): # Called in LabDataLoader.make_raw_data_dict()
