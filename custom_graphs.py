@@ -71,8 +71,14 @@ def plot_UV_spectra():
     data_dict = load_all_data()
     ocean_optics_data = data_dict.get('ocean_optics')
 
-    this_data = ocean_optics_data[ocean_optics_data['source_file'] == 'FHG_1016_tuning_nov3_2026_HR6009441__0__19-04-53-747.txt']
+    if ocean_optics_data is None:
+        print("No Ocean Optics data found. Cannot plot UV spectra.")
+        return
 
+    this_data = ocean_optics_data[ocean_optics_data['source_file'] == 'FHG_1016_tuning_nov3_2026_HR6009441__0__19-04-53-747.txt']
+    if this_data is not pd.DataFrame:
+        print("No Ocean Optics data found. Cannot plot UV spectra.")
+        return
     fig, ax = plt.subplots(figsize=FIG_CONFIG['default_fig_settings']['figsize'], dpi=FIG_CONFIG['default_fig_settings']['dpi'])
     ax.plot(this_data['Wavelength (nm)'].values[0], this_data['Normalized Power (mW)'].values[0], color='purple', label=f'Data: $P$ = 340 mW')
 
@@ -82,18 +88,23 @@ def plot_UV_spectra():
     ax.set_xlabel('Wavelength (nm)')
     ax.set_ylabel('Normalized Power (mW)')
     ax.set_title('UV Spectrum')
-    ax.set_xlim([254, 258])
+    ax.set_xlim(254, 258)
     ax.legend()
     ax.grid()
     plt.savefig(FIGURE_PATH / '256_brag.png', dpi=FIG_CONFIG['default_fig_settings']['dpi'])
+    plt.close(fig)
 
 def plot_IR_spectra():
     data_dict = load_all_data()
     osa_data = data_dict.get('osa')
-
+    if osa_data is None:
+        print("No OSA data found. Cannot plot IR spectra.")
+        return
     this_data = osa_data[osa_data['exp_index'] == 20]
     this_amp_data = osa_data[osa_data['exp_index'] == 21]
-
+    if this_data is not pd.DataFrame or this_amp_data is not pd.DataFrame:
+            print("No OSA data found. Cannot plot IR spectra.")
+            return
     fig, ax = plt.subplots(figsize=(15, 4), dpi=FIG_CONFIG['default_fig_settings']['dpi'])
     ax.plot(this_data['Wavelength (nm)'].values[0], this_data['Normalized Power (mW)'].values[0], color='orangered', label=f'OSA Data: $P$ = 20 mW')
     ax.plot(this_amp_data['Wavelength (nm)'].values[0], this_amp_data['Normalized Power (mW)'].values[0], color='red', label=f'AMP Data: $P$ = 7.1 W')
@@ -108,11 +119,12 @@ def plot_IR_spectra():
     ax.set_xlabel('Wavelength (nm)')
     ax.set_ylabel('Normalized Power (mW)')
     ax.set_title('OSC and Amplifier Spectra')
-    ax.set_xlim([1000, 1040])
+    ax.set_xlim(1000, 1040)
     plt.legend(loc="center right", bbox_to_anchor=(-0.1, 0.5))
     ax.grid()
     plt.tight_layout()
     plt.savefig(FIGURE_PATH / '1016_brag.png', dpi=FIG_CONFIG['default_fig_settings']['dpi'])
+    plt.close(fig)
 
 def main():
     
