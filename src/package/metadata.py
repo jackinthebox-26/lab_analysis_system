@@ -76,6 +76,7 @@ def save_metadata():
     else:
         metastring_file = FIGURE_PATH / f"metadata_{git_hash[:7]}.log"
 
+    FIGURE_PATH.mkdir(parents=True, exist_ok=True)
     with open(metastring_file, 'w', encoding='utf-8') as f:
         f.write(metastring)
     return metastring
