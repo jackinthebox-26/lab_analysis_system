@@ -74,7 +74,7 @@ class data_parser:
             case 'FROG pulse stats':
                 self.data = self.parse_FROG_pulse_stats()
             case _:
-                print(f'Data not extracted from {file_path.name}')
+                logger.info(f'Data not extracted from {file_path.name}')
 
 
 

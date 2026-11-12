@@ -53,7 +53,7 @@ class LabDataLoader:
         elif "FROGtrace" in file_path.name:
             return "FROG trace"
         else:
-            print(f"{file_path.name} not categorized")
+            logger.info(f"{file_path.name} not categorized")
             return "Other"
 
  
@@ -62,7 +62,7 @@ class LabDataLoader:
     def make_raw_data_dict(self): # Called in LabDataLoader.initiate_data_saving()
         # Implement the logic to create a dictionary of raw data files categorized by their data type
         raw_data_dict = {}
-        print("Pull Data")
+        logger.info("Pull Data")
         all_files = find_all_files(self.data_dir, nested=False) # Get list of files 
         for file in all_files:  # file is a Path object
             data_type = self.get_data_type(file)  #Peak in all files and determine where the data came from
@@ -72,25 +72,25 @@ class LabDataLoader:
         return raw_data_dict # A dictionary where the keys are data types and values is a list of files of this type
 
     def initiate_data_saving(self): # Called in main()
-        print("-------------------Initializing Data saving-------------------")
-        print('Initializing data catagorization')
+        logger.info("-------------------Initializing Data saving-------------------")
+        logger.info('Initializing data catagorization')
         data_dict = self.make_raw_data_dict()  # Contains categorized data
-        print(f"Found the following data types: {data_dict.keys()}")
-        print('Data catagorized')
+        logger.info(f"Found the following data types: {data_dict.keys()}")
+        logger.info('Data catagorized')
         
         
-        print('Initializing raw data processing and json saving.')
+        logger.info('Initializing raw data processing and json saving.')
         for key, file_list in data_dict.items():
-            print(f'Key: {key}')
+            logger.info(f'Key: {key}')
             records = []
             for file in file_list:
-                print(f"{' ' * 5}File: {file}")
+                logger.info(f"{' ' * 5}File: {file}")
                 try:
                     raw_dict = data_parser(file, key).data
                     analyzed_dict = data_analysis(raw_dict, key).data
                     records.append(analyzed_dict)
                 except Exception as e:
-                    print(f"WARNING: Skipping {file.name} due to parse/analysis error: {e}")
+                    logger.info(f"WARNING: Skipping {file.name} due to parse/analysis error: {e}")
 
             if records and key in DATA_TYPE_TO_CONFIG_KEY:
                 temp_df = pd.DataFrame(records)
@@ -98,7 +98,7 @@ class LabDataLoader:
                 config_key = DATA_TYPE_TO_CONFIG_KEY[key]
                 file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[config_key]["data_file"]
                 temp_df.to_json(file_name)
-                print(f"Saved {key} data to {file_name}")
+                logger.info(f"Saved {key} data to {file_name}")
 
 
                 

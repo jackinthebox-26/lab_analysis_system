@@ -29,8 +29,8 @@ def load_all_data() -> dict[str, pd.DataFrame]:
 
 def inspect_data_files(data_dict: dict[str, pd.DataFrame]) -> None:
     for name, df in data_dict.items():
-        print(f"-- {name.upper()} data ({len(df)} rows) --")
-        print(df.columns.tolist())
+        logger.info(f"-- {name.upper()} data ({len(df)} rows) --")
+        logger.info(df.columns.tolist())
 
 def plot_spectrum_with_fit(ax, row: pd.Series, color: str, data_label: str) -> None:
     wl = row["Wavelength (nm)"]

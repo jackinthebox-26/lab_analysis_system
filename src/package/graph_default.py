@@ -21,8 +21,8 @@ BBOX_PROPS = dict(
 def load_data(config_key):
 
     file_path = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[config_key]['data_file']
-    print(file_path)
-    print(f"Loading data from {file_path}")
+    logger.info(file_path)
+    logger.info(f"Loading data from {file_path}")
     if not file_path.is_file():
         return None
     data = pd.read_json(file_path)
@@ -52,13 +52,13 @@ def save_and_close_plot(config_key, source_file):
     plt.tight_layout()
     output_filename = plot_folder / f"plot_{Path(clean_source).stem}.png"
     plt.savefig(output_filename)
-    print(f"Saved graph to {output_filename}")
+    logger.info(f"Saved graph to {output_filename}")
     plt.close()
 
 def plot_spectra(config_key):
     data = load_data(config_key)
     if data is None:
-        print(f"No {config_key.replace('_', ' ')} ")
+        logger.info(f"No {config_key.replace('_', ' ')} ")
         return
     for index, row in data.iterrows():
         template = FIG_CONFIG[config_key]['file_info']
@@ -98,7 +98,7 @@ def plot_spectra(config_key):
         window = FIG_CONFIG['default_fig_settings']['tight_plot_window']
 
         if np.isnan(center_wavelength) or np.isnan(fwhm):
-            print(f"Warning: Center wavelength or FWHM is NaN for {row['source_file']}. Skipping xlim setting.")
+            logger.info(f"Warning: Center wavelength or FWHM is NaN for {row['source_file']}. Skipping xlim setting.")
         else:
             ax[1].set_xlim([center_wavelength - fwhm * window,
                             center_wavelength + fwhm * window]) 
@@ -116,7 +116,7 @@ def plot_RF_data():
     config_key = 'RF_data'
     data = load_data(config_key)
     if data is None:
-            print("No RF data")
+            logger.info("No RF data")
             return
     for index, row in data.iterrows():
         template = FIG_CONFIG['RF_data']['file_info']
@@ -147,7 +147,7 @@ def plot_FROG_data():
     config_key = 'FROG_data'
     data = load_data(config_key)
     if data is None:
-        print("No FROG data")
+        logger.info("No FROG data")
         return
     for index, row in data.iterrows():
         template = FIG_CONFIG['FROG_data']['file_info']
@@ -173,18 +173,18 @@ def plot_FROG_data():
         save_and_close_plot(config_key, row['source_file'])
 
 def create_all_graphs():
-    print("-------------------Initializing plot creation-------------------")
-    print("Creating OSA graphs")
+    logger.info("-------------------Initializing plot creation-------------------")
+    logger.info("Creating OSA graphs")
     plot_OSA_data()
-    print("Creating RF analyser graphs")
+    logger.info("Creating RF analyser graphs")
     plot_RF_data()
-    print("Creating Aurora 4000 graphs")
+    logger.info("Creating Aurora 4000 graphs")
     plot_aurora_data()
-    print("Creating Ocean Optics graphs")
+    logger.info("Creating Ocean Optics graphs")
     plot_ocean_optics_data()
-    print("Creating FROG graphs")
+    logger.info("Creating FROG graphs")
     plot_FROG_data()
-    print("Completed graph creation")
+    logger.info("Completed graph creation")
 
     
 

@@ -27,19 +27,19 @@ def run_daily_custom_plots():
     if not script_path.is_file():
         if template_path.is_file():
             shutil.copyfile(template_path, script_path)
-            print(f"Created new custom plot script from template: {script_path.name}")
+            logger.info(f"Created new custom plot script from template: {script_path.name}")
         else:
-            print(f"Warning: Neither {script_path.name} nor template.py found. Skipping custom plots.")
+            logger.info(f"Warning: Neither {script_path.name} nor template.py found. Skipping custom plots.")
             return
 
     if not script_path.is_file():
-        print(f"No custom script found at {script_path}, skipping custom plots.")
+        logger.info(f"No custom script found at {script_path}, skipping custom plots.")
         return
 
-    print(f"Running custom plots from {script_path.name}")
+    logger.info(f"Running custom plots from {script_path.name}")
     spec = importlib.util.spec_from_file_location(f"exp_{date_slug}", script_path)
     if spec is None or spec.loader is None:
-        print(f"Failed to load the custom script at {script_path}.")
+        logger.info(f"Failed to load the custom script at {script_path}.")
         return
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

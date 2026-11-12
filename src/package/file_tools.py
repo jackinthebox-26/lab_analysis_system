@@ -15,28 +15,28 @@ def clean_folder(folder_path):
         raise RuntimeError("Safety abort: Refusing to clean RAW_DIR!")
     deleted_count = 0
     if not folder_path.exists():
-        print(f"Directory does not exist yet: {folder_path}")
+        logger.info(f"Directory does not exist yet: {folder_path}")
         return 0
     for item in folder_path.iterdir():
         if item.suffix not in PROTECTED_EXTENSIONS:
             if item.is_dir():
                 shutil.rmtree(item)
-                print(f"Deleted {item.name}")
+                logger.info(f"Deleted {item.name}")
                 deleted_count += 1
             if item.is_file():
                 item.unlink()
-                print(f"Deleted {item.name}")
+                logger.info(f"Deleted {item.name}")
                 deleted_count += 1
     return deleted_count
 
 
 
 def clean_directories():
-    print("-------------------Initializing tree cleaning-------------------")
+    logger.info("-------------------Initializing tree cleaning-------------------")
     deleted_count = 0
     for folder in folder_list:
         deleted_count += clean_folder(folder)
-    print(f"Deleted {deleted_count} files from {len(folder_list)} folders")
+    logger.info(f"Deleted {deleted_count} files from {len(folder_list)} folders")
     
 
 
@@ -46,7 +46,7 @@ def find_all_files(data_dir: Path | str, nested: bool = False, resolve: bool = F
         return []
     iterator = data_dir.rglob("*") if nested else data_dir.iterdir()
     all_files = [f.resolve() if resolve else f for f in iterator if f.is_file()]
-    print(f"Found {len(all_files)} files in {data_dir}")
+    logger.info(f"Found {len(all_files)} files in {data_dir}")
     return all_files
 
 

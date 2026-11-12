@@ -88,4 +88,4 @@ def save_metadata():
     return metastring
 
 if __name__ == "__main__":
-    print(save_metadata())
+    logger.info(save_metadata())
