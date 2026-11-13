@@ -13,22 +13,22 @@ store_plots_with_data = true
 [plot_config]
 tight_plot_window = 2
 
-[OSA_data]
+[osa_ando]
 data_file = 'OSA_data.json'
 plot_folder = 'OSA_plots'
 
-[RF_data]
+[rfa_agilent]
 data_file = 'RF_analyser_data.json'
 plot_folder = 'RF_analyser_plots'
 
-[aurora_data]
+[spect_aurora_4000]
 data_file = 'Aurora_4000_data.json'
 plot_folder = 'aurora_plots'
 
-[ocean_optics_data]
+[spect_ocean_optics_uv]
 data_file = 'Ocean_Optics_data.json'
 plot_folder = 'ocean_optics_plots'
 
-[FROG_data]
+[frog_mesa]
 data_file = 'FROG_pulse_stats_data.json'
 plot_folder = 'FROG_plots'
