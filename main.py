@@ -84,7 +84,7 @@ def main():
     raw_dir, processed_dir, figure_dir = resolve_paths(target_folder)
     setup_logging(log_dir=None)
     clean_directories([processed_dir, figure_dir])
-    setup_logging(log_dir=PROCESSED_DATA_PATH)
+    setup_logging(log_dir=processed_dir)
     logger.info("Starting lab analysis pipeline for RAW_DIR=%s", raw_dir)
     LabDataLoader(data_dir=raw_dir, processed_dir=processed_dir).initiate_data_saving()
     create_all_graphs(processed_dir=processed_dir, figure_dir=figure_dir)
