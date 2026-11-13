@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from lab_analysis_system.instrument_base import Instrument
-from lab_analysis_system.instrument_tools import _parse_delimited_spectrum, analyze_spectrum
+from lab_analysis_system.instrument_tools import _parse_delimited_spectrum, analyze_spectrum, plot_spect_row_w_fit
 
 logger = logging.getLogger(__name__)
 
@@ -30,5 +30,5 @@ class SpectAurora4000(Instrument):
         return processed_data
 
     def plot(self, row: pd.Series) -> None:
-            """Render and save the default diagnostic plot for one processed data row."""
-            pass
+        """Render and save the default diagnostic plot for one processed data row."""
+        plot_spect_row_w_fit(row, self.name)

@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from lab_analysis_system.instrument_base import Instrument
-from lab_analysis_system.instrument_tools import parse_OSC_settings, parse_spect_data, analyze_spectrum, plot_spect_row
+from lab_analysis_system.instrument_tools import parse_OSC_settings, parse_spect_data, analyze_spectrum, plot_spect_row_w_fit
 
 logger = logging.getLogger(__name__)
 
@@ -32,4 +32,4 @@ class OSAAndo(Instrument):
 
     def plot(self, row: pd.Series) -> None:
             """Render and save the default diagnostic plot for one processed data row."""
-            plot_spect_row(row, self.name)
+            plot_spect_row_w_fit(row, self.name)

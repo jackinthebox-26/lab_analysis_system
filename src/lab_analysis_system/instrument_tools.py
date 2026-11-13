@@ -140,8 +140,24 @@ def save_and_close_plot(config_key, source_file):
     logger.info(f"Saved graph to {output_filename}")
     plt.close()
 
-
 def plot_spect_row(row: pd.Series, config_key: str):
+    template = FIG_CONFIG[config_key]['file_info']
+    file_info = template.format(**row)
+    fig, ax = plt.subplots(1, 1)
+    ax.plot(row["Wavelength (nm)"], 
+                row["Normalized Linear Power (a.u.)"], 
+                label='Data',
+                color=FIG_CONFIG['default_fig_settings']['color'])
+    ax.set_xlabel(FIG_CONFIG[config_key]['xlabel'])
+    ax.set_ylabel(FIG_CONFIG[config_key]['ylabel'])
+
+
+    plt.suptitle(f"{row['source_file']}")
+    ax = add_info_box(ax, file_info)
+    
+    save_and_close_plot(config_key, row['source_file']) 
+
+def plot_spect_row_w_fit(row: pd.Series, config_key: str):
     template = FIG_CONFIG[config_key]['file_info']
     file_info = template.format(**row)
     fig, ax = plt.subplots(1, 2)

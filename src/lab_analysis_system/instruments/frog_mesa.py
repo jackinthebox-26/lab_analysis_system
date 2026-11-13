@@ -3,9 +3,12 @@ from pathlib import Path
 import re
 
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
+from lab_analysis_system.config import FIG_CONFIG
 from lab_analysis_system.instrument_base import Instrument
-from lab_analysis_system.instrument_tools import _infer_year
+from lab_analysis_system.instrument_tools import _infer_year, save_and_close_plot, add_info_box
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +94,26 @@ class FROGMesa(Instrument):
         return raw_data
 
     def plot(self, row: pd.Series) -> None:
-            """Render and save the default diagnostic plot for one processed data row."""
-            pass
+        """Render and save the default diagnostic plot for one processed data row."""
+        template = FIG_CONFIG[self.name]['file_info']
+        file_info = template.format(**row)
+        
+        
+        fig, ax = plt.subplots(1, 3, figsize=FIG_CONFIG['default_fig_settings']['figsize'], 
+                                dpi=FIG_CONFIG['default_fig_settings']['dpi'])
+
+        ax[0].plot(np.array(row["pulse_time_data_time"]), np.array(row["pulse_time_data_intensity"]))
+        ax[0].set_xlabel('Time (fs)')
+        ax[0].set_ylabel('Normalized Linear Power (a.u.)')
+        plt.suptitle(f"Pulse temporal data \n{row['source_file']}")
+
+        ax[1].plot(np.array(row["pulse_freq_data_wavelength"]), np.array(row["pulse_freq_data_intensity"]))
+        ax[1].set_xlabel('Wavelength (nm)')
+        ax[1].set_ylabel('Normalized Linear Power (a.u.)')
+        
+        
+        ax[2] = add_info_box(ax[2], file_info)
+        ax[2].set_axis_off()
+        
+        save_and_close_plot(self.name, row['source_file'])
 

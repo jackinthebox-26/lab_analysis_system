@@ -5,7 +5,7 @@ from datetime import datetime
 import pandas as pd
 
 from lab_analysis_system.instrument_base import Instrument
-from lab_analysis_system.instrument_tools import parse_OSC_settings
+from lab_analysis_system.instrument_tools import parse_OSC_settings, plot_spect_row
 
 logger = logging.getLogger(__name__)
 
@@ -66,4 +66,4 @@ class RFAAgilent(Instrument):
 
     def plot(self, row: pd.Series) -> None:
             """Render and save the default diagnostic plot for one processed data row."""
-            pass
+            plot_spect_row(row, self.name)
