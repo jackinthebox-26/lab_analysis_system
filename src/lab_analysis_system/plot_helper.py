@@ -5,26 +5,24 @@ import pandas as pd
 import logging
 from lab_analysis_system.config import DATA_LOAD_CONFIG, PROCESSED_DATA_PATH
 from lab_analysis_system.math_tools import gaussian, FWHM_to_stddev
+from lab_analysis_system.instrument_base import Instrument
 
 
 logger = logging.getLogger(__name__)
 
 def load_all_data() -> dict[str, pd.DataFrame]:
-    data_sources = {
-        "osa": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["osa_ando"]["data_file"],
-        "rf": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["rfa_agilent"]["data_file"],
-        "aurora": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["spect_aurora_4000"]["data_file"],
-        "ocean_optics": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["spect_ocean_optics_uv"]["data_file"],
-        "frog": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["frog_mesa"]["data_file"],
-    }
     loaded_data: dict[str, pd.DataFrame] = {}
-    for key, path in data_sources.items():
-        if Path(path).exists():
+    for inst in Instrument.registry:
+        cfg = DATA_LOAD_CONFIG.get(inst.name)
+        if not cfg or "data_file" not in cfg:
+            continue
+        path = PROCESSED_DATA_PATH / cfg["data_file"]
+        if path.is_file():
             temp_df = pd.read_json(path)
             for col in temp_df.columns:
                 if len(temp_df) > 0 and isinstance(temp_df[col].iloc[0], list):
                     temp_df[col] = temp_df[col].apply(np.array)
-            loaded_data[key] = temp_df
+            loaded_data[inst.name] = temp_df
     return loaded_data
 
 def inspect_data_files(data_dict: dict[str, pd.DataFrame]) -> None:
