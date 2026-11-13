@@ -6,6 +6,7 @@ import logging
 from lab_analysis_system.config import DATA_LOAD_CONFIG, PROCESSED_DATA_PATH
 from lab_analysis_system.math_tools import gaussian, FWHM_to_stddev
 from lab_analysis_system.instrument_base import Instrument
+import lab_analysis_system.instruments
 
 
 logger = logging.getLogger(__name__)
