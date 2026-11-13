@@ -128,9 +128,12 @@ def add_info_box(ax, text_dict, x=0.03, y=-0.4):
             )
     return ax
 
-def save_and_close_plot(fig, config_key, source_file):
+def save_and_close_plot(fig, config_key, source_file, figure_dir: str | Path | None = None):
     clean_source = str(source_file).strip().replace('\r', '').replace('\n', '')
-    plot_folder = (FIGURE_PATH / DATA_LOAD_CONFIG[config_key]['plot_folder']).resolve()
+    if figure_dir is None:
+        plot_folder = (FIGURE_PATH / DATA_LOAD_CONFIG[config_key]['plot_folder']).resolve()
+    if isinstance(figure_dir, str):
+        figure_dir = Path(figure_dir)
 
     plot_folder.mkdir(parents=True, exist_ok=True)
 
@@ -140,7 +143,7 @@ def save_and_close_plot(fig, config_key, source_file):
     logger.info(f"Saved graph to {output_filename}")
     plt.close(fig)
 
-def plot_rf_row(row: pd.Series, config_key: str):
+def plot_rf_row(row: pd.Series, config_key: str, figure_dir: str | Path | None = None):
     template = FIG_CONFIG[config_key]['file_info']
     file_info = template.format(**row)
     fig, ax = plt.subplots(1, 1)
@@ -155,9 +158,9 @@ def plot_rf_row(row: pd.Series, config_key: str):
     plt.suptitle(f"{row['source_file']}")
     ax = add_info_box(ax, file_info)
     
-    save_and_close_plot(fig, config_key, row['source_file']) 
+    save_and_close_plot(fig, config_key, row['source_file'], figure_dir) 
 
-def plot_spect_row_w_fit(row: pd.Series, config_key: str):
+def plot_spect_row_w_fit(row: pd.Series, config_key: str, figure_dir: str | Path | None = None):
     template = FIG_CONFIG[config_key]['file_info']
     file_info = template.format(**row)
     fig, ax = plt.subplots(1, 2)
@@ -202,4 +205,4 @@ def plot_spect_row_w_fit(row: pd.Series, config_key: str):
     
     ax[1].legend()
     
-    save_and_close_plot(fig, config_key, row['source_file']) 
+    save_and_close_plot(fig, config_key, row['source_file'], figure_dir) 

@@ -99,7 +99,7 @@ class FROGMesa(Instrument):
     def analyze(self, raw_data: dict) -> dict:
         return raw_data
 
-    def plot(self, row: pd.Series) -> None:
+    def plot(self, row: pd.Series, figure_dir: str | Path | None = None) -> None:
         """Render and save the default diagnostic plot for one processed data row."""
         template = FIG_CONFIG[self.name]['file_info']
         file_info = template.format(**row)
@@ -121,7 +121,7 @@ class FROGMesa(Instrument):
         ax[2] = add_info_box(ax[2], file_info)
         ax[2].set_axis_off()
         
-        save_and_close_plot(fig, self.name, row['source_file'])
+        save_and_close_plot(fig, self.name, row['source_file'], figure_dir)
     
     def should_ignore(self, file_path):
         return file_path.name.startswith(self.COMPANION_PREFIXES)

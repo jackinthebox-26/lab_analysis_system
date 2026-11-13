@@ -64,6 +64,6 @@ class RFAAgilent(Instrument):
     def analyze(self, raw_data: dict) -> dict:
             return raw_data
 
-    def plot(self, row: pd.Series) -> None:
+    def plot(self, row: pd.Series, figure_dir: str | Path | None = None) -> None:
             """Render and save the default diagnostic plot for one processed data row."""
-            plot_rf_row(row, self.name)
+            plot_rf_row(row, self.name, figure_dir)

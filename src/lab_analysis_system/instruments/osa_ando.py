@@ -30,8 +30,8 @@ class OSAAndo(Instrument):
         processed_data = analyze_spectrum(processed_data)
         return processed_data
 
-    def plot(self, row: pd.Series) -> None:
+    def plot(self, row: pd.Series, figure_dir: str | Path | None = None) -> None:
             """Render and save the default diagnostic plot for one processed data row."""
-            plot_spect_row_w_fit(row, self.name)
+            plot_spect_row_w_fit(row, self.name, figure_dir)
 
     

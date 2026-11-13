@@ -17,8 +17,9 @@ from lab_analysis_system.file_tools import find_all_files
 logger = logging.getLogger(__name__)
 
 class LabDataLoader:
-    def __init__(self, data_dir: str = str(RAW_DIR)):
+    def __init__(self, data_dir: Path = RAW_DIR, processed_dir: Path = PROCESSED_DATA_PATH):
         self.data_dir = Path(data_dir)
+        self.processed_dir = Path(processed_dir)
         self.instruments = Instrument.get_all_instruments()
         self.instruments_by_name = {inst.name: inst for inst in self.instruments}
 
@@ -26,9 +27,6 @@ class LabDataLoader:
         # Implement logic to determine the data type based on the file path or first 5 lines content
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             first_5_lines = [f.readline().strip() for _ in range(5)]
-        if len(first_5_lines) < 4:
-            logger.warning(f"{file_path.name} too short!")
-            return "Other"
         for inst in Instrument.get_all_instruments():
             if inst.should_ignore(file_path):
                 logger.debug(f"Ignoring companion file {file_path.name} (handled by {inst.name})")
@@ -51,6 +49,8 @@ class LabDataLoader:
         all_files = find_all_files(self.data_dir, nested=False) # Get list of files 
         for file in all_files:  # file is a Path object
             data_type = self.get_data_type(file)  #Peak in all files and determine where the data came from
+            if data_type is None:
+                continue
             if data_type not in raw_data_dict:  # If this is the first one, create the data type
                 raw_data_dict[data_type] = []
             raw_data_dict[data_type].append(file) # Add it to the list of this type
