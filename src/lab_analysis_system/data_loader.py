@@ -9,8 +9,6 @@ from lab_analysis_system.instrument_base import Instrument
 import lab_analysis_system.instruments
 
 from lab_analysis_system.config import RAW_DIR, PROCESSED_DATA_PATH
-from lab_analysis_system.parsers import data_parser
-from lab_analysis_system.data_analysis import data_analysis
 
 from lab_analysis_system.config import RAW_DIR, PROCESSED_DATA_PATH, DATA_LOAD_CONFIG
 from lab_analysis_system.file_tools import find_all_files
