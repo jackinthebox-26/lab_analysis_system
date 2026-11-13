@@ -13,7 +13,7 @@ import importlib.util
 import shutil
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("lab_analysis_system.main")
 
 def run_daily_custom_plots():
     # Turns '.../2026/11/03' into '2026_11_03.py'
