@@ -5,11 +5,11 @@ from lab_analysis_system.instrument_base import Instrument
 
 logger = logging.getLogger(__name__)
 
-class OpticalSpectrumAnalyzer(Instrument):
+class OSAAndo(Instrument):
     
     @property
     def name(self) -> str:
-        return "OSA"
+        return "osa_ando"
 
     @property
     def config_key(self) -> str:

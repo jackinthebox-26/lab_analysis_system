@@ -22,7 +22,7 @@ def test_get_data_type_rf_analyser(tmp_path):
     test_file.write_text("Date (day-month-year),2026-10-29\nLine 2\nLine 3\nLine 4\nLine 5\n", encoding="utf-8")
     
     loader = LabDataLoader(data_dir=tmp_path)
-    assert loader.get_data_type(test_file) == "RF analyser"
+    assert loader.get_data_type(test_file) == "agilent_rfa"
 
 def test_get_data_type_osa(tmp_path):
     test_file = tmp_path / "test_osa.csv"

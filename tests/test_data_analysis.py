@@ -4,7 +4,7 @@ from lab_analysis_system.data_analysis import data_analysis
 def test_analyze_spectrum_normalization(mocker):
     # Mock the fit_gaussian_profile to avoid testing math_tools logic here
     mocker.patch(
-        'package.data_analysis.fit_gaussian_profile', 
+        'lab_analysis_system.data_analysis.fit_gaussian_profile', 
         return_value={'center': 800, 'fwhm': 10, 'amplitude': 5, 'offset': 2, 'stddev': 4, 'fit_y': []}
     )
     

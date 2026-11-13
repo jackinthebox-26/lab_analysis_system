@@ -36,8 +36,10 @@ class LabDataLoader:
             first_5_lines = [f.readline().strip() for _ in range(5)]
 
         for inst in Instrument.registry:
-            print(inst)
+            logging.critical(file_path)
+            logging.critical(f'{inst.can_identify(file_path, first_5_lines)}')
             if inst.can_identify(file_path, first_5_lines):
+                logging.critical(inst.name)
                 return inst
         if "Device Name:Aurora 4000" in first_5_lines[4]:
             return "Aurora 4000"
@@ -45,8 +47,6 @@ class LabDataLoader:
             return "Ocean Optics"
         elif "Date (day-month-year)," in first_5_lines[0]:
             return "RF analyser"
-        elif ",dBm" in first_5_lines[0]:
-            return "OSA"
         elif "Pulse_Stats" in file_path.name:
             return "FROG pulse stats"
         elif "RetrievedFT" in file_path.name:
