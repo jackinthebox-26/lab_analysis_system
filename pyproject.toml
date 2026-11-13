@@ -26,3 +26,10 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["."]
 
+
+[project.entry-points."lab_analysis.instruments"]
+frog_mesa = "lab_analysis_system.instruments.frog_mesa:FROGMesa"
+osa_ando = "lab_analysis_system.instruments.osa_ando:OSAAndo"
+rfa_agilent = "lab_analysis_system.instruments.rfa_agilent:RFAAgilent"
+spect_aurora_4000 = "lab_analysis_system.instruments.spect_aurora_4000:SpectAurora4000"
+spect_ocean_optics_uv = "lab_analysis_system.instruments.spect_ocean_optics_uv:SpectOceanOpticsUV"

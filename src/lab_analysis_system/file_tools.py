@@ -41,7 +41,7 @@ def clean_directories(folders: list[Path] | None = None, raw_dir: Path | None = 
         folders = folder_list
     for folder in folders:
         deleted_count += clean_folder(folder, raw_dir)
-    logger.info(f"Deleted {deleted_count} files from {len(folder)} folders")
+    logger.info(f"Deleted {deleted_count} files from {len(folders)} folders")
     
 
 

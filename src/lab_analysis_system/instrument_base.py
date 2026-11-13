@@ -1,26 +1,29 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import ClassVar
+import importlib.metadata
 
 import pandas as pd
 
 class Instrument(ABC):
-    _registry: ClassVar[dict[str, type["Instrument"]]] = {}
-
-    def __init_subclass__(cls, **kwargs):
-        """Automatically registers any class that inherits from Instrument."""
-        super().__init_subclass__(**kwargs)
-        # Skip intermediate abstract base classes if any are added later
-        if not getattr(cls, "__abstractmethods__", None):
-            Instrument._registry[cls.__name__] = cls
-        
+    ENTRY_POINT_GROUP = "lab_analysis.instruments"
 
     @classmethod
     def get_all_instruments(cls) -> list["Instrument"]:
-        """Instantiate and return one instance of each registered instrument."""
-        return [inst_cls() for inst_cls in cls._registry.values()]
-
-
+        """Discover, validate, and instantiate all registered instrument plugins."""
+        instruments: list[Instrument] = []
+        for ep in importlib.metadata.entry_points(group=cls.ENTRY_POINT_GROUP):
+            inst_cls = ep.load()
+            if not (isinstance(inst_cls, type) and issubclass(inst_cls, cls)):
+                raise TypeError(
+                    f"Entry point '{ep.name}' ({inst_cls!r}) must subclass Instrument."
+                )
+            inst = inst_cls()
+            if inst.name != ep.name:
+                raise ValueError(
+                    f"Entry point name '{ep.name}' does not match {inst_cls.__name__}.name ('{inst.name}')."
+                )
+            instruments.append(inst)
+        return instruments
     @property
     @abstractmethod
     def name(self) -> str:
@@ -46,7 +49,7 @@ class Instrument(ABC):
         return raw_data
 
     @abstractmethod
-    def plot(self, row: pd.Series) -> None:
+    def plot(self, row: pd.Series, figure_dir: str | Path | None = None) -> None:
         """Render and save the default diagnostic plot for one processed data row."""
         pass
 

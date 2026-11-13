@@ -7,6 +7,47 @@ import json
 from pathlib import Path
 from lab_analysis_system import __main__ as cli_main
 
+import importlib.metadata
+from lab_analysis_system.instrument_base import Instrument
+
+
+def test_entry_point_plugin_discovery():
+    instruments = Instrument.get_all_instruments()
+    expected_names = {
+        "frog_mesa",
+        "osa_ando",
+        "rfa_agilent",
+        "spect_aurora_4000",
+        "spect_ocean_optics_uv",
+    }
+
+    assert all(isinstance(inst, Instrument) for inst in instruments)
+    assert {inst.name for inst in instruments} == expected_names
+
+
+def test_entry_point_rejects_non_instrument_subclass(monkeypatch):
+    bad_ep = importlib.metadata.EntryPoint(
+        name="not_an_instrument",
+        value="builtins:dict",
+        group=Instrument.ENTRY_POINT_GROUP,
+    )
+    monkeypatch.setattr(importlib.metadata, "entry_points", lambda group: [bad_ep])
+
+    with pytest.raises(TypeError, match="must subclass Instrument"):
+        Instrument.get_all_instruments()
+
+
+def test_entry_point_rejects_mismatched_name(monkeypatch):
+    mismatched_ep = importlib.metadata.EntryPoint(
+        name="wrong_config_key",
+        value="lab_analysis_system.instruments.osa_ando:OSAAndo",
+        group=Instrument.ENTRY_POINT_GROUP,
+    )
+    monkeypatch.setattr(importlib.metadata, "entry_points", lambda group: [mismatched_ep])
+
+    with pytest.raises(ValueError, match="does not match OSAAndo.name"):
+        Instrument.get_all_instruments()
+
 def test_get_data_type_aurora(tmp_path):
     # Create a temporary file mimicking an Aurora 4000 output
     test_file = tmp_path / "test_aurora.txt"
