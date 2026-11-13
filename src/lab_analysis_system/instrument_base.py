@@ -13,6 +13,7 @@ class Instrument(ABC):
         # Skip intermediate abstract base classes if any are added later
         if not getattr(cls, "__abstractmethods__", None):
             Instrument._registry[cls.__name__] = cls
+        
 
     @classmethod
     def get_all_instruments(cls) -> list["Instrument"]:

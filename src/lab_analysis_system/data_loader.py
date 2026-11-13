@@ -27,7 +27,7 @@ class LabDataLoader:
         # Implement logic to determine the data type based on the file path or first 5 lines content
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             first_5_lines = [f.readline().strip() for _ in range(5)]
-        for inst in Instrument.get_all_instruments():
+        for inst in self.instruments:
             if inst.should_ignore(file_path):
                 logger.debug(f"Ignoring companion file {file_path.name} (handled by {inst.name})")
                 return None
@@ -80,8 +80,8 @@ class LabDataLoader:
 
             if records and key in DATA_LOAD_CONFIG:
                 temp_df = pd.DataFrame(records)
-                PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
-                file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[key]["data_file"]
+                self.processed_dir.mkdir(parents=True, exist_ok=True)
+                file_name = self.processed_dir / DATA_LOAD_CONFIG[key]["data_file"]
                 temp_df.to_json(file_name)
                 logger.info(f"Saved {key} data to {file_name}")
 
