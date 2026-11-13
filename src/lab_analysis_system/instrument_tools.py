@@ -1,11 +1,24 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from pathlib import Path
+
+import logging
 
 from datetime import datetime
 
-from lab_analysis_system.config import RAW_DIR
-from lab_analysis_system.math_tools import fit_gaussian_profile
+from lab_analysis_system.config import RAW_DIR, FIG_CONFIG, FIGURE_PATH, DATA_LOAD_CONFIG
+from lab_analysis_system.math_tools import fit_gaussian_profile, gaussian, FWHM_to_stddev
+
+logger = logging.getLogger(__name__)
+
+BBOX_PROPS = dict(
+                boxstyle=FIG_CONFIG['info_box']['boxstyle'],  # Options: 'square', 'round', 'sawtooth'
+                facecolor=FIG_CONFIG['info_box']['facecolor'],         # Background fill color
+                edgecolor=FIG_CONFIG['info_box']['edgecolor'],          # Border line color
+                alpha=FIG_CONFIG['info_box']['alpha'],                 # Transparency (0 to 1)
+                linewidth=FIG_CONFIG['info_box']['linewidth']
+            )
 
 def _parse_delimited_spectrum(file_path: Path, start_marker: str) -> dict:
     data_start_line = 0
@@ -101,3 +114,76 @@ def analyze_spectrum(data_pd):
 
     data_pd['Normalized Linear Power (a.u.)'] = norm_power.tolist()
     return data_pd
+
+def add_info_box(ax, text_dict, x=0.03, y=-0.4):
+    ax.text(
+                x, y,                # (x, y) coordinates in relative axes space (3% from left, 95% from bottom)
+                text_dict,
+                transform=ax.transAxes,    # Coordinates relative to axes, not data values
+                fontsize=FIG_CONFIG['info_box']['fontsize'],
+                fontfamily=FIG_CONFIG['info_box']['fontfamily'],    # Monospace keeps key-value pairs aligned
+                verticalalignment=FIG_CONFIG['info_box']['verticalalignment'],
+                horizontalalignment=FIG_CONFIG['info_box']['horizontalalignment'],
+                bbox=BBOX_PROPS
+            )
+    return ax
+
+def save_and_close_plot(config_key, source_file):
+    clean_source = str(source_file).strip().replace('\r', '').replace('\n', '')
+    plot_folder = (FIGURE_PATH / DATA_LOAD_CONFIG[config_key]['plot_folder']).resolve()
+
+    plot_folder.mkdir(parents=True, exist_ok=True)
+
+    plt.tight_layout()
+    output_filename = plot_folder / f"plot_{Path(clean_source).stem}.png"
+    plt.savefig(output_filename)
+    logger.info(f"Saved graph to {output_filename}")
+    plt.close()
+
+
+def plot_spect_row(row: pd.Series, config_key: str):
+    template = FIG_CONFIG[config_key]['file_info']
+    file_info = template.format(**row)
+    fig, ax = plt.subplots(1, 2)
+    ax[0].plot(row["Wavelength (nm)"], 
+                row["Normalized Linear Power (a.u.)"], 
+                label='Data',
+                color=FIG_CONFIG['default_fig_settings']['color'])
+    ax[0].set_xlabel(FIG_CONFIG[config_key]['xlabel'])
+    ax[0].set_ylabel(FIG_CONFIG[config_key]['ylabel'])
+
+
+    plt.suptitle(f"{row['source_file']}")
+    ax[0] = add_info_box(ax[0], file_info)
+
+
+    ax[1].plot(row["Wavelength (nm)"], 
+                row["Normalized Linear Power (a.u.)"], 
+                label='Data',
+                color=FIG_CONFIG['default_fig_settings']['color'])
+    ax[1].plot(row['Wavelength (nm)'], gaussian(row['Wavelength (nm)'], 
+                                                1, 
+                                                row['Center Wavelength (nm)'],
+                                                FWHM_to_stddev(row['FWHM Wavelength (nm)']),
+                                                0),
+                                                color=FIG_CONFIG['gaussian_plot']['color'],
+                                                linestyle=FIG_CONFIG['gaussian_plot']['linestyle'],
+                                                label=FIG_CONFIG['gaussian_plot']['label'])
+
+    ax[1].set_xlabel(FIG_CONFIG[config_key]['xlabel'])
+    ax[1].set_ylabel(FIG_CONFIG[config_key]['ylabel'])
+
+    center_wavelength = row['Center Wavelength (nm)']
+    fwhm = row['FWHM Wavelength (nm)']
+
+    window = FIG_CONFIG['default_fig_settings']['tight_plot_window']
+
+    if np.isnan(center_wavelength) or np.isnan(fwhm):
+        logger.warning(f"Warning: Center wavelength or FWHM is NaN for {row['source_file']}. Skipping xlim setting.")
+    else:
+        ax[1].set_xlim([center_wavelength - fwhm * window,
+                        center_wavelength + fwhm * window]) 
+    
+    ax[1].legend()
+    
+    save_and_close_plot(config_key, row['source_file']) 
