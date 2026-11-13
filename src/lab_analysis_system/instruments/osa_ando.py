@@ -16,7 +16,7 @@ class OSAAndo(Instrument):
 
     def can_identify(self, file_path: Path, first_5_lines: list[str]) -> bool:
         # From your old data_loader.py get_data_type logic
-        return ",dBm" in first_5_lines[0]
+        return ",dBm" in first_5_lines[0]  # Note that it always outputs this even when saving in linear
 
     def parse(self, file_path):
         meta_data = {"source_file": file_path.name}

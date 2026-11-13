@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def load_all_data() -> dict[str, pd.DataFrame]:
     loaded_data: dict[str, pd.DataFrame] = {}
-    for inst in Instrument.registry:
+    for inst in Instrument.get_all_instruments():
         cfg = DATA_LOAD_CONFIG.get(inst.name)
         if not cfg or "data_file" not in cfg:
             continue

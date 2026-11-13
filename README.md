@@ -73,4 +73,5 @@ Get-ChildItem -Recurse -File -Include *.py, *.js, *.html, *.css, *.md, *.sql, *.
 
 
 TODO
-
+- make it so a data can be called using the command line
+- 

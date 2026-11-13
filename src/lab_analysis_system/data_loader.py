@@ -19,13 +19,17 @@ logger = logging.getLogger(__name__)
 class LabDataLoader:
     def __init__(self, data_dir: str = str(RAW_DIR)):
         self.data_dir = Path(data_dir)
-        self.instruments_by_name = {inst.name: inst for inst in Instrument.registry}
-    
+        self.instruments = Instrument.get_all_instruments()
+        self.instruments_by_name = {inst.name: inst for inst in self.instruments}
+
     def get_data_type(self, file_path: Path):  # Called in LabDataLoader.make_raw_data_dict()
         # Implement logic to determine the data type based on the file path or first 5 lines content
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             first_5_lines = [f.readline().strip() for _ in range(5)]
-        for inst in Instrument.registry:
+        if len(first_5_lines) < 4:
+            logger.warning(f"{file_path.name} too short!")
+            return "Other"
+        for inst in Instrument.get_all_instruments():
             if inst.can_identify(file_path, first_5_lines):
                 logger.info(f"Success! {inst.name}")
                 return inst.name

@@ -50,7 +50,7 @@ Pump current: {Pump current} mA
 Notes: {Notes}
 """
 
-xlabel='Frequency (MHz)'
+xlabel='Frequency (Hz)'
 ylabel='Power (dBm)'
 
 

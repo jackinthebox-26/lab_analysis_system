@@ -19,7 +19,7 @@ def load_data(config_key: str) -> pd.DataFrame | None:
 
 def create_all_graphs():
     logger.info("-------------------Initializing plot creation-------------------")
-    for inst in Instrument.registry:
+    for inst in Instrument.get_all_instruments():
         logger.info(f"Creating {inst.name} graphs")
         data = load_data(inst.name)
         if data is None:

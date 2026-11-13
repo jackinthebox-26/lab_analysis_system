@@ -1,15 +1,23 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import ClassVar
 
 import pandas as pd
 
 class Instrument(ABC):
-    registry: list["Instrument"] = []
+    _registry: ClassVar[dict[str, type["Instrument"]]] = {}
 
     def __init_subclass__(cls, **kwargs):
         """Automatically registers any class that inherits from Instrument."""
         super().__init_subclass__(**kwargs)
-        Instrument.registry.append(cls())
+        # Skip intermediate abstract base classes if any are added later
+        if not getattr(cls, "__abstractmethods__", None):
+            Instrument._registry[cls.__name__] = cls
+
+    @classmethod
+    def get_all_instruments(cls) -> list["Instrument"]:
+        """Instantiate and return one instance of each registered instrument."""
+        return [inst_cls() for inst_cls in cls._registry.values()]
 
 
     @property
