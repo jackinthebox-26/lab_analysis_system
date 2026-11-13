@@ -67,13 +67,13 @@ def add_to_metadata(metastring, string_to_add, header=""):
 def get_now():
     return datetime.now().isoformat()
 
-def save_metadata():
+def save_metadata(raw_dir: Path = RAW_DIR, processed_dir: Path = PROCESSED_DATA_PATH, figure_dir: Path = FIGURE_PATH):
     metastring = ""
     metastring = add_to_metadata(metastring, get_now(), "Code run datetime")
     metastring = add_to_metadata(metastring, dict_to_string(get_repo_version()), "Git repo data")
-    metastring = add_to_metadata(metastring, list_to_string(find_all_files(RAW_DIR, nested=False, resolve=True)), 'Raw data files')
-    metastring = add_to_metadata(metastring, list_to_string(find_all_files(PROCESSED_DATA_PATH, nested=True, resolve=True)), 'Processed data files')
-    metastring = add_to_metadata(metastring, list_to_string(find_all_files(FIGURE_PATH, nested=True, resolve=True)), 'Plot files')
+    metastring = add_to_metadata(metastring, list_to_string(find_all_files(raw_dir, nested=False, resolve=True)), 'Raw data files')
+    metastring = add_to_metadata(metastring, list_to_string(find_all_files(processed_dir, nested=True, resolve=True)), 'Processed data files')
+    metastring = add_to_metadata(metastring, list_to_string(find_all_files(figure_dir, nested=True, resolve=True)), 'Plot files')
 
 
     git_hash, is_dirty = get_repo_hash()
