@@ -1,9 +1,10 @@
-Lab Analysis System
+# Lab Analysis System
 
 Automated experimental data-processing, curve-fitting, and diagnostic plotting pipeline for multi-instrument ultrafast optics and spectroscopy experiments.
 
-File Structure
+## File Structure
 
+```text
 lab_analysis_system/                      # Repository root (BASE_DIR)
 ├── pyproject.toml                        # Editable package definition, CLI entrypoint, and pytest config
 ├── README.md
@@ -46,116 +47,97 @@ lab_analysis_system/                      # Repository root (BASE_DIR)
             ├── rfa_agilent.py            # Agilent RF spectrum analyzer parser/plotter
             ├── spect_aurora_4000.py      # Aurora 4000 spectrometer parser/analyzer/plotter
             └── spect_ocean_optics_uv.py  # Ocean Optics UV spectrometer parser/analyzer/plotter
+```
 
+## Installation & Setup
 
+1. **Create a virtual environment:**
+   ```bash
+   python -m venv venv
+   ```
 
-Installation & Setup
+2. **Activate the virtual environment:**
+   * **VS Code:** `Ctrl + Shift + P` $\rightarrow$ **Python: Select Interpreter** $\rightarrow$ choose `./venv`
+   * **PowerShell:** `.\venv\Scripts\Activate.ps1`
+   * **macOS / Linux:** `source venv/bin/activate`
 
-Create a virtual environment:
+3. **Install the package in editable mode:**
+   ```bash
+   pip install -e .
+   ```
 
-python -m venv venv
+## Usage
 
+### Running the Analysis Pipeline
 
+* **Run using the default folder in `config/data_load_config.toml`:**
+  ```bash
+  lab-analysis
+  # or
+  python main.py
+  ```
 
-Activate the virtual environment:
+* **Run for a specific experiment date** (resolved relative to `prefix_to_head` in `data_load_config.toml`; accepts `YYYY-MM-DD`, `YYYY/MM/DD`, or `YYYY_MM_DD`):
+  ```bash
+  lab-analysis -d 2026-10-29
+  ```
 
-VS Code: Ctrl + Shift + P $\rightarrow$ Python: Select Interpreter $\rightarrow$ choose ./venv
+* **Run on an explicit raw data directory:**
+  ```bash
+  lab-analysis --data-dir ../2026/10/29
+  ```
 
-PowerShell: .\venv\Scripts\Activate.ps1
+### Running Tests & Regenerating the Project Bundle
 
-macOS / Linux: source venv/bin/activate
+A single `pytest` command runs all unit tests, executes the end-to-end pipeline on the default dataset, and refreshes `project_bundle.txt`:
 
-Install the package in editable mode:
-
-pip install -e .
-
-
-
-Usage
-
-Running the Analysis Pipeline
-
-Run using the default folder in config/data_load_config.toml:
-
-lab-analysis
-
-
-
-(or python main.py)
-
-Run for a specific experiment date (resolved relative to prefix_to_head in data_load_config.toml):
-
-lab-analysis -d 2026-10-29
-
-
-
-(Accepts YYYY-MM-DD, YYYY/MM/DD, or YYYY_MM_DD.)
-
-Run on an explicit raw data directory:
-
-lab-analysis --data-dir ../2026/10/29
-
-
-
-Running Tests & Regenerating the Project Bundle
-
-A single pytest command runs all unit tests, executes the end-to-end pipeline on the default dataset, and refreshes project_bundle.txt:
-
+```bash
 pytest
+```
 
+To generate `project_bundle.txt` standalone:
 
-
-To generate project_bundle.txt standalone:
-
+```bash
 python make_bundle.py
+```
 
+## Adding a New Instrument
 
+Because `Instrument` uses `__init_subclass__` auto-registration (`src/lab_analysis_system/instrument_base.py`), adding a new device requires no changes to the loader or plotting loops:
 
-Adding a New Instrument
+1. Create a new module in `src/lab_analysis_system/instruments/` subclassing `Instrument` and implementing `name`, `can_identify()`, `parse()`, `analyze()`, and `plot()`.
+2. Import the new class in `src/lab_analysis_system/instruments/__init__.py`.
+3. Add `[<instrument_name>]` entries (`data_file`, `plot_folder`, `file_info`, axis labels) to `config/data_load_config.toml` and `config/figure_config.toml`.
 
-Because Instrument uses __init_subclass__ auto-registration (src/lab_analysis_system/instrument_base.py), adding a new device requires no changes to the loader or plotting loops:
+## Reproducibility & Repository Maintenance
 
-Create a new module in src/lab_analysis_system/instruments/ subclassing Instrument and implementing name, can_identify(), parse(), analyze(), and plot().
+### Recreating Figures from an Earlier Run
 
-Import the new class in src/lab_analysis_system/instruments/__init__.py.
+Every run writes a `metadata_<sha>.log` (or `metadata_<sha>-dirty.log`) file inside `processed_data/` recording the exact Git commit SHA and file manifest. To reproduce historical plots:
 
-Add [<instrument_name>] entries (data_file, plot_folder, file_info, axis labels) to config/data_load_config.toml and config/figure_config.toml.
+1. Check out the recorded commit:
+   ```bash
+   git checkout <hash>
+   ```
+2. Re-run the pipeline for that dataset:
+   ```bash
+   lab-analysis -d YYYY-MM-DD
+   ```
+3. Return to `main`:
+   ```bash
+   git checkout main
+   ```
 
-Reproducibility & Repository Maintenance
+### Hard Resetting Untracked Files
 
-Recreating Figures from an Earlier Run
-
-Every run writes a metadata_<sha>.log (or metadata_<sha>-dirty.log) file inside processed_data/ recording the exact Git commit SHA and file manifest. To reproduce historical plots:
-
-Check out the recorded commit:
-
-git checkout <hash>
-
-
-
-Re-run the pipeline for that dataset:
-
-lab-analysis -d YYYY-MM-DD
-
-
-
-Return to main:
-
-git checkout main
-
-
-
-Hard Resetting Untracked Files
-
+```bash
 git reset --hard HEAD
 git clean -fdx
+```
 
+> **Warning:** `git clean -fdx` permanently deletes all untracked files (including virtual environments and local logs). Use with caution.
 
+## TODO
 
-Warning: git clean -fdx permanently deletes all untracked files (including virtual environments and local logs). Use with caution.
-
-TODO
-
-[ ] Add new instrument plugins and analysis routines as needed
-
-[ ]
+- [ ] Add new instrument plugins and analysis routines as needed
+- [ ]
