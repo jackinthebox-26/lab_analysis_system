@@ -90,3 +90,7 @@ class FROGMesa(Instrument):
     def analyze(self, raw_data: dict) -> dict:
         return raw_data
 
+    def plot(self, row: pd.Series) -> None:
+            """Render and save the default diagnostic plot for one processed data row."""
+            pass
+

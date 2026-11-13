@@ -29,3 +29,7 @@ class OSAAndo(Instrument):
         processed_data |= raw_data
         processed_data = analyze_spectrum(processed_data)
         return processed_data
+
+    def plot(self, row: pd.Series) -> None:
+            """Render and save the default diagnostic plot for one processed data row."""
+            pass

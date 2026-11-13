@@ -2,6 +2,8 @@ import logging
 from pathlib import Path
 from datetime import datetime
 
+import pandas as pd
+
 from lab_analysis_system.instrument_base import Instrument
 from lab_analysis_system.instrument_tools import parse_OSC_settings
 
@@ -61,3 +63,7 @@ class RFAAgilent(Instrument):
     
     def analyze(self, raw_data: dict) -> dict:
             return raw_data
+
+    def plot(self, row: pd.Series) -> None:
+            """Render and save the default diagnostic plot for one processed data row."""
+            pass

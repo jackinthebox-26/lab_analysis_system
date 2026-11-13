@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+import pandas as pd
+
 class Instrument(ABC):
     registry: list["Instrument"] = []
 
@@ -30,6 +32,11 @@ class Instrument(ABC):
     def analyze(self, raw_data: dict) -> dict:
         """Optional post-parse mathematical analysis. Defaults to no-op."""
         return raw_data
+
+    @abstractmethod
+    def plot(self, row: pd.Series) -> None:
+        """Render and save the default diagnostic plot for one processed data row."""
+        pass
 
 
     

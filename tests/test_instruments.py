@@ -131,3 +131,61 @@ def test_non_spectral_instruments_analyze_passthrough():
     dummy_data = {"source_file": "sample.txt", "metric": 42}
     for inst in (RFAAgilent(), FROGMesa()):
         assert inst.analyze(dummy_data.copy()) == dummy_data
+
+
+import pandas as pd
+from lab_analysis_system import instrument_tools
+
+def test_instruments_plot_creates_png(tmp_path, monkeypatch):
+    monkeypatch.setattr(instrument_tools, "FIGURE_PATH", tmp_path)
+
+    # 1. Optical spectrometer row (OSA, Aurora, Ocean Optics)
+    spec_row = pd.Series({
+        "source_file": "001_HWP1_45_HWP2_90_QWP_0_500mA_test_20261029_153000.csv",
+        "exp_index": 1,
+        "QWP": 0.0,
+        "HWP1": 45.0,
+        "HWP2": 90.0,
+        "Pump current": "500",
+        "Center Wavelength (nm)": 800.0,
+        "FWHM Wavelength (nm)": 10.0,
+        "Notes": "test",
+        "Wavelength (nm)": [795.0, 800.0, 805.0],
+        "Normalized Linear Power (a.u.)": [0.1, 1.0, 0.1],
+    })
+    OSAAndo().plot(spec_row)
+    assert (tmp_path / "OSA_plots" / "plot_001_HWP1_45_HWP2_90_QWP_0_500mA_test_20261029_153000.png").is_file()
+
+    # 2. RF Analyser row
+    rf_row = pd.Series({
+        "source_file": "002_HWP1_10_HWP2_20_QWP_30_400mA_rf_note.csv",
+        "exp_index": 2,
+        "QWP": 30.0,
+        "HWP1": 10.0,
+        "HWP2": 20.0,
+        "Pump current": "400",
+        "Notes": "rf note",
+        "date": "2026-10-29T14:30:00",
+        "Frequency (Hz)": [1e6, 2e6],
+        "Power (dBm)": [-50.0, -20.0],
+    })
+    RFAAgilent().plot(rf_row)
+    assert (tmp_path / "RF_analyser_plots" / "plot_002_HWP1_10_HWP2_20_QWP_30_400mA_rf_note.png").is_file()
+
+    # 3. FROG row
+    frog_row = pd.Series({
+        "source_file": "Pulse_Stats 10_29_time_15_33_12_717.txt",
+        "pulse_width": 45.2,
+        "pulse_width_unit": "fs",
+        "bandwidth": 12.5,
+        "bandwidth_unit": "nm",
+        "tbw_product": 0.45,
+        "frog_trace_error": 0.0032,
+        "timestamp": "2026-10-29 15:33:12.717",
+        "pulse_time_data_time": [0.0, 10.0],
+        "pulse_time_data_intensity": [1.0, 0.5],
+        "pulse_freq_data_wavelength": [800.0, 805.0],
+        "pulse_freq_data_intensity": [1.0, 0.5],
+    })
+    FROGMesa().plot(frog_row)
+    assert (tmp_path / "FROG_plots" / "plot_Pulse_Stats 10_29_time_15_33_12_717.png").is_file()
