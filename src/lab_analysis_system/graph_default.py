@@ -4,7 +4,6 @@ import pandas as pd
 from pathlib import Path
 
 from lab_analysis_system.instrument_base import Instrument
-import lab_analysis_system.instruments
 from lab_analysis_system.logger import setup_logging
 from lab_analysis_system.config import DATA_LOAD_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
 

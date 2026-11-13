@@ -1,6 +1,5 @@
 # python3
 from pathlib import Path
-import lab_analysis_system.instruments
 import argparse
 
 from lab_analysis_system.data_loader import LabDataLoader
