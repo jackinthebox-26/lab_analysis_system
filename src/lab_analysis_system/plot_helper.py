@@ -11,7 +11,7 @@ import lab_analysis_system.instruments
 
 logger = logging.getLogger(__name__)
 
-def load_all_data() -> dict[str, pd.DataFrame]:
+def load_all_data(processed_dir: Path = PROCESSED_DATA_PATH) -> dict[str, pd.DataFrame]:
     loaded_data: dict[str, pd.DataFrame] = {}
     for inst in Instrument.get_all_instruments():
         cfg = DATA_LOAD_CONFIG.get(inst.name)
