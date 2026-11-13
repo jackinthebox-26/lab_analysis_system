@@ -16,14 +16,6 @@ from lab_analysis_system.file_tools import find_all_files
 
 logger = logging.getLogger(__name__)
 
-DATA_TYPE_TO_CONFIG_KEY = {
-    "OSA": "OSA_data",
-    "RF analyser": "RF_data",
-    "Aurora 4000": "aurora_data",
-    "Ocean Optics": "ocean_optics_data",
-    "FROG pulse stats": "FROG_data",
-}
-
 class LabDataLoader:
     def __init__(self, data_dir: str = str(RAW_DIR)):
         self.data_dir = Path(data_dir)
