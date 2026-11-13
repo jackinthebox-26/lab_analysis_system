@@ -46,6 +46,10 @@ class Instrument(ABC):
         """Render and save the default diagnostic plot for one processed data row."""
         pass
 
+    def should_ignore(self, file_path: Path) -> bool:
+        """Return True for auxiliary/companion files handled alongside a primary file."""
+        return False
+
 
     
     

@@ -13,6 +13,12 @@ from lab_analysis_system.instrument_tools import _infer_year, save_and_close_plo
 logger = logging.getLogger(__name__)
 
 class FROGMesa(Instrument):
+
+    COMPANION_PREFIXES = (
+        "Pulse_Time_Domain",
+        "Pulse_Complex_Time_Domain",
+        "Pulse_Freq_Domain",
+    )
     
     @property
     def name(self) -> str:
@@ -116,4 +122,7 @@ class FROGMesa(Instrument):
         ax[2].set_axis_off()
         
         save_and_close_plot(fig, self.name, row['source_file'])
+    
+    def should_ignore(self, file_path):
+        return file_path.name.startswith(self.COMPANION_PREFIXES)
 

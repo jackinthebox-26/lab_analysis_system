@@ -33,3 +33,5 @@ class OSAAndo(Instrument):
     def plot(self, row: pd.Series) -> None:
             """Render and save the default diagnostic plot for one processed data row."""
             plot_spect_row_w_fit(row, self.name)
+
+    

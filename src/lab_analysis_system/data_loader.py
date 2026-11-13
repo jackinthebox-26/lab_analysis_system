@@ -30,9 +30,13 @@ class LabDataLoader:
             logger.warning(f"{file_path.name} too short!")
             return "Other"
         for inst in Instrument.get_all_instruments():
+            if inst.should_ignore(file_path):
+                logger.debug(f"Ignoring companion file {file_path.name} (handled by {inst.name})")
+                return None
             if inst.can_identify(file_path, first_5_lines):
                 logger.info(f"Success! {inst.name}")
                 return inst.name
+            
             
         logger.warning(f"{file_path.name} not categorized")
         return "Other"
