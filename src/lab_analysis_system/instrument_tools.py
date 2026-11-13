@@ -5,6 +5,7 @@ from pathlib import Path
 from datetime import datetime
 
 from lab_analysis_system.config import RAW_DIR
+from lab_analysis_system.math_tools import fit_gaussian_profile
 
 def _parse_delimited_spectrum(file_path: Path, start_marker: str) -> dict:
     data_start_line = 0
@@ -80,3 +81,23 @@ def parse_spect_data(file_path, header=None, skiprows=1):
     meta_data["Wavelength (nm)"] = data["Wavelength (nm)"].tolist()
     meta_data["Power (mW)"] = data["Power (mW)"] .tolist()
     return meta_data
+
+def analyze_spectrum(data_pd):
+    fit_dict = fit_gaussian_profile(
+        data_pd['Wavelength (nm)'],
+        data_pd['Power (mW)']
+    )
+
+    data_pd['Center Wavelength (nm)'] = fit_dict['center']
+    data_pd['FWHM Wavelength (nm)'] = fit_dict['fwhm']
+    data_pd['amplitude'] = fit_dict['amplitude']
+    data_pd['offset'] = fit_dict['offset']
+
+    power = np.asarray(data_pd['Power (mW)'], dtype=float)
+    offset = fit_dict['offset'] if not np.isnan(fit_dict['offset']) else np.min(power)
+    shifted = power - offset
+    max_val = np.max(shifted)
+    norm_power = shifted / max_val if max_val > 0 else shifted
+
+    data_pd['Normalized Linear Power (a.u.)'] = norm_power.tolist()
+    return data_pd

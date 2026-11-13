@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from lab_analysis_system.instrument_base import Instrument
-from lab_analysis_system.instrument_tools import parse_OSC_settings, parse_spect_data
+from lab_analysis_system.instrument_tools import parse_OSC_settings, parse_spect_data, analyze_spectrum
 
 logger = logging.getLogger(__name__)
 
@@ -23,3 +23,9 @@ class OSAAndo(Instrument):
         meta_data |= parse_OSC_settings(file_path.name)
         meta_data |= parse_spect_data(str(file_path))
         return meta_data
+    
+    def analyze(self, raw_data: dict) -> dict:
+        processed_data = {}
+        processed_data |= raw_data
+        processed_data = analyze_spectrum(processed_data)
+        return processed_data

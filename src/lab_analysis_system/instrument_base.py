@@ -25,4 +25,12 @@ class Instrument(ABC):
     def parse(self, file_path: Path) -> dict:
         """Extract metadata and raw arrays from file_path into a dictionary."""
         pass
+
+    @abstractmethod
+    def analyze(self, raw_data: dict) -> dict:
+        """Optional post-parse mathematical analysis. Defaults to no-op."""
+        return raw_data
+
+
+    
     

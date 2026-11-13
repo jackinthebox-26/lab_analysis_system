@@ -86,3 +86,7 @@ class FROGMesa(Instrument):
             
             return meta_data
 
+        
+    def analyze(self, raw_data: dict) -> dict:
+        return raw_data
+

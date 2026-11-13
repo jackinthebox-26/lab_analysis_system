@@ -58,3 +58,6 @@ class RFAAgilent(Instrument):
         meta_data['date'] = datetime.strptime(date_macro + time_str, "%d_%m_%Y%H_%M_%S").isoformat()
 
         return meta_data
+    
+    def analyze(self, raw_data: dict) -> dict:
+            return raw_data
