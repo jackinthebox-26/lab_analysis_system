@@ -128,17 +128,17 @@ def add_info_box(ax, text_dict, x=0.03, y=-0.4):
             )
     return ax
 
-def save_and_close_plot(config_key, source_file):
+def save_and_close_plot(fig, config_key, source_file):
     clean_source = str(source_file).strip().replace('\r', '').replace('\n', '')
     plot_folder = (FIGURE_PATH / DATA_LOAD_CONFIG[config_key]['plot_folder']).resolve()
 
     plot_folder.mkdir(parents=True, exist_ok=True)
 
-    plt.tight_layout()
+    
     output_filename = plot_folder / f"plot_{Path(clean_source).stem}.png"
-    plt.savefig(output_filename)
+    fig.savefig(output_filename, bbox_inches="tight")
     logger.info(f"Saved graph to {output_filename}")
-    plt.close()
+    plt.close(fig)
 
 def plot_rf_row(row: pd.Series, config_key: str):
     template = FIG_CONFIG[config_key]['file_info']
@@ -155,7 +155,7 @@ def plot_rf_row(row: pd.Series, config_key: str):
     plt.suptitle(f"{row['source_file']}")
     ax = add_info_box(ax, file_info)
     
-    save_and_close_plot(config_key, row['source_file']) 
+    save_and_close_plot(fig, config_key, row['source_file']) 
 
 def plot_spect_row_w_fit(row: pd.Series, config_key: str):
     template = FIG_CONFIG[config_key]['file_info']
@@ -202,4 +202,4 @@ def plot_spect_row_w_fit(row: pd.Series, config_key: str):
     
     ax[1].legend()
     
-    save_and_close_plot(config_key, row['source_file']) 
+    save_and_close_plot(fig, config_key, row['source_file']) 
