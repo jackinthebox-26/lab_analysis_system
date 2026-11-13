@@ -3,8 +3,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import logging
-from package.config import DATA_LOAD_CONFIG, PROCESSED_DATA_PATH
-from package.math_tools import gaussian, FWHM_to_stddev
+from lab_analysis_system.config import DATA_LOAD_CONFIG, PROCESSED_DATA_PATH
+from lab_analysis_system.math_tools import gaussian, FWHM_to_stddev
 
 
 logger = logging.getLogger(__name__)

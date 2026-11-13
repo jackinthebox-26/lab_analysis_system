@@ -1,12 +1,14 @@
 # python3
 
-from package.data_loader import LabDataLoader
-from package.graph_default import create_all_graphs
-from package.file_tools import clean_directories
-from package.metadata import save_metadata
-from package.logger import setup_logging
+import lab_analysis_system.instruments
 
-from package.config import BASE_DIR, RAW_DIR, FIGURE_PATH, PROCESSED_DATA_PATH
+from lab_analysis_system.data_loader import LabDataLoader
+from lab_analysis_system.graph_default import create_all_graphs
+from lab_analysis_system.file_tools import clean_directories
+from lab_analysis_system.metadata import save_metadata
+from lab_analysis_system.logger import setup_logging
+
+from lab_analysis_system.config import BASE_DIR, RAW_DIR, FIGURE_PATH, PROCESSED_DATA_PATH
 import importlib.util
 import shutil
 import logging
