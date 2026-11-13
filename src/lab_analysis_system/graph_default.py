@@ -1,15 +1,16 @@
 from pathlib import Path
 import logging
 
+import lab_analysis_system.instruments
 
-from package.logger import setup_logging
+from lab_analysis_system.logger import setup_logging
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-from package.config import DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
-from package.math_tools import gaussian, FWHM_to_stddev
+from lab_analysis_system.config import DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
+from lab_analysis_system.math_tools import gaussian, FWHM_to_stddev
 
 logger = logging.getLogger(__name__)
 

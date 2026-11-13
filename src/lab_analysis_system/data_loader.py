@@ -1,16 +1,18 @@
 from pathlib import Path
 import logging
 
-from package.logger import setup_logging
+from lab_analysis_system.logger import setup_logging
 
 import pandas as pd
 
-from package.config import RAW_DIR, PROCESSED_DATA_PATH
-from package.parsers import data_parser
-from package.data_analysis import data_analysis
+import lab_analysis_system.instruments
 
-from package.config import RAW_DIR, PROCESSED_DATA_PATH, DATA_LOAD_CONFIG
-from package.file_tools import find_all_files
+from lab_analysis_system.config import RAW_DIR, PROCESSED_DATA_PATH
+from lab_analysis_system.parsers import data_parser
+from lab_analysis_system.data_analysis import data_analysis
+
+from lab_analysis_system.config import RAW_DIR, PROCESSED_DATA_PATH, DATA_LOAD_CONFIG
+from lab_analysis_system.file_tools import find_all_files
 
 
 logger = logging.getLogger(__name__)
