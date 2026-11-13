@@ -13,7 +13,7 @@ class RFAAgilent(Instrument):
 
     @property
     def config_key(self) -> str:
-        return "RF analyser"
+        return "rfa_agilent"
 
     def can_identify(self, file_path: Path, first_5_lines: list[str]) -> bool:
         # From your old data_loader.py get_data_type logic

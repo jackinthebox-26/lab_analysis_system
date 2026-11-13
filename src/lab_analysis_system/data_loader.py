@@ -34,36 +34,13 @@ class LabDataLoader:
         # Implement logic to determine the data type based on the file path or first 5 lines content
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             first_5_lines = [f.readline().strip() for _ in range(5)]
-
         for inst in Instrument.registry:
-            logging.critical(file_path)
-            logging.critical(f'{inst.can_identify(file_path, first_5_lines)}')
             if inst.can_identify(file_path, first_5_lines):
-                logging.critical(inst.name)
-                return inst
-        if "Device Name:Aurora 4000" in first_5_lines[4]:
-            return "Aurora 4000"
-        elif "Spectrometer: HR600944" in first_5_lines[4]:
-            return "Ocean Optics"
-        elif "Date (day-month-year)," in first_5_lines[0]:
-            return "RF analyser"
-        elif "Pulse_Stats" in file_path.name:
-            return "FROG pulse stats"
-        elif "RetrievedFT" in file_path.name:
-            return "FROG retrieved FT"
-        elif "Pulse_Time_Domain" in file_path.name:
-            return "FROG time domain"
-        elif "Pulse_Freq_Domain" in file_path.name:
-            return "FROG frequency domain"
-        elif "Pulse_Complex_Time_Domain" in file_path.name:
-            return "FROG complex time domain"
-        elif "Gate" in file_path.name:
-            return "FROG gate"
-        elif "FROGtrace" in file_path.name:
-            return "FROG trace"
-        else:
-            logger.info(f"{file_path.name} not categorized")
-            return "Other"
+                print(f"Success! {inst.config_key}")
+                return inst.config_key
+            
+        logger.info(f"{file_path.name} not categorized")
+        return "Other"
 
  
 

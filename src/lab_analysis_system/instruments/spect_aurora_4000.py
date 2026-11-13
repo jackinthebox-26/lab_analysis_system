@@ -13,8 +13,8 @@ class SpectAurora4000(Instrument):
 
     @property
     def config_key(self) -> str:
-        return "OSA_data"
+        return "spect_aurora_4000"
 
     def can_identify(self, file_path: Path, first_5_lines: list[str]) -> bool:
         # From your old data_loader.py get_data_type logic
-        return ",dBm" in first_5_lines[0]
+        return "Device Name:Aurora 4000" in first_5_lines[4]
