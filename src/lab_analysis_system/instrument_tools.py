@@ -46,9 +46,11 @@ def _parse_delimited_spectrum(file_path: Path, start_marker: str) -> dict:
 
 REQUIRED_OSC_KEYS = ("HWP1", "HWP2", "QWP", "Pump current")
 
-def _infer_year(file_path: Path) -> int:
+def _infer_year(file_path: Path, raw_dir: Path | None = None) -> int:
         # Try to extract a 4-digit year from RAW_DIR (e.g. '../2026/11/03')
-        for part in RAW_DIR.resolve().parts:
+        if raw_dir is None: 
+            raw_dir = file_path.parent
+        for part in raw_dir.resolve().parts:
             if part.isdigit() and len(part) == 4:
                 return int(part)
         # Fallback to file modification year

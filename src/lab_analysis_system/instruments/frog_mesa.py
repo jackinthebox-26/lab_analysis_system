@@ -29,7 +29,7 @@ class FROGMesa(Instrument):
         return "Pulse_Stats" in file_path.name
 
     def parse(self, file_path):
-        year = _infer_year(file_path)
+        year = _infer_year(file_path, raw_dir=file_path.parent)
         # Parse key-value lines
         meta_data = {'source_file': file_path.name}
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
