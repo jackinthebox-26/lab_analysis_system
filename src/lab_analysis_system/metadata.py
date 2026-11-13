@@ -81,11 +81,11 @@ def save_metadata(raw_dir: Path = RAW_DIR, processed_dir: Path = PROCESSED_DATA_
 
     if is_dirty:
         logger.warning("Git repository is dirty. Changes may not be tracked.")
-        metastring_file = PROCESSED_DATA_PATH / f"metadata_{git_hash[:7]}-dirty.log"
+        metastring_file = processed_dir / f"metadata_{git_hash[:7]}-dirty.log"
     else:
-        metastring_file = PROCESSED_DATA_PATH / f"metadata_{git_hash[:7]}.log"
+        metastring_file = processed_dir / f"metadata_{git_hash[:7]}.log"
 
-    PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
+    processed_dir.mkdir(parents=True, exist_ok=True)
     with open(metastring_file, "w", encoding="utf-8") as f:
         f.write(metastring)
     return metastring

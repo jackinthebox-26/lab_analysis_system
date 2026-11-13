@@ -34,10 +34,12 @@ def clean_folder(folder_path):
 
 
 
-def clean_directories():
+def clean_directories(folders: list[Path] | None = None):
     logger.info("-------------------Initializing tree cleaning-------------------")
     deleted_count = 0
-    for folder in folder_list:
+    if folders is None:
+        folders = folder_list
+    for folder in folders:
         deleted_count += clean_folder(folder)
     logger.info(f"Deleted {deleted_count} files from {len(folder_list)} folders")
     

@@ -132,10 +132,8 @@ def save_and_close_plot(fig, config_key, source_file, figure_dir: str | Path | N
     clean_source = str(source_file).strip().replace('\r', '').replace('\n', '')
     if figure_dir is None:
         plot_folder = (FIGURE_PATH / DATA_LOAD_CONFIG[config_key]['plot_folder']).resolve()
-    if isinstance(figure_dir, str):
-        plot_folder = Path(figure_dir)
-    if isinstance(figure_dir, Path):
-        plot_folder = figure_dir
+    else: 
+        plot_folder = (Path(figure_dir) / DATA_LOAD_CONFIG[config_key]['plot_folder']).resolve()
 
     plot_folder.mkdir(parents=True, exist_ok=True)
 
