@@ -23,3 +23,6 @@ lab-analysis = "lab_analysis_system.__main__:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
