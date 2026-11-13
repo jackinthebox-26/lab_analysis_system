@@ -144,8 +144,8 @@ def plot_rf_row(row: pd.Series, config_key: str):
     template = FIG_CONFIG[config_key]['file_info']
     file_info = template.format(**row)
     fig, ax = plt.subplots(1, 1)
-    ax.plot(row["Wavelength (nm)"], 
-                row["Normalized Linear Power (a.u.)"], 
+    ax.plot(row["Frequency (Hz)"], 
+                row["Power (dBm)"], 
                 label='Data',
                 color=FIG_CONFIG['default_fig_settings']['color'])
     ax.set_xlabel(FIG_CONFIG[config_key]['xlabel'])
@@ -161,8 +161,8 @@ def plot_spect_row_w_fit(row: pd.Series, config_key: str):
     template = FIG_CONFIG[config_key]['file_info']
     file_info = template.format(**row)
     fig, ax = plt.subplots(1, 2)
-    ax[0].plot(row["Frequency (Hz)"], 
-                row["Power (dBm)"], 
+    ax[0].plot(row["Wavelength (nm)"], 
+                row["Normalized Linear Power (a.u.)"], 
                 label='Data',
                 color=FIG_CONFIG['default_fig_settings']['color'])
     ax[0].set_xlabel(FIG_CONFIG[config_key]['xlabel'])
