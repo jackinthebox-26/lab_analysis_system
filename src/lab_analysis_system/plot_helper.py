@@ -17,7 +17,7 @@ def load_all_data(processed_dir: Path = PROCESSED_DATA_PATH) -> dict[str, pd.Dat
         cfg = DATA_LOAD_CONFIG.get(inst.name)
         if not cfg or "data_file" not in cfg:
             continue
-        path = PROCESSED_DATA_PATH / cfg["data_file"]
+        path = processed_dir / cfg["data_file"]
         if path.is_file():
             temp_df = pd.read_json(path)
             for col in temp_df.columns:

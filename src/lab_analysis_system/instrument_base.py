@@ -29,7 +29,10 @@ class Instrument(ABC):
 
     @abstractmethod
     def can_identify(self, file_path: Path, first_5_lines: list[str]) -> bool:
-        """Return True if this instrument generated this specific file."""
+        """Return True if this instrument generated this specific file.
+        Note: `first_5_lines` is always padded to length 5 with empty strings (`""`)
+        by `LabDataLoader` for files shorter than 5 lines.
+        """
         pass
 
     @abstractmethod

@@ -17,5 +17,9 @@ dependencies = [
     "pytest"
 ]
 
+[project.scripts]
+lab-analyze = "lab_analysis_system.__main__:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
