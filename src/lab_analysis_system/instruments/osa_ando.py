@@ -1,7 +1,10 @@
 import logging
 from pathlib import Path
 
+import pandas as pd
+
 from lab_analysis_system.instrument_base import Instrument
+from lab_analysis_system.instrument_tools import parse_OSC_settings, parse_spect_data
 
 logger = logging.getLogger(__name__)
 
@@ -17,4 +20,7 @@ class OSAAndo(Instrument):
         return ",dBm" in first_5_lines[0]
 
     def parse(self, file_path):
-        pass
+        meta_data = {"source_file": file_path.name}
+        meta_data |= parse_OSC_settings(file_path.name)
+        meta_data |= parse_spect_data(str(file_path))
+        return meta_data
