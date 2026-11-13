@@ -14,3 +14,7 @@ class FROGMesa(Instrument):
     def can_identify(self, file_path: Path, first_5_lines: list[str]) -> bool:
         # From your old data_loader.py get_data_type logic
         return "Pulse_Stats" in file_path.name
+
+    def parse(self, file_path):
+        pass
+

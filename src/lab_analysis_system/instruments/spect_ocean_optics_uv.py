@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 from lab_analysis_system.instrument_base import Instrument
+from lab_analysis_system.instrument_tools import _parse_delimited_spectrum
 
 logger = logging.getLogger(__name__)
 
@@ -15,3 +16,6 @@ class SpectOceanOpticsUV(Instrument):
     def can_identify(self, file_path: Path, first_5_lines: list[str]) -> bool:
         # From your old data_loader.py get_data_type logic
         return "Spectrometer: HR600944" in first_5_lines[4]
+
+    def parse(self, file_path):
+            return _parse_delimited_spectrum(file_path, '>>>>>Begin Spectral Data<<<<<')

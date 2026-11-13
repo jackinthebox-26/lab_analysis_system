@@ -25,3 +25,4 @@ class Instrument(ABC):
     def parse(self, file_path: Path) -> dict:
         """Extract metadata and raw arrays from file_path into a dictionary."""
         pass
+    

@@ -11,11 +11,11 @@ logger = logging.getLogger(__name__)
 
 def load_all_data() -> dict[str, pd.DataFrame]:
     data_sources = {
-        "osa": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["OSA_data"]["data_file"],
-        "rf": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["RF_data"]["data_file"],
-        "aurora": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["aurora_data"]["data_file"],
-        "ocean_optics": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["ocean_optics_data"]["data_file"],
-        "frog": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["FROG_data"]["data_file"],
+        "osa": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["osa_ando"]["data_file"],
+        "rf": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["rfa_agilent"]["data_file"],
+        "aurora": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["spect_aurora_4000"]["data_file"],
+        "ocean_optics": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["spect_ocean_optics_uv"]["data_file"],
+        "frog": PROCESSED_DATA_PATH / DATA_LOAD_CONFIG["frog_mesa"]["data_file"],
     }
     loaded_data: dict[str, pd.DataFrame] = {}
     for key, path in data_sources.items():
