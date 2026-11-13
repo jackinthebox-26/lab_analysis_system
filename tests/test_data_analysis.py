@@ -1,5 +1,5 @@
 import numpy as np
-from package.data_analysis import data_analysis
+from lab_analysis_system.data_analysis import data_analysis
 
 def test_analyze_spectrum_normalization(mocker):
     # Mock the fit_gaussian_profile to avoid testing math_tools logic here

@@ -5,6 +5,7 @@ from lab_analysis_system.logger import setup_logging
 
 import pandas as pd
 
+from lab_analysis_system.instrument_base import Instrument
 import lab_analysis_system.instruments
 
 from lab_analysis_system.config import RAW_DIR, PROCESSED_DATA_PATH
@@ -34,6 +35,10 @@ class LabDataLoader:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             first_5_lines = [f.readline().strip() for _ in range(5)]
 
+        for inst in Instrument.registry:
+            print(inst)
+            if inst.can_identify(file_path, first_5_lines):
+                return inst
         if "Device Name:Aurora 4000" in first_5_lines[4]:
             return "Aurora 4000"
         elif "Spectrometer: HR600944" in first_5_lines[4]:

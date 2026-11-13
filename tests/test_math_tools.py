@@ -1,5 +1,5 @@
 import numpy as np
-from package.math_tools import gaussian, FWHM_to_stddev, fit_gaussian_profile
+from lab_analysis_system.math_tools import gaussian, FWHM_to_stddev, fit_gaussian_profile
 
 def test_fit_gaussian_profile_clean_data():
     # Generate a perfect Gaussian to test the fitting algorithm

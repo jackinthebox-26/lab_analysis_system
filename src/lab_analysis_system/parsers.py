@@ -7,7 +7,7 @@ import numpy as np
 import re
 from datetime import datetime
 
-from package.config import RAW_DIR
+from lab_analysis_system.config import RAW_DIR
 
 
 logger = logging.getLogger(__name__)

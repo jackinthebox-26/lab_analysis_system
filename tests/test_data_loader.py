@@ -1,4 +1,4 @@
-from package.data_loader import LabDataLoader
+from lab_analysis_system.data_loader import LabDataLoader
 
 def test_get_data_type_aurora(tmp_path):
     # Create a temporary file mimicking an Aurora 4000 output

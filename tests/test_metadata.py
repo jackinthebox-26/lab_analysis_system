@@ -1,4 +1,4 @@
-from package.metadata import dict_to_string, list_to_string, add_to_metadata
+from lab_analysis_system.metadata import dict_to_string, list_to_string, add_to_metadata
 
 def test_dict_to_string():
     d = {"key1": "value1", "key2": {"nested_key": 42}}

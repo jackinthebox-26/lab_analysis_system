@@ -3,11 +3,11 @@ from pathlib import Path
 import logging
 
 
-from package.logger import setup_logging
+from lab_analysis_system.logger import setup_logging
 
 import shutil
 
-from package.config import PROCESSED_DATA_PATH, FIGURE_PATH, RAW_DIR
+from lab_analysis_system.config import PROCESSED_DATA_PATH, FIGURE_PATH, RAW_DIR
 
 logger = logging.getLogger(__name__)
 folder_list = [PROCESSED_DATA_PATH, FIGURE_PATH]

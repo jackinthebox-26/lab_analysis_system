@@ -2,8 +2,8 @@ import numpy as np
 import logging
 
 
-from package.config import BASE_DIR, DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
-from package.math_tools import gaussian, fit_gaussian_profile
+from lab_analysis_system.config import BASE_DIR, DATA_LOAD_CONFIG, FIG_CONFIG, PROCESSED_DATA_PATH, FIGURE_PATH
+from lab_analysis_system.math_tools import gaussian, fit_gaussian_profile
 
 logger = logging.getLogger(__name__)
 
