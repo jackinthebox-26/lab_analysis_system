@@ -6,7 +6,7 @@ import sys
 
 def setup_logging(
     log_dir: Path | None = None,
-    log_filename: str = "pipeline_run.log",
+    log_filename: str = "data_analysis_log.log",
     console_level: int = logging.INFO,
     file_level: int = logging.DEBUG,
 ) -> logging.Logger:
@@ -15,7 +15,7 @@ def setup_logging(
     - Console receives clean INFO+ messages.
     - File (if log_dir is provided) receives detailed DEBUG+ records with module & line info.
     """
-    pkg_logger = logging.getLogger("package")
+    pkg_logger = logging.getLogger("lab_analysis_system")
     pkg_logger.setLevel(logging.DEBUG)
 
     # Prevent duplicate handlers if setup_logging() is called multiple times
