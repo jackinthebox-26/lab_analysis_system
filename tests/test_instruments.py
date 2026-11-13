@@ -1,9 +1,13 @@
+import pytest
+
 import numpy as np
 from lab_analysis_system.instruments.spect_aurora_4000 import SpectAurora4000
 from lab_analysis_system.instruments.spect_ocean_optics_uv import SpectOceanOpticsUV
 from lab_analysis_system.instruments.osa_ando import OSAAndo
 from lab_analysis_system.instruments.rfa_agilent import RFAAgilent
 from lab_analysis_system.instruments.frog_mesa import FROGMesa
+
+
 
 
 def test_aurora_parse_and_analyze(tmp_path):
@@ -111,12 +115,13 @@ def test_frog_mesa_parse(tmp_path):
 def test_spectrometers_analyze():
     raw_spectrum = {
         "Wavelength (nm)": np.linspace(-5, 5),
-        "Power (mW)": np.exp((np.linspace(-5, 5)) ** 2),
+        "Power (mW)": np.exp(-(np.linspace(-5, 5)) ** 2),
     }
 
     for inst in (OSAAndo(), SpectAurora4000(), SpectOceanOpticsUV()):
         analyzed = inst.analyze(raw_spectrum.copy())
         assert "Center Wavelength (nm)" in analyzed
+        assert analyzed['Center Wavelength (nm)'] == pytest.approx(0.0)
         assert "FWHM Wavelength (nm)" in analyzed
         assert np.isclose(np.max(analyzed["Normalized Linear Power (a.u.)"]), 1.0)
         assert np.isclose(np.min(analyzed["Normalized Linear Power (a.u.)"]), 0.0)

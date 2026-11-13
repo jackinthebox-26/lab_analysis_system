@@ -23,7 +23,7 @@ linestyle = '--'
 label='Gaussian fit'
 
 
-[OSA_data]
+[osa_ando]
 file_info = """
 Type: OSA
 Index: {exp_index:03d}
@@ -39,7 +39,7 @@ Notes: {Notes}
 xlabel="Wavelength (nm)"
 ylabel="Normalized Linear Power (a.u.)"
 
-[RF_data]
+[rfa_agilent]
 file_info ="""
 Type: RF 
 Index: {exp_index:03d}
@@ -54,7 +54,7 @@ xlabel='Frequency (MHz)'
 ylabel='Power (dBm)'
 
 
-[aurora_data]
+[spect_aurora_4000]
 file_info = """
 Type: Aurora 4000
 Device Name: {Device Name} 
@@ -69,7 +69,7 @@ xlabel='Wavelength (nm)'
 ylabel='Normalized Linear Power (a.u.)'
 
 
-[ocean_optics_data]
+[spect_ocean_optics_uv]
 file_info = """
 Type: Ocean Optics
 Device Name: {Spectrometer} 
@@ -84,7 +84,7 @@ ylabel='Normalized Linear Power (a.u.)'
 
 
 
-[FROG_data]
+[frog_mesa]
 file_info = """
 Type: FROG
 Pulse Width: {pulse_width} {pulse_width_unit}

@@ -1,3 +1,6 @@
+import pandas as pd
+import pytest
+from lab_analysis_system import data_loader
 from lab_analysis_system.data_loader import LabDataLoader
 
 def test_get_data_type_aurora(tmp_path):
@@ -44,3 +47,26 @@ def test_get_data_type_unknown(tmp_path):
     
     loader = LabDataLoader(data_dir=tmp_path)
     assert loader.get_data_type(test_file) == "Other"
+
+@pytest.mark.filterwarnings("ignore:Covariance of the parameters could not be estimated:scipy.optimize.OptimizeWarning")
+def test_initiate_data_saving_uses_registry(tmp_path, monkeypatch):
+    raw_dir = tmp_path / "raw"
+    raw_dir.mkdir()
+    processed_dir = tmp_path / "processed"
+
+    # Redirect output path away from real lab folders
+    monkeypatch.setattr(data_loader, "PROCESSED_DATA_PATH", processed_dir)
+
+    osa_file = raw_dir / "001_HWP1_45_HWP2_90_QWP_0_500mA_test_20261029_153000.csv"
+    osa_file.write_text("Wavelength,dBm\n795.0,1.0\n800.0,11.0\n805.0,1.0\n", encoding="utf-8")
+
+    loader = LabDataLoader(data_dir=raw_dir)
+    loader.initiate_data_saving()
+
+    expected_json = processed_dir / "OSA_data.json"
+    assert expected_json.is_file()
+
+    df = pd.read_json(expected_json)
+    assert len(df) == 1
+    assert df.iloc[0]["source_file"] == osa_file.name
+    assert "Center Wavelength (nm)" in df.columns

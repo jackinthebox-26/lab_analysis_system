@@ -29,6 +29,7 @@ DATA_TYPE_TO_CONFIG_KEY = {
 class LabDataLoader:
     def __init__(self, data_dir: str = str(RAW_DIR)):
         self.data_dir = Path(data_dir)
+        self.instruments_by_name = {inst.name: inst for inst in Instrument.registry}
     
     def get_data_type(self, file_path: Path):  # Called in LabDataLoader.make_raw_data_dict()
         # Implement logic to determine the data type based on the file path or first 5 lines content
@@ -57,32 +58,32 @@ class LabDataLoader:
             raw_data_dict[data_type].append(file) # Add it to the list of this type
         return raw_data_dict # A dictionary where the keys are data types and values is a list of files of this type
 
-    def initiate_data_saving(self): # Called in main()
+    def initiate_data_saving(self):
         logger.info("-------------------Initializing Data saving-------------------")
-        logger.info('Initializing data catagorization')
-        data_dict = self.make_raw_data_dict()  # Contains categorized data
-        logger.info(f"Found the following data types: {data_dict.keys()}")
-        logger.info('Data catagorized')
-        
-        
-        logger.info('Initializing raw data processing and json saving.')
+        data_dict = self.make_raw_data_dict()
+        logger.info(f"Found the following data types: {list(data_dict.keys())}")
+
         for key, file_list in data_dict.items():
-            logger.info(f'Key: {key}')
+            inst = self.instruments_by_name.get(key)
+            if inst is None:
+                logger.info(f"Skipping uncategorized group '{key}' ({len(file_list)} files)")
+                continue
+
+            logger.info(f"Processing instrument: {key}")
             records = []
             for file in file_list:
-                logger.info(f"{' ' * 5}File: {file}")
+                logger.info(f"     File: {file}")
                 try:
-                    raw_dict = data_parser(file, key).data
-                    analyzed_dict = data_analysis(raw_dict, key).data
+                    raw_dict = inst.parse(file)
+                    analyzed_dict = inst.analyze(raw_dict)
                     records.append(analyzed_dict)
                 except Exception as e:
                     logger.warning(f"WARNING: Skipping {file.name} due to parse/analysis error: {e}")
 
-            if records and key in DATA_TYPE_TO_CONFIG_KEY:
+            if records and key in DATA_LOAD_CONFIG:
                 temp_df = pd.DataFrame(records)
                 PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
-                config_key = DATA_TYPE_TO_CONFIG_KEY[key]
-                file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[config_key]["data_file"]
+                file_name = PROCESSED_DATA_PATH / DATA_LOAD_CONFIG[key]["data_file"]
                 temp_df.to_json(file_name)
                 logger.info(f"Saved {key} data to {file_name}")
 

@@ -113,17 +113,17 @@ def plot_spectra(config_key):
 
 
 def plot_OSA_data():
-    config_key = 'OSA_data'
+    config_key = 'osa_ando'
     plot_spectra(config_key)
 
 def plot_RF_data():
-    config_key = 'RF_data'
+    config_key = 'rfa_agilent'
     data = load_data(config_key)
     if data is None:
             logger.info("No RF data")
             return
     for index, row in data.iterrows():
-        template = FIG_CONFIG['RF_data']['file_info']
+        template = FIG_CONFIG[config_key]['file_info']
         file_info = template.format(**row)
         
         fig, ax = plt.subplots(figsize=FIG_CONFIG['default_fig_settings']['figsize'], 
@@ -132,29 +132,29 @@ def plot_RF_data():
                    color=FIG_CONFIG['default_fig_settings']['color'])
 
       
-        ax.set_xlabel(FIG_CONFIG['RF_data']['xlabel'])
-        ax.set_ylabel(FIG_CONFIG['RF_data']['ylabel'])
+        ax.set_xlabel(FIG_CONFIG[config_key]['xlabel'])
+        ax.set_ylabel(FIG_CONFIG[config_key]['ylabel'])
         plt.suptitle(f"RF Data - {row['date']}")
         ax = add_info_box(ax, file_info)
         save_and_close_plot(config_key, row['source_file'])
         
 def plot_aurora_data():
-    config_key = 'aurora_data'
+    config_key = 'spect_aurora_4000'
     plot_spectra(config_key)
 
 def plot_ocean_optics_data():
-    config_key = 'ocean_optics_data'
+    config_key = 'spect_ocean_optics_uv'
     plot_spectra(config_key)
 
 def plot_FROG_data():
     
-    config_key = 'FROG_data'
+    config_key = 'frog_mesa'
     data = load_data(config_key)
     if data is None:
         logger.info("No FROG data")
         return
     for index, row in data.iterrows():
-        template = FIG_CONFIG['FROG_data']['file_info']
+        template = FIG_CONFIG[config_key]['file_info']
         file_info = template.format(**row)
       
         
