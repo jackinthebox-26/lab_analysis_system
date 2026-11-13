@@ -3,6 +3,10 @@ import pytest
 from lab_analysis_system import data_loader
 from lab_analysis_system.data_loader import LabDataLoader
 
+import json
+from pathlib import Path
+from lab_analysis_system import __main__ as cli_main
+
 def test_get_data_type_aurora(tmp_path):
     # Create a temporary file mimicking an Aurora 4000 output
     test_file = tmp_path / "test_aurora.txt"
@@ -49,18 +53,15 @@ def test_get_data_type_unknown(tmp_path):
     assert loader.get_data_type(test_file) == "Other"
 
 @pytest.mark.filterwarnings("ignore:Covariance of the parameters could not be estimated:scipy.optimize.OptimizeWarning")
-def test_initiate_data_saving_uses_registry(tmp_path, monkeypatch):
+def test_initiate_data_saving_uses_registry(tmp_path):
     raw_dir = tmp_path / "raw"
     raw_dir.mkdir()
     processed_dir = tmp_path / "processed"
 
-    # Redirect output path away from real lab folders
-    monkeypatch.setattr(data_loader, "PROCESSED_DATA_PATH", processed_dir)
-
     osa_file = raw_dir / "001_HWP1_45_HWP2_90_QWP_0_500mA_test_20261029_153000.csv"
     osa_file.write_text("Wavelength,dBm\n795.0,1.0\n800.0,11.0\n805.0,1.0\n", encoding="utf-8")
 
-    loader = LabDataLoader(data_dir=raw_dir)
+    loader = LabDataLoader(data_dir=raw_dir, processed_dir=processed_dir)
     loader.initiate_data_saving()
 
     expected_json = processed_dir / "OSA_data.json"
@@ -70,3 +71,69 @@ def test_initiate_data_saving_uses_registry(tmp_path, monkeypatch):
     assert len(df) == 1
     assert df.iloc[0]["source_file"] == osa_file.name
     assert "Center Wavelength (nm)" in df.columns
+
+
+
+def test_run_daily_custom_plots_forwards_paths(tmp_path, monkeypatch):
+    # Point BASE_DIR to tmp_path so run_daily_custom_plots looks in tmp_path/experiments
+    monkeypatch.setattr(cli_main, "BASE_DIR", tmp_path)
+    experiments_dir = tmp_path / "experiments"
+    experiments_dir.mkdir()
+
+    raw_dir = tmp_path / "data" / "2026" / "11" / "05"
+    raw_dir.mkdir(parents=True)
+    processed_dir = raw_dir / "processed_data"
+    figure_dir = raw_dir / "plots"
+
+    # Create a custom experiment script that records the arguments it receives
+    marker_file = tmp_path / "received_args.json"
+    script_path = experiments_dir / "exp_2026_11_05.py"
+    script_path.write_text(
+        "import json\n"
+        "from pathlib import Path\n\n"
+        "def main(processed_dir: Path, figure_dir: Path):\n"
+        f"    Path(r'{marker_file}').write_text(json.dumps({{\n"
+        "        'processed_dir': str(processed_dir),\n"
+        "        'figure_dir': str(figure_dir),\n"
+        "    }))\n",
+        encoding="utf-8",
+    )
+
+    cli_main.run_daily_custom_plots(
+        raw_dir=raw_dir,
+        processed_dir=processed_dir,
+        figure_dir=figure_dir,
+    )
+
+    assert marker_file.is_file()
+    recorded = json.loads(marker_file.read_text(encoding="utf-8"))
+    assert Path(recorded["processed_dir"]) == processed_dir
+    assert Path(recorded["figure_dir"]) == figure_dir
+
+
+def test_run_daily_custom_plots_legacy_zero_arg_main(tmp_path, monkeypatch):
+    monkeypatch.setattr(cli_main, "BASE_DIR", tmp_path)
+    experiments_dir = tmp_path / "experiments"
+    experiments_dir.mkdir()
+
+    raw_dir = tmp_path / "data" / "2026" / "11" / "06"
+    raw_dir.mkdir(parents=True)
+    processed_dir = raw_dir / "processed_data"
+    figure_dir = raw_dir / "plots"
+
+    marker_file = tmp_path / "legacy_ran.txt"
+    script_path = experiments_dir / "exp_2026_11_06.py"
+    script_path.write_text(
+        "from pathlib import Path\n\n"
+        "def main():\n"
+        f"    Path(r'{marker_file}').write_text('ok')\n",
+        encoding="utf-8",
+    )
+
+    cli_main.run_daily_custom_plots(
+        raw_dir=raw_dir,
+        processed_dir=processed_dir,
+        figure_dir=figure_dir,
+    )
+
+    assert marker_file.read_text(encoding="utf-8") == "ok"

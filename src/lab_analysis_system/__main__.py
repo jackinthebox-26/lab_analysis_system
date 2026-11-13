@@ -70,7 +70,10 @@ def run_daily_custom_plots(raw_dir: Path = RAW_DIR, processed_dir: Path = PROCES
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     if hasattr(module, "main"):
-        module.main()
+        try:
+            module.main(processed_dir=processed_dir, figure_dir=figure_dir)
+        except TypeError:
+            module.main()
 
 def main():
     args = parse_args()
