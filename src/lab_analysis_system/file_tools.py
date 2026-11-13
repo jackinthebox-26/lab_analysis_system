@@ -34,7 +34,7 @@ def clean_folder(folder_path, raw_dir: Path | None = RAW_DIR):
 
 
 
-def clean_directories(folders: list[Path] | None = None, raw_dir: Path | None = None):
+def clean_directories(folders: list[Path] | None = None, raw_dir: Path | None = RAW_DIR):
     logger.info("-------------------Initializing tree cleaning-------------------")
     deleted_count = 0
     if folders is None:
