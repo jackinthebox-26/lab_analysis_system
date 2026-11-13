@@ -115,5 +115,5 @@ class FROGMesa(Instrument):
         ax[2] = add_info_box(ax[2], file_info)
         ax[2].set_axis_off()
         
-        save_and_close_plot(self.name, row['source_file'])
+        save_and_close_plot(fig, self.name, row['source_file'])
 
