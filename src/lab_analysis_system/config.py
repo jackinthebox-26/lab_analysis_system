@@ -25,9 +25,9 @@ fig_config_path = Path(fig_config_path)
 with open(fig_config_path, 'rb') as f:
     FIG_CONFIG = tomllib.load(f)
 def resolve_paths(raw_folder: str | Path | None = None) -> tuple[Path, Path, Path]:
-    folder = raw_folder or DATA_LOAD_CONFIG['raw_data']['raw_data_folder']
-    raw_dir = (BASE_DIR / Path(str(folder).lstrip('/\\'))).resolve()
-
+    folder = Path(raw_folder or DATA_LOAD_CONFIG['raw_data']['raw_data_folder'])
+    raw_dir = folder.resolve() if folder.is_absolute() else (BASE_DIR / folder).resolve()
+    
     proc_rel = Path(DATA_LOAD_CONFIG['processed_data']['processed_data_folder'].lstrip('/\\'))
     fig_rel = Path(DATA_LOAD_CONFIG['processed_data']['plot_data_folder'].lstrip('/\\'))
 

@@ -51,12 +51,11 @@ class RFAAgilent(Instrument):
         meta_data['Power (dBm)'] = power_array
         meta_data['Frequency (Hz)'] = freq_array
 
-        date_macro = str(meta_data['date__day-month-year'])
-        time_str = str(meta_data['time__24h-minute-second'])
+        date_macro = str(meta_data.get('date__day-month-year', ''))
+        time_str = str(meta_data.get('time__24h-minute-second', ''))
 
         if not date_macro or not time_str:
             raise ValueError(f"Missing date/time header fields in RF file: {file_path.name}")
-
         meta_data['date'] = datetime.strptime(date_macro + time_str, "%d_%m_%Y%H_%M_%S").isoformat()
 
         return meta_data

@@ -148,7 +148,11 @@ def save_and_close_plot(fig, config_key, source_file, figure_dir: str | Path | N
 def plot_rf_row(row: pd.Series, config_key: str, figure_dir: str | Path | None = None):
     template = FIG_CONFIG[config_key]['file_info']
     file_info = template.format(**row)
-    fig, ax = plt.subplots(1, 1)
+    fig, ax = plt.subplots(
+        1, 1,
+        figsize=FIG_CONFIG['default_fig_settings']['figsize'],
+        dpi=FIG_CONFIG['default_fig_settings']['dpi'],
+    )
     ax.plot(row["Frequency (Hz)"], 
                 row["Power (dBm)"], 
                 label='Data',
@@ -165,7 +169,11 @@ def plot_rf_row(row: pd.Series, config_key: str, figure_dir: str | Path | None =
 def plot_spect_row_w_fit(row: pd.Series, config_key: str, figure_dir: str | Path | None = None):
     template = FIG_CONFIG[config_key]['file_info']
     file_info = template.format(**row)
-    fig, ax = plt.subplots(1, 2)
+    fig, ax = plt.subplots(
+        1, 2,
+        figsize=FIG_CONFIG['default_fig_settings']['figsize'],
+        dpi=FIG_CONFIG['default_fig_settings']['dpi'],
+    )
     ax[0].plot(row["Wavelength (nm)"], 
                 row["Normalized Linear Power (a.u.)"], 
                 label='Data',

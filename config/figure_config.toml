@@ -75,8 +75,8 @@ Type: Ocean Optics
 Device Name: {Spectrometer} 
 Integral Time(s): {Integration Time (sec)}
 Scans to average: {Scans to average} 
-Center Wavelength (nm): {Center Wavelength (nm)} nm
-FWHM Wavelength (nm): {FWHM Wavelength (nm)} nm
+Center Wavelength (nm): {Center Wavelength (nm):.2f} nm
+FWHM Wavelength (nm): {FWHM Wavelength (nm):.2f} nm
 """
 
 xlabel='Wavelength (nm)'
