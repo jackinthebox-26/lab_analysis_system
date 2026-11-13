@@ -11,10 +11,6 @@ class FROGMesa(Instrument):
     def name(self) -> str:
         return "frog_mesa"
 
-    @property
-    def config_key(self) -> str:
-        return "frog_mesa"
-
     def can_identify(self, file_path: Path, first_5_lines: list[str]) -> bool:
         # From your old data_loader.py get_data_type logic
         return "Pulse_Stats" in file_path.name

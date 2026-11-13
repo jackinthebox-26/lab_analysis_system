@@ -11,9 +11,6 @@ class SpectAurora4000(Instrument):
     def name(self) -> str:
         return "spect_aurora_4000"
 
-    @property
-    def config_key(self) -> str:
-        return "spect_aurora_4000"
 
     def can_identify(self, file_path: Path, first_5_lines: list[str]) -> bool:
         # From your old data_loader.py get_data_type logic

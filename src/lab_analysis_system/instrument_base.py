@@ -16,13 +16,12 @@ class Instrument(ABC):
         """e.g., 'OSA' or 'Aurora 4000'"""
         pass
 
-    @property
-    @abstractmethod
-    def config_key(self) -> str:
-        """The exact key used in data_load_config.toml (e.g., 'OSA_data')."""
-        pass
-
     @abstractmethod
     def can_identify(self, file_path: Path, first_5_lines: list[str]) -> bool:
         """Return True if this instrument generated this specific file."""
+        pass
+
+    @abstractmethod
+    def parse(self, file_path: Path) -> dict:
+        """Extract metadata and raw arrays from file_path into a dictionary."""
         pass
