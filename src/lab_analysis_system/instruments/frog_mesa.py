@@ -78,7 +78,7 @@ class FROGMesa(Instrument):
 
             pulse_time_data = pd.read_csv(pulse_time_file, header=None, names=['Time (fs)', 'Intensity (a.u.)', 'Empty'], sep=r"\s+")
             pulse_complex_time_data = pd.read_csv(pulse_complex_time_file, header=None, names=['Time (s)', 'Amplitude (a.u.)', 'Phase (rad)'], sep=r"\s+")
-            pulse_freq_data = pd.read_csv(pulse_freq_file, header=None, names=['Frequency (THz)', 'Intensity (a.u.)', 'Empty'], sep=r"\s+")
+            pulse_freq_data = pd.read_csv(pulse_freq_file, header=None, names=['Wavelength (nm)', 'Intensity (a.u.)', 'Empty'], sep=r"\s+")
                                                 
             
             meta_data["pulse_time_data_time"] = pulse_time_data["Time (fs)"].tolist()
@@ -89,7 +89,7 @@ class FROGMesa(Instrument):
             meta_data["pulse_complex_time_data_amplitude"] = pulse_complex_time_data["Amplitude (a.u.)"].tolist()
             meta_data["pulse_complex_time_data_phase"] = pulse_complex_time_data["Phase (rad)"].tolist()
 
-            meta_data["pulse_freq_data_wavelength"] = pulse_freq_data["Frequency (THz)"].tolist()  # Note: This is really wavelength, the FROG software outputs frequency in THz, but it's actually wavelength in nm. This is a known quirk of the FROG software.
+            meta_data["pulse_freq_data_wavelength"] = pulse_freq_data["Wavelength (nm)"].tolist()  # Note: This is really wavelength, the FROG software outputs frequency in THz, but it's actually wavelength in nm. This is a known quirk of the FROG software.
             meta_data["pulse_freq_data_intensity"] = pulse_freq_data["Intensity (a.u.)"].tolist()
             
             
