@@ -36,10 +36,10 @@ class LabDataLoader:
             first_5_lines = [f.readline().strip() for _ in range(5)]
         for inst in Instrument.registry:
             if inst.can_identify(file_path, first_5_lines):
-                print(f"Success! {inst.config_key}")
+                logger.info(f"Success! {inst.config_key}")
                 return inst.config_key
             
-        logger.info(f"{file_path.name} not categorized")
+        logger.warning(f"{file_path.name} not categorized")
         return "Other"
 
  
