@@ -10,7 +10,9 @@ from lab_analysis_system.instrument_base import Instrument
 
 logger = logging.getLogger(__name__)
 
-def load_all_data(processed_dir: Path = PROCESSED_DATA_PATH) -> dict[str, pd.DataFrame]:
+def load_all_data(processed_dir: Path | None = None) -> dict[str, pd.DataFrame]:
+    if processed_dir is None:
+        processed_dir = PROCESSED_DATA_PATH
     loaded_data: dict[str, pd.DataFrame] = {}
     for inst in Instrument.get_all_instruments():
         cfg = DATA_LOAD_CONFIG.get(inst.name)

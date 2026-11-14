@@ -38,7 +38,15 @@ def normalize_date_folder(date_str: str) -> str:
     prefix = DATA_LOAD_CONFIG["src_config"]["prefix_to_head"]  # ".."
     return f"{prefix}/{clean_date}"
 
-def run_daily_custom_plots(raw_dir: Path = RAW_DIR, processed_dir: Path = PROCESSED_DATA_PATH, figure_dir: Path = FIGURE_PATH):
+def run_daily_custom_plots(raw_dir: Path | None = None, 
+                           processed_dir: Path | None = None, 
+                           figure_dir: Path | None = None):
+    if raw_dir is None:
+        raw_dir = RAW_DIR
+    if processed_dir is None:
+        processed_dir = PROCESSED_DATA_PATH
+    if figure_dir is None:
+        figure_dir = FIGURE_PATH
     # Turns '.../2026/11/03' into '2026_11_03.py'
     parts = raw_dir.resolve().parts[-3:]
     date_slug = "_".join(parts)

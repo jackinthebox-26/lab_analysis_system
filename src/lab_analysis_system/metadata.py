@@ -12,7 +12,9 @@ from lab_analysis_system.file_tools import find_all_files
 
 logger = logging.getLogger(__name__)
 
-def get_repo_hash(path=BASE_DIR):
+def get_repo_hash(path: Path | None=None):
+    if path is None:
+        path = BASE_DIR
     try:
         repo = git.Repo(path, search_parent_directories=True)
         return repo.head.commit.hexsha, repo.is_dirty()
@@ -20,7 +22,9 @@ def get_repo_hash(path=BASE_DIR):
         return "nogit00", True
     
 
-def get_repo_version(path=BASE_DIR):
+def get_repo_version(path: Path | None=None):
+    if path is None:
+        path = BASE_DIR
     try:
         repo = git.Repo(path, search_parent_directories=True)
         sha = repo.head.commit.hexsha

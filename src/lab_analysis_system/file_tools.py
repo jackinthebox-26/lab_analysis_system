@@ -13,7 +13,9 @@ logger = logging.getLogger(__name__)
 folder_list = [PROCESSED_DATA_PATH, FIGURE_PATH]
 PROTECTED_EXTENSIONS = [".py", ".toml", ".md", ".txt", ".gitkeep", ".gitignore", ".pdf", ".svg"]
 
-def clean_folder(folder_path, raw_dir: Path | None = RAW_DIR):
+def clean_folder(folder_path, raw_dir: Path | None = None):
+    if raw_dir is None: 
+        raw_dir = RAW_DIR
     if folder_path.resolve() == raw_dir.resolve():
         raise RuntimeError("Safety abort: Refusing to clean RAW_DIR!")
     deleted_count = 0
@@ -34,9 +36,12 @@ def clean_folder(folder_path, raw_dir: Path | None = RAW_DIR):
 
 
 
-def clean_directories(folders: list[Path] | None = None, raw_dir: Path | None = RAW_DIR):
+def clean_directories(folders: list[Path] | None = None, 
+                      raw_dir: Path | None = None):
     logger.info("-------------------Initializing tree cleaning-------------------")
     deleted_count = 0
+    if raw_dir is None:
+        raw_dir = RAW_DIR
     if folders is None:
         folders = folder_list
     for folder in folders:

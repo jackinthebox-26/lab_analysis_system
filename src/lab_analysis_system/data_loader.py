@@ -16,7 +16,12 @@ from lab_analysis_system.file_tools import find_all_files
 logger = logging.getLogger(__name__)
 
 class LabDataLoader:
-    def __init__(self, data_dir: Path = RAW_DIR, processed_dir: Path = PROCESSED_DATA_PATH):
+    def __init__(self, data_dir: Path | None = None, 
+                 processed_dir: Path | None = None):
+        if data_dir is None:
+            data_dir = RAW_DIR
+        if processed_dir is None:
+            processed_dir = PROCESSED_DATA_PATH
         self.data_dir = Path(data_dir)
         self.processed_dir = Path(processed_dir)
         self.instruments = Instrument.get_all_instruments()

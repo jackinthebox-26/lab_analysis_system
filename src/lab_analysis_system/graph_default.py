@@ -18,7 +18,12 @@ def load_data(config_key: str, processed_dir: Path) -> pd.DataFrame | None:
     return pd.read_json(file_path)
 
 
-def create_all_graphs(processed_dir: Path = PROCESSED_DATA_PATH, figure_dir: Path = FIGURE_PATH):
+def create_all_graphs(processed_dir: Path | None = None, 
+                      figure_dir: Path | None = None):
+    if processed_dir is None:
+        processed_dir = PROCESSED_DATA_PATH
+    if figure_dir is None:
+        figure_dir = FIGURE_PATH
     logger.info("-------------------Initializing plot creation-------------------")
     for inst in Instrument.get_all_instruments():
         logger.info(f"Creating {inst.name} graphs")
