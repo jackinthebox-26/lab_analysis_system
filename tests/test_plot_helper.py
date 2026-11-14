@@ -7,6 +7,9 @@ from lab_analysis_system import plot_helper
 def test_load_all_data_uses_registry(tmp_path, monkeypatch):
     monkeypatch.setattr(plot_helper, "PROCESSED_DATA_PATH", tmp_path)
 
+    # Must not fall back to real PROCESSED_DATA_PATH when tmp_path is empty
+    assert plot_helper.load_all_data() == {}
+
     sample_df = pd.DataFrame([
         {"source_file": "test.csv", "Wavelength (nm)": [800.0, 805.0]}
     ])
