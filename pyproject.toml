@@ -14,7 +14,8 @@ dependencies = [
     "numpy>=1.24",
     "scipy",
     "GitPython",
-    "pytest"
+    "pytest",
+    "pyarrow",
 ]
 
 [project.scripts]

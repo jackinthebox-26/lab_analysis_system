@@ -105,10 +105,10 @@ def test_initiate_data_saving_uses_registry(tmp_path):
     loader = LabDataLoader(data_dir=raw_dir, processed_dir=processed_dir)
     loader.initiate_data_saving()
 
-    expected_json = processed_dir / "OSA_data.json"
-    assert expected_json.is_file()
+    expected_parquet = processed_dir / "OSA_data.parquet"
+    assert expected_parquet.is_file()
 
-    df = pd.read_json(expected_json)
+    df = pd.read_parquet(expected_parquet)
     assert len(df) == 1
     assert df.iloc[0]["source_file"] == osa_file.name
     assert "Center Wavelength (nm)" in df.columns

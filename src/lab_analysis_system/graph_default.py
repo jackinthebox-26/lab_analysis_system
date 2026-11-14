@@ -15,7 +15,7 @@ def load_data(config_key: str, processed_dir: Path) -> pd.DataFrame | None:
     logger.info(f"Loading data from {file_path}")
     if not file_path.is_file():
         return None
-    return pd.read_json(file_path)
+    return pd.read_parquet(file_path)
 
 
 def create_all_graphs(processed_dir: Path | None = None, 

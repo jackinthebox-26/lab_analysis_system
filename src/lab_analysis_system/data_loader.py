@@ -87,7 +87,7 @@ class LabDataLoader:
                 temp_df = pd.DataFrame(records)
                 self.processed_dir.mkdir(parents=True, exist_ok=True)
                 file_name = self.processed_dir / DATA_LOAD_CONFIG[key]["data_file"]
-                temp_df.to_json(file_name)
+                temp_df.to_parquet(file_name)
                 logger.info(f"Saved {key} data to {file_name}")
 
 

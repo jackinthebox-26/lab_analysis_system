@@ -20,7 +20,7 @@ def load_all_data(processed_dir: Path | None = None) -> dict[str, pd.DataFrame]:
             continue
         path = processed_dir / cfg["data_file"]
         if path.is_file():
-            temp_df = pd.read_json(path)
+            temp_df = pd.read_parquet(path)
             for col in temp_df.columns:
                 if len(temp_df) > 0 and isinstance(temp_df[col].iloc[0], list):
                     temp_df[col] = temp_df[col].apply(np.array)

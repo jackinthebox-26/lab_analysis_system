@@ -13,8 +13,8 @@ def test_load_all_data_uses_registry(tmp_path, monkeypatch):
     sample_df = pd.DataFrame([
         {"source_file": "test.csv", "Wavelength (nm)": [800.0, 805.0]}
     ])
-    sample_df.to_json(tmp_path / "OSA_data.json")
+    sample_df.to_parquet(tmp_path / "OSA_data.parquet")
 
-    loaded = plot_helper.load_all_data()
+    loaded = plot_helper.load_all_data(tmp_path)
     assert "osa_ando" in loaded
     assert isinstance(loaded["osa_ando"]["Wavelength (nm)"].iloc[0], np.ndarray)
