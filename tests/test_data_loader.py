@@ -151,30 +151,3 @@ def test_run_daily_custom_plots_forwards_paths(tmp_path, monkeypatch):
     assert Path(recorded["processed_dir"]) == processed_dir
     assert Path(recorded["figure_dir"]) == figure_dir
 
-
-def test_run_daily_custom_plots_legacy_zero_arg_main(tmp_path, monkeypatch):
-    monkeypatch.setattr(cli_main, "BASE_DIR", tmp_path)
-    experiments_dir = tmp_path / "experiments"
-    experiments_dir.mkdir()
-
-    raw_dir = tmp_path / "data" / "2026" / "11" / "06"
-    raw_dir.mkdir(parents=True)
-    processed_dir = raw_dir / "processed_data"
-    figure_dir = raw_dir / "plots"
-
-    marker_file = tmp_path / "legacy_ran.txt"
-    script_path = experiments_dir / "exp_2026_11_06.py"
-    script_path.write_text(
-        "from pathlib import Path\n\n"
-        "def main():\n"
-        f"    Path(r'{marker_file}').write_text('ok')\n",
-        encoding="utf-8",
-    )
-
-    cli_main.run_daily_custom_plots(
-        raw_dir=raw_dir,
-        processed_dir=processed_dir,
-        figure_dir=figure_dir,
-    )
-
-    assert marker_file.read_text(encoding="utf-8") == "ok"

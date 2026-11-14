@@ -71,7 +71,16 @@ def add_to_metadata(metastring, string_to_add, header=""):
 def get_now():
     return datetime.now().isoformat()
 
-def save_metadata(raw_dir: Path = RAW_DIR, processed_dir: Path = PROCESSED_DATA_PATH, figure_dir: Path = FIGURE_PATH):
+def save_metadata(raw_dir: Path | None = None, 
+                  processed_dir: Path | None = None, 
+                  figure_dir: Path | None = None):
+
+    if raw_dir is None:
+        raw_dir = RAW_DIR
+    if processed_dir is None:
+        processed_dir = PROCESSED_DATA_PATH
+    if figure_dir is None:
+        figure_dir = FIGURE_PATH
     metastring = ""
     metastring = add_to_metadata(metastring, get_now(), "Code run datetime")
     metastring = add_to_metadata(metastring, dict_to_string(get_repo_version()), "Git repo data")
